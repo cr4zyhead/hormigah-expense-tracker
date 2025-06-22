@@ -29,11 +29,10 @@ def dashboard(request):
         date__year=current_year
     ).aggregate(total=Sum('amount'))['total'] or 0
     
-    # Gastos por categoría este mes (para tabla y gráfica dona)
+    # Gastos por categoría últimos 30 días (para tabla y gráfica dona)
     categories_summary = Expense.objects.filter(
         user=request.user,
-        date__month=current_month,
-        date__year=current_year
+        date__gte=last_30_days
     ).values('category__name', 'category__color').annotate(
         total=Sum('amount')
     ).order_by('-total')
@@ -61,7 +60,14 @@ def dashboard(request):
         chart_daily_amounts.append(float(expense['total']))
     
     # Estadísticas adicionales
-    total_expenses_count = Expense.objects.filter(user=request.user).count()
+    # Total de gastos del mes actual (para consistencia con monthly_total)
+    monthly_expenses_count = Expense.objects.filter(
+        user=request.user,
+        date__month=current_month,
+        date__year=current_year
+    ).count()
+    
+    # Promedio diario de los últimos 30 días
     avg_daily_expense = Expense.objects.filter(
         user=request.user,
         date__gte=last_30_days
@@ -73,7 +79,7 @@ def dashboard(request):
         'recent_expenses': recent_expenses,
         'monthly_total': monthly_total,
         'categories_summary': categories_summary,
-        'total_expenses_count': total_expenses_count,
+        'monthly_expenses_count': monthly_expenses_count,
         'avg_daily_expense': avg_daily_expense,
         
         # Datos para Chart.js (convertidos a JSON)

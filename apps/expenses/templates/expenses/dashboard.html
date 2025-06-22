@@ -35,15 +35,15 @@
             </div>
         </div>
 
-        <!-- Total de Gastos -->
+        <!-- Total de Gastos del Mes -->
         <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm p-6 text-white">
             <div class="flex items-center">
                 <div class="p-3 bg-white bg-opacity-20 rounded-lg">
                     <span class="text-2xl">📊</span>
                 </div>
                 <div class="ml-4">
-                    <p class="text-green-100">Total de Gastos</p>
-                    <p class="text-2xl font-bold">{{ total_expenses_count }}</p>
+                    <p class="text-green-100">Total de Gastos (Este Mes)</p>
+                    <p class="text-2xl font-bold">{{ monthly_expenses_count }}</p>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
         <!-- Gráfico de Dona - Gastos por Categoría -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                🍩 Gastos por Categoría
+                🍩 Gastos por Categoría (30 días)
             </h2>
             {% if categories_summary %}
                 <div class="h-80">
@@ -77,7 +77,7 @@
                 <div class="h-80 flex items-center justify-center text-gray-500">
                     <div class="text-center">
                         <span class="text-6xl mb-4 block">🐜</span>
-                        <p>No hay gastos este mes</p>
+                        <p>No hay gastos en los últimos 30 días</p>
                         <a href="{% url 'expenses:add_expense' %}" class="text-blue-600 hover:text-blue-800">
                             ¡Agrega tu primer gasto!
                         </a>
