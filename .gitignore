@@ -98,6 +98,9 @@ logs/
 .vscode/
 .history/
 
+# Cursor
+.cursor/
+
 # PyCharm
 .idea/
 *.iws
