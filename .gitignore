@@ -57,9 +57,10 @@ venv.bak/
 # Archivos de medios subidos por usuarios
 media/
 
-# Archivos estáticos recolectados
+# Archivos estáticos recolectados (solo producción)
 staticfiles/
-static/
+
+# Nota: static/ NO se ignora porque contiene archivos fuente de desarrollo
 
 # Archivos de configuración local
 local_settings.py
