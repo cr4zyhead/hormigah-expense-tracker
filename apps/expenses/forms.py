@@ -73,8 +73,7 @@ class ExpenseFilterForm(forms.Form):
         choices=MONTH_CHOICES,
         required=False,
         widget=forms.Select(attrs={
-            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
-            'onchange': 'toggleCustomDates(this.value)'
+            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500'
         }),
         label="Período"
     )
