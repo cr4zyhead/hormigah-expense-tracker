@@ -67,7 +67,7 @@ Una aplicación web personal para **controlar esos pequeños gastos diarios** qu
 - [ ] Gráficos con Chart.js
 - [ ] Proyecciones anuales
 - [ ] Cálculo de métricas
-- [ ] Sistema de usuarios
+- [ ] Sistema de login/logout (sin registro público)
 
 #### 🚀 **Deploy**
 - [ ] Configuración para producción
@@ -134,6 +134,7 @@ python manage.py runserver
 - **Commits:** Usar conventional commits en español
 - **Comentarios:** Solo cuando aporten valor real
 - **Estilo:** Código en inglés, comentarios en español
+- **Autenticación:** Solo login/logout - usuarios creados vía admin
 
 ---
 
