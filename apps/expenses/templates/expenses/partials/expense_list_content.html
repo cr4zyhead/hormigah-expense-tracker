@@ -235,10 +235,12 @@
             <div class="text-6xl mb-4">📋</div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">No tienes gastos registrados</h3>
             <p class="text-gray-500 mb-6">Comienza registrando tu primer gasto hormiga</p>
-            <a href="{% url 'expenses:add_expense' %}" 
-               class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <button hx-get="{% url 'expenses:add_expense' %}" 
+                    hx-target="body" 
+                    hx-swap="beforeend"
+                    class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
                 ➕ Agregar tu primer gasto
-            </a>
+            </button>
         {% endif %}
     </div>
     {% endif %}

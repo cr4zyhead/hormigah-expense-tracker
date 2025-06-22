@@ -119,9 +119,12 @@
                     <div class="text-center">
                         <span class="text-6xl mb-4 block">🐜</span>
                         <p>No hay gastos en los últimos 30 días</p>
-                        <a href="{% url 'expenses:add_expense' %}" class="text-blue-600 hover:text-blue-800">
+                        <button hx-get="{% url 'expenses:add_expense' %}" 
+                                hx-target="body" 
+                                hx-swap="beforeend"
+                                class="text-blue-600 hover:text-blue-800">
                             ¡Agrega tu primer gasto!
-                        </a>
+                        </button>
                     </div>
                 </div>
             {% endif %}
@@ -212,10 +215,12 @@
                 <span class="text-6xl mb-4 block">🐜</span>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No hay gastos registrados</h3>
                 <p class="text-gray-500 mb-4">¡Comienza a registrar tus gastos hormiga!</p>
-                <a href="{% url 'expenses:add_expense' %}" 
-                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <button hx-get="{% url 'expenses:add_expense' %}" 
+                        hx-target="body" 
+                        hx-swap="beforeend"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                     Agregar primer gasto
-                </a>
+                </button>
             </div>
         {% endif %}
     </div>
