@@ -35,6 +35,18 @@
     <!-- Alpine.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    <!-- Configuración CSRF para HTMX -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <script>
+        // Configurar HTMX para incluir token CSRF en todas las peticiones
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('htmx:configRequest', function(evt) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                evt.detail.headers['X-CSRFToken'] = csrfToken;
+            });
+        });
+    </script>
+    
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐜</text></svg>">
     

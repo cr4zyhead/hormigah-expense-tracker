@@ -119,7 +119,7 @@ def delete_expense(request, expense_id):
             # Si es petición HTMX, devolver lista actualizada con mensaje
             if request.headers.get('HX-Request'):
                 # Obtener contexto actualizado para la lista
-                context = get_expense_list_context(request)
+                context = get_expense_list_context(request.user, request.GET)
                 context.update({
                     'delete_success': True,
                     'expense_data': expense_data,
