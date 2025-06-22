@@ -312,4 +312,119 @@ def get_expense_list_context(user, request_params):
         **statistics,  # total_filtered, count_filtered
     }
     
-    return context 
+    return context
+
+
+def get_expense_for_user(expense_id, user):
+    """
+    Obtiene un gasto específico verificando que pertenece al usuario
+    
+    Args:
+        expense_id: ID del gasto
+        user: Usuario actual
+    
+    Returns:
+        Expense: Objeto del gasto o None si no existe/no pertenece al usuario
+    
+    Raises:
+        Expense.DoesNotExist: Si el gasto no existe o no pertenece al usuario
+    """
+    try:
+        return Expense.objects.get(id=expense_id, user=user)
+    except Expense.DoesNotExist:
+        raise Expense.DoesNotExist("El gasto no existe o no tienes permisos para acceder a él")
+
+
+def handle_expense_form_update(expense, form_data):
+    """
+    Maneja la actualización de un gasto con los datos del formulario
+    
+    Args:
+        expense: Instancia del gasto a actualizar
+        form_data: Datos POST del formulario
+    
+    Returns:
+        tuple: (updated_expense, form, is_valid)
+    """
+    from .forms import ExpenseForm
+    
+    form = ExpenseForm(form_data, instance=expense)
+    
+    if form.is_valid():
+        updated_expense = form.save()
+        return updated_expense, form, True
+    
+    return expense, form, False
+
+
+def build_expense_edit_context(user, expense, form, request_params):
+    """
+    Construye el contexto para mostrar después de una edición exitosa
+    
+    Args:
+        user: Usuario actual
+        expense: Gasto actualizado
+        form: Formulario usado
+        request_params: Parámetros GET de la petición
+    
+    Returns:
+        dict: Context actualizado con mensaje de éxito
+    """
+    # Obtener contexto actualizado de la lista
+    context = get_expense_list_context(user, request_params)
+    
+    # Agregar información específica de la edición
+    context.update({
+        'edit_success': True,
+        'expense_data': {
+            'amount': expense.amount,
+            'category_name': expense.category.name,
+            'description': expense.description or 'Sin descripción',
+            'date': expense.date
+        },
+        'edit_message': 'Gasto actualizado exitosamente'
+    })
+    
+    return context
+
+
+def handle_expense_error_response(request, error_message):
+    """
+    Maneja respuestas de error de forma consistente
+    
+    Args:
+        request: Objeto request de Django
+        error_message: Mensaje de error a mostrar
+    
+    Returns:
+        HttpResponse: Respuesta apropiada según el tipo de petición
+    """
+    from django.shortcuts import render
+    from django.contrib import messages
+    from django.shortcuts import redirect
+    
+    if request.headers.get('HX-Request'):
+        return render(request, 'expenses/partials/delete_error.html', {
+            'error': error_message
+        })
+    
+    messages.error(request, error_message)
+    return redirect('expenses:expense_list')
+
+
+def create_htmx_edit_response(request, context):
+    """
+    Crea respuesta HTMX para edición exitosa con trigger para cerrar modal
+    
+    Args:
+        request: Objeto request de Django
+        context: Context para el template
+    
+    Returns:
+        HttpResponse: Respuesta con header HX-Trigger-After-Swap
+    """
+    from django.shortcuts import render
+    
+    response = render(request, 'expenses/partials/expense_list_content.html', context)
+    response['HX-Trigger-After-Swap'] = 'closeEditModal'
+    return response 
