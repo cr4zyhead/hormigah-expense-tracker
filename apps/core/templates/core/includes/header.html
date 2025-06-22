@@ -9,15 +9,25 @@
                 </a>
             </div>
             
-            <!-- Navigation -->
+            <!-- Desktop Navigation -->
             <div class="hidden md:flex space-x-6">
                 <a href="{% url 'expenses:dashboard' %}" class="text-gray-600 hover:text-gray-800">Dashboard</a>
                 <a href="{% url 'expenses:add_expense' %}" class="text-gray-600 hover:text-gray-800">Agregar Gasto</a>
                 <a href="{% url 'expenses:expense_list' %}" class="text-gray-600 hover:text-gray-800">Todos los Gastos</a>
             </div>
             
-            <!-- User Menu -->
+            <!-- Mobile menu button + User Menu -->
             <div class="flex items-center space-x-4">
+                <!-- Mobile menu button -->
+                <button 
+                    onclick="toggleMobileMenu()" 
+                    class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
                 {% if user.is_authenticated %}
                     <!-- User Dropdown -->
                     <div class="relative">
@@ -26,7 +36,7 @@
                             class="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-800 focus:outline-none"
                         >
                             <span class="text-lg">👤</span>
-                            <span>{{ user.username }}</span>
+                            <span class="hidden sm:inline">{{ user.username }}</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -51,23 +61,55 @@
                 {% endif %}
             </div>
         </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="md:hidden mt-4 pb-4 border-t border-gray-200 hidden">
+            <div class="pt-4 space-y-2">
+                <a href="{% url 'expenses:dashboard' %}" 
+                   class="block px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-md">
+                    📊 Dashboard
+                </a>
+                <a href="{% url 'expenses:add_expense' %}" 
+                   class="block px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-md">
+                    ➕ Agregar Gasto
+                </a>
+                <a href="{% url 'expenses:expense_list' %}" 
+                   class="block px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-md">
+                    📋 Todos los Gastos
+                </a>
+            </div>
+        </div>
     </nav>
 </header>
 
-<!-- JavaScript para el dropdown -->
+<!-- JavaScript para los dropdowns -->
 <script>
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
+}
+
 function toggleUserMenu() {
     const dropdown = document.getElementById('userDropdown');
     dropdown.classList.toggle('hidden');
 }
 
-// Cerrar dropdown si se hace clic fuera
+// Cerrar dropdowns si se hace clic fuera
 document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('userDropdown');
-    const button = event.target.closest('button');
+    const userDropdown = document.getElementById('userDropdown');
+    const mobileMenu = document.getElementById('mobileMenu');
     
-    if (!button || button.getAttribute('onclick') !== 'toggleUserMenu()') {
-        dropdown.classList.add('hidden');
+    // Cerrar user dropdown
+    const userButton = event.target.closest('button[onclick="toggleUserMenu()"]');
+    if (!userButton) {
+        userDropdown.classList.add('hidden');
+    }
+    
+    // Cerrar mobile menu
+    const mobileButton = event.target.closest('button[onclick="toggleMobileMenu()"]');
+    const mobileMenuContent = event.target.closest('#mobileMenu');
+    if (!mobileButton && !mobileMenuContent) {
+        mobileMenu.classList.add('hidden');
     }
 });
 </script> 
