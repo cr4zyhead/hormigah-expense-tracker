@@ -4,6 +4,7 @@ from .models import Category, Expense
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    """Admin para gestionar categorías de gastos"""
     list_display = ['name', 'icon', 'color', 'created_at']
     list_filter = ['created_at']
     search_fields = ['name', 'description']
@@ -14,6 +15,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Expense)
 class ExpenseAdmin(admin.ModelAdmin):
+    """Admin para gestionar gastos individuales"""
     list_display = ['date', 'amount', 'category', 'user', 'description']
     list_filter = ['category', 'date', 'user', 'created_at']
     search_fields = ['description', 'location']
