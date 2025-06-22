@@ -44,7 +44,7 @@ def expense_list(request):
 @login_required
 def add_expense(request):
     """
-    Vista para agregar un nuevo gasto
+    Vista refactorizada para agregar gastos - soporta modal HTMX
     """
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
@@ -52,16 +52,46 @@ def add_expense(request):
             expense = form.save(commit=False)
             expense.user = request.user
             expense.save()
+            
+            # Si es petición HTMX, devolver respuesta especial
+            if request.headers.get('HX-Request'):
+                # Cerrar modal y mostrar mensaje de éxito
+                return render(request, 'expenses/partials/expense_success.html', {
+                    'expense': expense,
+                    'message': '¡Gasto agregado exitosamente!'
+                })
+            
+            # Petición normal: redirect tradicional
             messages.success(request, '¡Gasto agregado exitosamente!')
             return redirect('expenses:dashboard')
+        else:
+            # Si hay errores y es HTMX, devolver modal con errores
+            if request.headers.get('HX-Request'):
+                return render(request, 'expenses/partials/add_expense_modal.html', {
+                    'form': form
+                })
     else:
         form = ExpenseForm()
     
+    # Si es petición HTMX, devolver modal
+    if request.headers.get('HX-Request'):
+        return render(request, 'expenses/partials/add_expense_modal.html', {
+            'form': form
+        })
+    
+    # Petición normal: página completa
     context = {
         'form': form,
     }
-    
     return render(request, 'expenses/add_expense.html', context)
+
+
+@login_required
+def close_modal(request):
+    """
+    Vista para cerrar modales HTMX
+    """
+    return render(request, 'expenses/partials/empty.html')
 
 
 

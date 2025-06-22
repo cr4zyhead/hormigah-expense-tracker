@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('gastos/', views.expense_list, name='expense_list'),
     path('agregar/', views.add_expense, name='add_expense'),
+    path('close-modal/', views.close_modal, name='close_modal'),
 ] 
