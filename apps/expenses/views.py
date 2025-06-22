@@ -12,28 +12,72 @@ from .forms import ExpenseForm, ExpenseFilterForm
 @login_required
 def dashboard(request):
     """
-    Vista principal del dashboard que muestra resumen de gastos con gráficas
+    Vista del dashboard que maneja filtros de período con HTMX
     """
+    # Obtener el período seleccionado del filtro
+    period = request.GET.get('period', 'current_month')
+    
+    # Calcular fechas según el período
+    today = datetime.now().date()
+    
+    if period == 'current_month':
+        start_date = today.replace(day=1)
+        next_month = start_date.replace(month=start_date.month + 1) if start_date.month < 12 else start_date.replace(year=start_date.year + 1, month=1)
+        end_date = next_month - timedelta(days=1)
+        period_label = f"Este mes ({start_date.strftime('%B %Y').title()})"
+        
+    elif period == 'last_month':
+        first_day_current = today.replace(day=1)
+        end_date = first_day_current - timedelta(days=1)
+        start_date = end_date.replace(day=1)
+        period_label = f"Mes pasado ({start_date.strftime('%B %Y').title()})"
+        
+    elif period == 'last_7_days':
+        start_date = today - timedelta(days=7)
+        end_date = today
+        period_label = f"Últimos 7 días"
+        
+    elif period == 'last_30_days':
+        start_date = today - timedelta(days=30)
+        end_date = today
+        period_label = f"Últimos 30 días"
+        
+    elif period == 'current_year':
+        start_date = today.replace(month=1, day=1)
+        end_date = today.replace(month=12, day=31)
+        period_label = f"Este año ({today.year})"
+    
+    else:  # Default: current_month
+        start_date = today.replace(day=1)
+        next_month = start_date.replace(month=start_date.month + 1) if start_date.month < 12 else start_date.replace(year=start_date.year + 1, month=1)
+        end_date = next_month - timedelta(days=1)
+        period_label = f"Este mes"
+    
+    # Filtrar gastos por el período seleccionado
+    period_expenses = Expense.objects.filter(
+        user=request.user,
+        date__gte=start_date,
+        date__lte=end_date
+    )
+    
+    # Calcular métricas del período
+    period_total = period_expenses.aggregate(total=Sum('amount'))['total'] or 0
+    period_expenses_count = period_expenses.count()
+    
+    # Calcular promedio diario
+    period_days = (end_date - start_date).days + 1
+    period_avg_daily = period_total / period_days if period_days > 0 else 0
+    
+    # Para compatibilidad con el template existente (valores por defecto)
+    monthly_total = period_total
+    monthly_expenses_count = period_expenses_count
+    avg_daily_expense = period_avg_daily
+    
     # Gastos recientes del usuario actual
     recent_expenses = Expense.objects.filter(user=request.user).order_by('-date')[:10]
     
-    # Fechas para filtros
-    current_month = datetime.now().month
-    current_year = datetime.now().year
-    last_30_days = datetime.now().date() - timedelta(days=30)
-    
-    # Total de gastos del mes actual
-    monthly_total = Expense.objects.filter(
-        user=request.user,
-        date__month=current_month,
-        date__year=current_year
-    ).aggregate(total=Sum('amount'))['total'] or 0
-    
-    # Gastos por categoría últimos 30 días (para tabla y gráfica dona)
-    categories_summary = Expense.objects.filter(
-        user=request.user,
-        date__gte=last_30_days
-    ).values('category__name', 'category__color').annotate(
+    # Gastos por categoría en el período seleccionado (para gráficas)
+    categories_summary = period_expenses.values('category__name', 'category__color').annotate(
         total=Sum('amount')
     ).order_by('-total')
     
@@ -42,11 +86,8 @@ def dashboard(request):
     chart_amounts = list(categories_summary.values_list('total', flat=True))
     chart_colors = list(categories_summary.values_list('category__color', flat=True))
     
-    # Gastos por día en los últimos 30 días (para gráfico de líneas)
-    daily_expenses = Expense.objects.filter(
-        user=request.user,
-        date__gte=last_30_days
-    ).annotate(
+    # Gastos por día en el período seleccionado (para gráfico de líneas)
+    daily_expenses = period_expenses.annotate(
         day=TruncDay('date')
     ).values('day').annotate(
         total=Sum('amount')
@@ -59,28 +100,20 @@ def dashboard(request):
         chart_dates.append(expense['day'].strftime('%Y-%m-%d'))
         chart_daily_amounts.append(float(expense['total']))
     
-    # Estadísticas adicionales
-    # Total de gastos del mes actual (para consistencia con monthly_total)
-    monthly_expenses_count = Expense.objects.filter(
-        user=request.user,
-        date__month=current_month,
-        date__year=current_year
-    ).count()
-    
-    # Promedio diario de los últimos 30 días
-    avg_daily_expense = Expense.objects.filter(
-        user=request.user,
-        date__gte=last_30_days
-    ).aggregate(avg=Sum('amount'))['avg'] or 0
-    if avg_daily_expense:
-        avg_daily_expense = avg_daily_expense / 30
-    
+    # Context para el template
     context = {
         'recent_expenses': recent_expenses,
         'monthly_total': monthly_total,
         'categories_summary': categories_summary,
         'monthly_expenses_count': monthly_expenses_count,
         'avg_daily_expense': avg_daily_expense,
+        
+        # Nuevas variables para HTMX
+        'period_label': period_label,
+        'period_total': period_total,
+        'period_expenses_count': period_expenses_count,
+        'period_avg_daily': period_avg_daily,
+        'selected_period': period,
         
         # Datos para Chart.js (convertidos a JSON)
         'chart_categories_json': json.dumps(chart_categories),
@@ -89,6 +122,10 @@ def dashboard(request):
         'chart_dates_json': json.dumps(chart_dates),
         'chart_daily_amounts_json': json.dumps(chart_daily_amounts),
     }
+    
+    # Si es una petición HTMX, devolver solo las métricas
+    if request.headers.get('HX-Request'):
+        return render(request, 'expenses/partials/dashboard_metrics.html', context)
     
     return render(request, 'expenses/dashboard.html', context)
 

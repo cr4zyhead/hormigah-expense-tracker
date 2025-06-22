@@ -20,43 +20,78 @@
         </div>
     </div>
 
+    <!-- Filtros del Dashboard -->
+    <div class="bg-white rounded-lg shadow-sm p-4" x-data="{ selectedPeriod: '{{ selected_period|default:'current_month' }}' }">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-medium text-gray-900">📊 Filtrar métricas</h3>
+            <form id="dashboard-filter" 
+                  hx-get="{% url 'expenses:dashboard' %}"
+                  hx-target="#dashboard-metrics"
+                  hx-trigger="change"
+                  hx-indicator="#metrics-loading">
+                <select name="period" 
+                        class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        x-model="selectedPeriod">
+                    <option value="current_month" {% if selected_period == 'current_month' %}selected{% endif %}>Este mes</option>
+                    <option value="last_month" {% if selected_period == 'last_month' %}selected{% endif %}>Mes pasado</option>
+                    <option value="last_7_days" {% if selected_period == 'last_7_days' %}selected{% endif %}>Últimos 7 días</option>
+                    <option value="last_30_days" {% if selected_period == 'last_30_days' %}selected{% endif %}>Últimos 30 días</option>
+                    <option value="current_year" {% if selected_period == 'current_year' %}selected{% endif %}>Este año</option>
+                </select>
+            </form>
+        </div>
+        
+        <!-- Indicador de carga para métricas -->
+        <div id="metrics-loading" class="htmx-indicator mt-2 text-center">
+            <div class="inline-flex items-center px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-blue-700 text-sm">Actualizando métricas...</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Métricas Principales -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Total Mensual -->
-        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-sm p-6 text-white">
-            <div class="flex items-center">
-                <div class="p-3 bg-white bg-opacity-20 rounded-lg">
-                    <span class="text-2xl">💰</span>
-                </div>
-                <div class="ml-4">
-                    <p class="text-blue-100">Total del Mes</p>
-                    <p class="text-2xl font-bold">${{ monthly_total|floatformat:0 }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total de Gastos del Mes -->
-        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm p-6 text-white">
-            <div class="flex items-center">
-                <div class="p-3 bg-white bg-opacity-20 rounded-lg">
-                    <span class="text-2xl">📊</span>
-                </div>
-                <div class="ml-4">
-                    <p class="text-green-100">Total de Gastos (Este Mes)</p>
-                    <p class="text-2xl font-bold">{{ monthly_expenses_count }}</p>
+    <div id="dashboard-metrics">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Total del Período -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-sm p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white bg-opacity-20 rounded-lg">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-blue-100">{{ period_label|default:"Total del Mes" }}</p>
+                        <p class="text-2xl font-bold">${{ period_total|floatformat:0 }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Promedio Diario -->
-        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow-sm p-6 text-white">
-            <div class="flex items-center">
-                <div class="p-3 bg-white bg-opacity-20 rounded-lg">
-                    <span class="text-2xl">📈</span>
+            <!-- Total de Gastos del Período -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white bg-opacity-20 rounded-lg">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-green-100">Gastos ({{ period_label|default:"Este Mes" }})</p>
+                        <p class="text-2xl font-bold">{{ period_expenses_count }}</p>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <p class="text-purple-100">Promedio Diario (30 días)</p>
-                    <p class="text-2xl font-bold">${{ avg_daily_expense|floatformat:0 }}</p>
+            </div>
+
+            <!-- Promedio Diario -->
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg shadow-sm p-6 text-white">
+                <div class="flex items-center">
+                    <div class="p-3 bg-white bg-opacity-20 rounded-lg">
+                        <span class="text-2xl">📈</span>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-purple-100">Promedio Diario</p>
+                        <p class="text-2xl font-bold">${{ period_avg_daily|floatformat:0 }}</p>
+                    </div>
                 </div>
             </div>
         </div>
