@@ -124,7 +124,7 @@
                 Los filtros aplicados no devolvieron ningún resultado.<br>
                 Intenta ajustar los criterios de búsqueda.
             </p>
-            <button hx-get="{% url 'expenses:expense_list_htmx' %}" 
+            <button hx-get="{% url 'expenses:expense_list' %}" 
                     hx-target="#expense-results"
                     hx-indicator="#loading-indicator"
                     class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
