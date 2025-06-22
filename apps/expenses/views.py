@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .models import Expense
 from .forms import ExpenseForm
 from .utils import get_dashboard_context, get_expense_list_context
 
@@ -92,6 +93,53 @@ def close_modal(request):
     Vista para cerrar modales HTMX
     """
     return render(request, 'expenses/partials/empty.html')
+
+
+@login_required
+def delete_expense(request, expense_id):
+    """
+    Vista para eliminar un gasto con HTMX
+    """
+    try:
+        # Obtener el gasto y verificar que pertenece al usuario
+        expense = Expense.objects.get(id=expense_id, user=request.user)
+        
+        if request.method == 'DELETE':
+            # Guardar datos para el mensaje de confirmación
+            expense_data = {
+                'amount': expense.amount,
+                'category_name': expense.category.name,
+                'description': expense.description or 'Sin descripción',
+                'date': expense.date
+            }
+            
+            # Eliminar el gasto
+            expense.delete()
+            
+            # Si es petición HTMX, devolver lista actualizada con mensaje
+            if request.headers.get('HX-Request'):
+                # Obtener contexto actualizado para la lista
+                context = get_expense_list_context(request)
+                context.update({
+                    'delete_success': True,
+                    'expense_data': expense_data,
+                    'delete_message': 'Gasto eliminado exitosamente'
+                })
+                return render(request, 'expenses/partials/expense_list_content.html', context)
+            
+            # Petición normal: redirect con mensaje
+            messages.success(request, f'Gasto de €{expense_data["amount"]} eliminado exitosamente')
+            return redirect('expenses:expense_list')
+            
+    except Expense.DoesNotExist:
+        # El gasto no existe o no pertenece al usuario
+        if request.headers.get('HX-Request'):
+            return render(request, 'expenses/partials/delete_error.html', {
+                'error': 'El gasto no existe o no tienes permisos para eliminarlo'
+            })
+        
+        messages.error(request, 'El gasto no existe o no tienes permisos para eliminarlo')
+        return redirect('expenses:expense_list')
 
 
 

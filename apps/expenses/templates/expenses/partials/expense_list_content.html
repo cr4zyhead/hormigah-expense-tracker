@@ -1,3 +1,25 @@
+<!-- Mensaje de éxito si existe -->
+{% if delete_success %}
+<div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 rounded-lg">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <div class="ml-3">
+            <p class="text-sm text-green-700">
+                <strong>🗑️ {{ delete_message }}</strong><br>
+                €{{ expense_data.amount }} - {{ expense_data.category_name }}
+                {% if expense_data.description %}
+                    - "{{ expense_data.description }}"
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Información del Período Activo -->
 {% if active_period_info %}
 <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-6">
@@ -60,6 +82,9 @@
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Cantidad
                         </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -90,6 +115,16 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900">
                             €{{ expense.amount|floatformat:2 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                            <button hx-delete="{% url 'expenses:delete_expense' expense.id %}" 
+                                    hx-target="#expense-results"
+                                    hx-confirm="¿Estás seguro de que quieres eliminar este gasto de €{{ expense.amount }}?"
+                                    hx-indicator="#delete-loading"
+                                    class="text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                                    title="Eliminar gasto">
+                                🗑️
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}

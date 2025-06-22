@@ -153,6 +153,14 @@
         </form>
     </div>
 
+    <!-- Indicador de carga para eliminación -->
+    <div id="delete-loading" class="htmx-indicator bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+        <div class="flex items-center">
+            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-600 mr-3"></div>
+            <span class="text-yellow-800 font-medium">🗑️ Eliminando gasto...</span>
+        </div>
+    </div>
+
     <!-- Contenedor de resultados que será actualizado por HTMX -->
     <div id="expense-results">
         {% include 'expenses/partials/expense_list_content.html' %}
