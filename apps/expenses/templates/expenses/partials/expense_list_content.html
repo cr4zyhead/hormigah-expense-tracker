@@ -115,7 +115,9 @@
 <!-- Lista de gastos -->
 <div class="bg-white rounded-lg shadow">
     {% if expenses %}
-    <div class="overflow-hidden">
+    
+    <!-- Vista Desktop: Tabla -->
+    <div class="hidden md:block overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -198,10 +200,76 @@
             </table>
         </div>
     </div>
+
+    <!-- Vista Mobile: Tarjetas -->
+    <div class="md:hidden divide-y divide-gray-200">
+        {% for expense in expenses %}
+        <div class="p-4 hover:bg-gray-50 transition-colors">
+            <!-- Header de la tarjeta -->
+            <div class="flex justify-between items-start mb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-4 h-4 rounded-full" style="background-color: {{ expense.category.color }}"></div>
+                    <span class="font-medium text-gray-900">{{ expense.category.name }}</span>
+                </div>
+                <div class="text-right">
+                    <div class="text-lg font-bold text-gray-900">€{{ expense.amount|floatformat:2 }}</div>
+                    <div class="text-xs text-gray-500">{{ expense.date|date:"d/m/Y" }}</div>
+                </div>
+            </div>
+            
+            <!-- Contenido de la tarjeta -->
+            <div class="space-y-2 mb-3">
+                {% if expense.description %}
+                <div class="flex items-start space-x-2">
+                    <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                    </svg>
+                    <span class="text-sm text-gray-700">{{ expense.description }}</span>
+                </div>
+                {% endif %}
+                
+                {% if expense.location %}
+                <div class="flex items-start space-x-2">
+                    <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="text-sm text-gray-500">{{ expense.location }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Acciones -->
+            <div class="flex justify-end space-x-2">
+                <!-- Botón Editar -->
+                <button hx-get="{% url 'expenses:edit_expense' expense.id %}" 
+                        hx-target="body"
+                        hx-swap="beforeend"
+                        hx-indicator="#edit-loading"
+                        class="flex items-center space-x-1 text-blue-600 hover:text-blue-900 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                        title="Editar gasto">
+                    <span>✏️</span>
+                    <span class="text-xs">Editar</span>
+                </button>
+                
+                <!-- Botón Eliminar -->
+                <button hx-delete="{% url 'expenses:delete_expense' expense.id %}" 
+                        hx-target="#expense-results"
+                        hx-confirm="¿Estás seguro de que quieres eliminar este gasto de €{{ expense.amount }}?"
+                        hx-indicator="#delete-loading"
+                        class="flex items-center space-x-1 text-red-600 hover:text-red-900 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+                        title="Eliminar gasto">
+                    <span>🗑️</span>
+                    <span class="text-xs">Eliminar</span>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     
     <!-- Total de gastos -->
-    <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
-        <div class="flex justify-between items-center">
+    <div class="bg-gray-50 px-4 md:px-6 py-3 border-t border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
             <span class="text-sm text-gray-600">
                 {% if has_filters %}
                     Mostrando {{ count_filtered }} de {{ expenses|length }} gasto{{ expenses|length|pluralize }}
@@ -209,9 +277,12 @@
                     Total de {{ expenses|length }} gasto{{ expenses|length|pluralize }}
                 {% endif %}
             </span>
-            <span class="text-lg font-bold text-gray-900">
-                €{{ total_filtered|floatformat:2 }}
-            </span>
+            <div class="flex items-center justify-between sm:justify-end">
+                <span class="text-sm text-gray-500 sm:hidden mr-2">Total:</span>
+                <span class="text-lg font-bold text-gray-900">
+                    €{{ total_filtered|floatformat:2 }}
+                </span>
+            </div>
         </div>
     </div>
     
