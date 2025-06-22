@@ -1,0 +1,22 @@
+/* ===================================
+   HTMX Styles
+   =================================== */
+
+/* Indicadores de carga HTMX */
+.htmx-indicator {
+    display: none;
+}
+
+.htmx-request .htmx-indicator {
+    display: block;
+}
+
+.htmx-request.htmx-indicator {
+    display: block;
+}
+
+/* ===================================
+   Custom Styles
+   =================================== */
+
+/* Aquí podemos agregar más estilos personalizados en el futuro */ 
