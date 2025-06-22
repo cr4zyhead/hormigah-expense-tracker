@@ -37,7 +37,7 @@
         </div>
         
         <form id="filter-form" method="GET" class="space-y-4"
-              hx-get="{% url 'expenses:expense_list_htmx' %}"
+              hx-get="{% url 'expenses:expense_list' %}"
               hx-target="#expense-results"
               hx-trigger="change from:select, change from:input, submit"
               hx-indicator="#loading-indicator"
