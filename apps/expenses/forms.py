@@ -3,6 +3,20 @@ from .models import Expense, Category
 from datetime import datetime, date, timedelta
 
 
+class DateInput(forms.DateInput):
+    """
+    Widget personalizado para fechas que funciona correctamente con HTML5
+    """
+    input_type = 'date'
+    
+    def format_value(self, value):
+        if value is None:
+            return ''
+        if isinstance(value, str):
+            return value
+        return value.strftime('%Y-%m-%d') if value else ''
+
+
 class ExpenseForm(forms.ModelForm):
     """
     Formulario para crear y editar gastos
@@ -25,9 +39,8 @@ class ExpenseForm(forms.ModelForm):
                 'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
                 'placeholder': 'Descripción del gasto (opcional)'
             }),
-            'date': forms.DateInput(attrs={
-                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
-                'type': 'date'
+            'date': DateInput(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500'
             }),
             'location': forms.TextInput(attrs={
                 'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',

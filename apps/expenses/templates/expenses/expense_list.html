@@ -169,4 +169,13 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    // Escuchar evento para cerrar modal de edición
+    document.body.addEventListener('closeEditModal', function() {
+        const modal = document.getElementById('edit-modal');
+        if (modal) {
+            modal.remove();
+        }
+    });
+</script>
 {% endblock %} 

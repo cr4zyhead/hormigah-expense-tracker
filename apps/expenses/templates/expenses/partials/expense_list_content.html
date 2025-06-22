@@ -1,21 +1,74 @@
 <!-- Mensaje de éxito si existe -->
 {% if delete_success %}
-<div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 rounded-lg">
-    <div class="flex">
-        <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+<div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4 rounded-lg transition-all duration-300"
+     hx-get="{% url 'expenses:close_modal' %}"
+     hx-target="this"
+     hx-swap="outerHTML"
+     hx-trigger="load delay:4s">
+    <div class="flex justify-between items-start">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-green-700">
+                    <strong>🗑️ {{ delete_message }}</strong><br>
+                    €{{ expense_data.amount }} - {{ expense_data.category_name }}
+                    {% if expense_data.description %}
+                        - "{{ expense_data.description }}"
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <!-- Botón para cerrar manualmente -->
+        <button type="button" 
+                class="text-green-400 hover:text-green-600 ml-4"
+                hx-get="{% url 'expenses:close_modal' %}"
+                hx-target="closest div"
+                hx-swap="outerHTML">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
+        </button>
+    </div>
+</div>
+{% endif %}
+
+{% if edit_success %}
+<div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded-lg transition-all duration-300"
+     hx-get="{% url 'expenses:close_modal' %}"
+     hx-target="this"
+     hx-swap="outerHTML"
+     hx-trigger="load delay:4s">
+    <div class="flex justify-between items-start">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    <strong>✏️ {{ edit_message }}</strong><br>
+                    €{{ expense_data.amount }} - {{ expense_data.category_name }}
+                    {% if expense_data.description %}
+                        - "{{ expense_data.description }}"
+                    {% endif %}
+                </p>
+            </div>
         </div>
-        <div class="ml-3">
-            <p class="text-sm text-green-700">
-                <strong>🗑️ {{ delete_message }}</strong><br>
-                €{{ expense_data.amount }} - {{ expense_data.category_name }}
-                {% if expense_data.description %}
-                    - "{{ expense_data.description }}"
-                {% endif %}
-            </p>
-        </div>
+        <!-- Botón para cerrar manualmente -->
+        <button type="button" 
+                class="text-blue-400 hover:text-blue-600 ml-4"
+                hx-get="{% url 'expenses:close_modal' %}"
+                hx-target="closest div"
+                hx-swap="outerHTML">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
     </div>
 </div>
 {% endif %}
@@ -117,14 +170,27 @@
                             €{{ expense.amount|floatformat:2 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                            <button hx-delete="{% url 'expenses:delete_expense' expense.id %}" 
-                                    hx-target="#expense-results"
-                                    hx-confirm="¿Estás seguro de que quieres eliminar este gasto de €{{ expense.amount }}?"
-                                    hx-indicator="#delete-loading"
-                                    class="text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                                    title="Eliminar gasto">
-                                🗑️
-                            </button>
+                            <div class="flex justify-center space-x-1">
+                                <!-- Botón Editar -->
+                                <button hx-get="{% url 'expenses:edit_expense' expense.id %}" 
+                                        hx-target="body"
+                                        hx-swap="beforeend"
+                                        hx-indicator="#edit-loading"
+                                        class="text-blue-600 hover:text-blue-900 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                                        title="Editar gasto">
+                                    ✏️
+                                </button>
+                                
+                                <!-- Botón Eliminar -->
+                                <button hx-delete="{% url 'expenses:delete_expense' expense.id %}" 
+                                        hx-target="#expense-results"
+                                        hx-confirm="¿Estás seguro de que quieres eliminar este gasto de €{{ expense.amount }}?"
+                                        hx-indicator="#delete-loading"
+                                        class="text-red-600 hover:text-red-900 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                                        title="Eliminar gasto">
+                                    🗑️
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
