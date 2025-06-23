@@ -3,21 +3,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Expense
 from .forms import ExpenseForm
-from .utils import (
-    get_dashboard_context, 
-    get_expense_list_context,
+# Imports específicos de utils modularizados
+from .utils.util_dashboard import get_dashboard_context
+from .utils.util_expense_list import get_expense_list_context
+from .utils.util_crud_operations import (
     get_expense_for_user,
-    handle_expense_form_update,
-    build_expense_edit_context,
-    handle_expense_error_response,
-    create_htmx_edit_response,
-    # Nuevas funciones para add_expense
     handle_expense_creation,
-    create_htmx_add_response,
-    build_add_expense_context,
-    # Nuevas funciones para delete_expense
+    handle_expense_form_update,
     handle_expense_deletion,
+    build_add_expense_context,
+    build_expense_edit_context,
     build_delete_success_context,
+    handle_expense_error_response,
+    create_htmx_add_response,
+    create_htmx_edit_response,
     create_htmx_delete_response
 )
 
