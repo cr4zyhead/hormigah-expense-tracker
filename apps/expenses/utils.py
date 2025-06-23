@@ -491,4 +491,77 @@ def build_add_expense_context(form=None):
     
     return {
         'form': form
-    } 
+    }
+
+
+def handle_expense_deletion(expense_id, user):
+    """
+    Maneja la eliminación segura de un gasto
+    
+    Args:
+        expense_id: ID del gasto a eliminar
+        user: Usuario actual
+    
+    Returns:
+        tuple: (expense_data, is_deleted, error_message)
+    """
+    try:
+        # Obtener el gasto usando función auxiliar existente
+        expense = get_expense_for_user(expense_id, user)
+        
+        # Guardar datos para el mensaje de confirmación
+        expense_data = {
+            'amount': expense.amount,
+            'category_name': expense.category.name,
+            'description': expense.description or 'Sin descripción',
+            'date': expense.date
+        }
+        
+        # Eliminar el gasto
+        expense.delete()
+        
+        return expense_data, True, None
+        
+    except Expense.DoesNotExist:
+        return None, False, 'El gasto no existe o no tienes permisos para eliminarlo'
+
+
+def build_delete_success_context(user, expense_data, request_params):
+    """
+    Construye el contexto para mostrar después de una eliminación exitosa
+    
+    Args:
+        user: Usuario actual
+        expense_data: Datos del gasto eliminado
+        request_params: Parámetros GET de la petición
+    
+    Returns:
+        dict: Context actualizado con mensaje de éxito
+    """
+    # Obtener contexto actualizado de la lista
+    context = get_expense_list_context(user, request_params)
+    
+    # Agregar información específica de la eliminación
+    context.update({
+        'delete_success': True,
+        'expense_data': expense_data,
+        'delete_message': 'Gasto eliminado exitosamente'
+    })
+    
+    return context
+
+
+def create_htmx_delete_response(request, context):
+    """
+    Crea respuesta HTMX para eliminación exitosa
+    
+    Args:
+        request: Objeto request de Django
+        context: Context para el template
+    
+    Returns:
+        HttpResponse: Respuesta con lista actualizada
+    """
+    from django.shortcuts import render
+    
+    return render(request, 'expenses/partials/expense_list_content.html', context) 
