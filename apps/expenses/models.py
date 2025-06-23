@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
@@ -69,6 +70,14 @@ class Expense(models.Model):
         verbose_name = "Gasto"
         verbose_name_plural = "Gastos"
         ordering = ['-date', '-created_at']  # Más recientes primero
+
+    def clean(self):
+        """Validaciones personalizadas del modelo"""
+        super().clean()
+        if self.amount and self.amount <= 0:
+            raise ValidationError({
+                'amount': 'El monto debe ser mayor que cero.'
+            })
 
     def __str__(self):
         return f"{self.amount}€ - {self.category.name} ({self.date})"
