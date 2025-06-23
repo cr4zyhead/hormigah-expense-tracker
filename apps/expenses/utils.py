@@ -427,4 +427,68 @@ def create_htmx_edit_response(request, context):
     
     response = render(request, 'expenses/partials/expense_list_content.html', context)
     response['HX-Trigger-After-Swap'] = 'closeEditModal'
-    return response 
+    return response
+
+
+def handle_expense_creation(form_data, user):
+    """
+    Maneja la creación de un nuevo gasto con los datos del formulario
+    
+    Args:
+        form_data: Datos POST del formulario
+        user: Usuario actual
+    
+    Returns:
+        tuple: (expense, form, is_valid)
+    """
+    from .forms import ExpenseForm
+    
+    form = ExpenseForm(form_data)
+    
+    if form.is_valid():
+        expense = form.save(commit=False)
+        expense.user = user
+        expense.save()
+        return expense, form, True
+    
+    return None, form, False
+
+
+def create_htmx_add_response(request, expense):
+    """
+    Crea respuesta HTMX para creación exitosa con trigger para cerrar modal
+    
+    Args:
+        request: Objeto request de Django
+        expense: Gasto creado exitosamente
+    
+    Returns:
+        HttpResponse: Respuesta con mensaje de éxito
+    """
+    from django.shortcuts import render
+    
+    response = render(request, 'expenses/partials/expense_success.html', {
+        'expense': expense,
+        'message': '¡Gasto agregado exitosamente!'
+    })
+    return response
+
+
+def build_add_expense_context(form=None):
+    """
+    Construye el contexto para el formulario de agregar gasto
+    
+    Args:
+        form: Formulario (nuevo o con errores)
+    
+    Returns:
+        dict: Context para el template
+    """
+    from .forms import ExpenseForm
+    
+    if form is None:
+        form = ExpenseForm()
+    
+    return {
+        'form': form
+    } 

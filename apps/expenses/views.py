@@ -10,7 +10,11 @@ from .utils import (
     handle_expense_form_update,
     build_expense_edit_context,
     handle_expense_error_response,
-    create_htmx_edit_response
+    create_htmx_edit_response,
+    # Nuevas funciones para add_expense
+    handle_expense_creation,
+    create_htmx_add_response,
+    build_add_expense_context
 )
 
 
@@ -54,45 +58,36 @@ def expense_list(request):
 def add_expense(request):
     """
     Vista refactorizada para agregar gastos - soporta modal HTMX
+    Utiliza funciones auxiliares para mantener el código limpio y organizado
     """
     if request.method == 'POST':
-        form = ExpenseForm(request.POST)
-        if form.is_valid():
-            expense = form.save(commit=False)
-            expense.user = request.user
-            expense.save()
-            
-            # Si es petición HTMX, devolver respuesta especial
-            if request.headers.get('HX-Request'):
-                # Cerrar modal y mostrar mensaje de éxito
-                return render(request, 'expenses/partials/expense_success.html', {
-                    'expense': expense,
-                    'message': '¡Gasto agregado exitosamente!'
-                })
-            
-            # Petición normal: redirect tradicional
+        # Manejar creación del gasto usando función auxiliar
+        expense, form, is_valid = handle_expense_creation(request.POST, request.user)
+        
+        # Formulario válido: respuesta HTMX con mensaje de éxito
+        if is_valid and request.headers.get('HX-Request'):
+            return create_htmx_add_response(request, expense)
+        
+        # Formulario válido: redirect normal
+        if is_valid:
             messages.success(request, '¡Gasto agregado exitosamente!')
             return redirect('expenses:dashboard')
-        else:
-            # Si hay errores y es HTMX, devolver modal con errores
-            if request.headers.get('HX-Request'):
-                return render(request, 'expenses/partials/add_expense_modal.html', {
-                    'form': form
-                })
+        
+        # Formulario con errores: mostrar modal HTMX
+        if request.headers.get('HX-Request'):
+            return render(request, 'expenses/partials/add_expense_modal.html', {
+                'form': form
+            })
+    
     else:
-        form = ExpenseForm()
-    
-    # Si es petición HTMX, devolver modal
-    if request.headers.get('HX-Request'):
-        return render(request, 'expenses/partials/add_expense_modal.html', {
-            'form': form
-        })
-    
-    # Petición normal: página completa
-    context = {
-        'form': form,
-    }
-    return render(request, 'expenses/add_expense.html', context)
+        # Obtener contexto usando función auxiliar
+        context = build_add_expense_context()
+        
+        # Mostrar formulario: modal HTMX o página completa
+        if request.headers.get('HX-Request'):
+            return render(request, 'expenses/partials/add_expense_modal.html', context)
+        
+        return render(request, 'expenses/add_expense.html', context)
 
 
 @login_required
