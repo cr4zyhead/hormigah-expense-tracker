@@ -234,121 +234,17 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
 <script>
-// Listener para recargar página después de agregar gasto en dashboard
-document.body.addEventListener('refreshDashboard', function() {
-    setTimeout(function() {
-        window.location.reload();
-    }, 1500); // Esperar 1.5 segundos para ver el mensaje
+// Inicializar gráficos con datos del servidor
+document.addEventListener('DOMContentLoaded', function() {
+    initDashboardCharts({
+        categories: {{ chart_categories_json|safe }},
+        amounts: {{ chart_amounts_json|safe }},
+        colors: {{ chart_colors_json|safe }},
+        dates: {{ chart_dates_json|safe }},
+        dailyAmounts: {{ chart_daily_amounts_json|safe }}
+    });
 });
-
-// Configuración de Chart.js con Nunito
-Chart.defaults.font.family = 'Nunito, system-ui, sans-serif';
-Chart.defaults.color = '#6B7280';
-
-// Gráfico de Dona - Gastos por Categoría
-{% if categories_summary %}
-const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-const categoryChart = new Chart(categoryCtx, {
-    type: 'doughnut',
-    data: {
-        labels: {{ chart_categories_json|safe }},
-        datasets: [{
-            data: {{ chart_amounts_json|safe }},
-            backgroundColor: {{ chart_colors_json|safe }},
-            borderWidth: 2,
-            borderColor: '#ffffff'
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    padding: 20,
-                    usePointStyle: true
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const value = context.parsed;
-                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                        const percentage = ((value / total) * 100).toFixed(1);
-                        return context.label + ': $' + value.toLocaleString() + ' (' + percentage + '%)';
-                    }
-                }
-            }
-        }
-    }
-});
-{% endif %}
-
-// Gráfico de Líneas - Tendencia de Gastos
-{% if chart_dates_json != "[]" %}
-const trendCtx = document.getElementById('trendChart').getContext('2d');
-const trendChart = new Chart(trendCtx, {
-    type: 'line',
-    data: {
-        labels: {{ chart_dates_json|safe }},
-        datasets: [{
-            label: 'Gastos Diarios',
-            data: {{ chart_daily_amounts_json|safe }},
-            borderColor: '#3B82F6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#3B82F6',
-            pointBorderColor: '#ffffff',
-            pointBorderWidth: 2,
-            pointRadius: 6,
-            pointHoverRadius: 8
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return 'Gasto: $' + context.parsed.y.toLocaleString();
-                    }
-                }
-            }
-        },
-        scales: {
-            x: {
-                display: true,
-                title: {
-                    display: true,
-                    text: 'Fecha'
-                },
-                ticks: {
-                    maxTicksLimit: 10
-                }
-            },
-            y: {
-                display: true,
-                title: {
-                    display: true,
-                    text: 'Monto ($)'
-                },
-                ticks: {
-                    callback: function(value) {
-                        return '$' + value.toLocaleString();
-                    }
-                }
-            }
-        }
-    }
-});
-{% endif %}
 </script>
 {% endblock %} 
