@@ -164,7 +164,10 @@
     </div>
 
     <!-- Contenedor de resultados que será actualizado por HTMX -->
-    <div id="expense-results">
+    <div id="expense-results" 
+         hx-get="{% url 'expenses:expense_list' %}"
+         hx-trigger="refreshExpenseList from:body"
+         hx-swap="innerHTML">
         {% include 'expenses/partials/expense_list_content.html' %}
     </div>
 </div>

@@ -60,7 +60,10 @@
     </div>
 
     <!-- Métricas Principales -->
-    <div id="dashboard-metrics">
+    <div id="dashboard-metrics"
+         hx-get="{% url 'expenses:dashboard' %}"
+         hx-trigger="refreshDashboard from:body"
+         hx-swap="innerHTML">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Total del Período -->
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-sm p-6 text-white">

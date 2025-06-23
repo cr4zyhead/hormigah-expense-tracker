@@ -456,14 +456,14 @@ def handle_expense_creation(form_data, user):
 
 def create_htmx_add_response(request, expense):
     """
-    Crea respuesta HTMX para creación exitosa con trigger para cerrar modal
+    Crea respuesta HTMX para creación exitosa que actualiza contenido automáticamente
     
     Args:
         request: Objeto request de Django
         expense: Gasto creado exitosamente
     
     Returns:
-        HttpResponse: Respuesta con mensaje de éxito
+        HttpResponse: Respuesta con mensaje de éxito y triggers para actualización
     """
     from django.shortcuts import render
     
@@ -471,6 +471,12 @@ def create_htmx_add_response(request, expense):
         'expense': expense,
         'message': '¡Gasto agregado exitosamente!'
     })
+    
+    # Agregar triggers para actualizar contenido automáticamente
+    # - refreshExpenseList: actualiza la lista si está visible
+    # - refreshDashboard: actualiza métricas del dashboard si está visible
+    response['HX-Trigger-After-Settle'] = 'refreshExpenseList, refreshDashboard'
+    
     return response
 
 
