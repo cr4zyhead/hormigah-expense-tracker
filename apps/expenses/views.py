@@ -25,7 +25,7 @@ from .utils import (
 @login_required
 def dashboard(request):
     """
-    Vista del dashboard refactorizada - limpia y enfocada
+    Muestra el dashboard principal con métricas de gastos
     Maneja filtros de período con HTMX
     """
     # Obtener el período seleccionado del filtro
@@ -44,8 +44,8 @@ def dashboard(request):
 @login_required
 def expense_list(request):
     """
-    Vista refactorizada - limpia y profesional
-    Maneja tanto peticiones normales como HTMX usando funciones auxiliares
+    Muestra la lista de gastos del usuario con filtros
+    Maneja tanto peticiones normales como HTMX
     """
     # Obtener todo el contexto usando las funciones auxiliares
     context = get_expense_list_context(request.user, request.GET)
@@ -61,8 +61,8 @@ def expense_list(request):
 @login_required
 def add_expense(request):
     """
-    Vista refactorizada para agregar gastos - soporta modal HTMX
-    Utiliza funciones auxiliares para mantener el código limpio y organizado
+    Maneja la creación de nuevos gastos
+    Soporta tanto formularios tradicionales como modales HTMX
     """
     if request.method == 'POST':
         # Manejar creación del gasto usando función auxiliar
@@ -105,8 +105,8 @@ def close_modal(request):
 @login_required
 def delete_expense(request, expense_id):
     """
-    Vista refactorizada para eliminar un gasto con HTMX
-    Utiliza funciones auxiliares para mantener el código limpio y organizado
+    Elimina un gasto específico del usuario
+    Soporta eliminación vía HTMX y peticiones tradicionales
     """
     if request.method == 'DELETE':
         # Manejar eliminación del gasto usando función auxiliar
@@ -129,8 +129,8 @@ def delete_expense(request, expense_id):
 @login_required
 def edit_expense(request, expense_id):
     """
-    Vista refactorizada para editar un gasto con HTMX
-    Utiliza funciones auxiliares para mantener el código limpio y organizado
+    Permite editar un gasto existente del usuario
+    Soporta edición vía modal HTMX y formularios tradicionales
     """
     try:
         # Obtener el gasto usando función auxiliar
