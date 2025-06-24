@@ -1,4 +1,4 @@
-# �� Hormigah - Control Inteligente de Gastos Hormiga
+# Hormigah - Control Inteligente de Gastos Hormiga
 
 <div align="center">
 
