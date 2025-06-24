@@ -9,6 +9,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
 # Distribuciones / empaquetado
 .Python
@@ -184,4 +185,11 @@ yarn-error.log*
 
 # Claves SSH
 id_rsa
-id_rsa.pub 
+id_rsa.pub
+
+# Docker
+.docker/
+
+# SQL
+*.sql
+backup_*.sql 

@@ -1,0 +1,64 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.docker
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.pytest_cache
+htmlcov
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos de entorno
+.env
+.env.local
+.env.production
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Static files (se generan en el contenedor)
+staticfiles
+
+# Media files en desarrollo
+media
+
+# Node modules (si usas Node.js)
+node_modules
+
+# Documentación
+README.md
+LICENSE
+
+# Otros
+*.tar.gz 

@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Servicio de la base de datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: gastos_hormiga_db_dev
+    environment:
+      POSTGRES_DB: gastos_hormiga_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      # Volumen persistente para los datos de la base de datos
+      - postgres_data:/var/lib/postgresql/data
+      # Script de inicialización (opcional)
+      # - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Servicio de la aplicación Django
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: gastos_hormiga_web_dev
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      # Montar el código para desarrollo (hot reload)
+      - .:/app
+      # Volumen para archivos estáticos
+      - static_volume:/app/staticfiles
+      # Volumen para archivos media
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.local
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Servicios adicionales opcionales (descomenta si los necesitas):
+  # 
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: gastos_hormiga_redis_dev
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: gastos_hormiga_postgres_data_dev
+  static_volume:
+    name: gastos_hormiga_static_dev
+  media_volume:
+    name: gastos_hormiga_media_dev
+  # redis_data:
+  #   name: gastos_hormiga_redis_data_dev
+
+networks:
+  default:
+    name: gastos_hormiga_network_dev 
