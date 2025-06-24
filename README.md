@@ -203,8 +203,7 @@ hormigah/
 
 #### **Backend**
 - **Django 5.2.3**: Framework web robusto
-- **PostgreSQL**: Base de datos robusta para producción
-- **SQLite**: Base de datos para desarrollo manual
+- **PostgreSQL**: Base de datos para desarrollo y producción
 - **Python 3.12**: Lenguaje base
 - **Gunicorn**: Servidor WSGI para producción
 
