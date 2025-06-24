@@ -60,10 +60,32 @@ Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualm
 ## 🚀 Instalación
 
 ### Requisitos Previos
-- **Python 3.8+**
+- **Docker** y **Docker Compose**
 - **Git**
 
-### Setup Rápido
+### 🚀 Setup Rápido con Docker
+```bash
+# 1. Clonar e iniciar
+git clone https://github.com/tu-usuario/hormigah.git
+cd hormigah
+
+# 2. Configurar y ejecutar
+cp .env.example .env.local
+docker-compose up -d
+
+# 3. ¡Listo! Tu app está en http://localhost:8000
+```
+
+### 🔧 Configuración Completa
+```bash
+# Crear superusuario (para admin)
+docker-compose exec web python manage.py createsuperuser
+
+# Cargar datos de ejemplo (opcional)
+docker-compose exec web python manage.py loaddata apps/expenses/fixtures/categories.json
+```
+
+### 🐍 Setup Manual (Alternativo)
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/tu-usuario/hormigah.git
@@ -71,32 +93,60 @@ cd hormigah
 
 # 2. Crear y activar entorno virtual
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Linux/Mac
-source venv/bin/activate
+# Windows: venv\Scripts\activate
+# Linux/Mac: source venv/bin/activate
 
 # 3. Instalar dependencias
-pip install django
+pip install -r requirements.txt
 
-# 4. Aplicar migraciones
+# 4. Configurar base de datos
 python manage.py migrate
-
-# 5. Crear superusuario (opcional)
 python manage.py createsuperuser
 
-# 6. Cargar datos de ejemplo (opcional)
-python manage.py loaddata apps/expenses/fixtures/categories.json
-
-# 7. ¡Ejecutar la aplicación!
+# 5. Ejecutar aplicación
 python manage.py runserver
 ```
 
 ### 🌐 Acceso
-- **Aplicación principal**: http://127.0.0.1:8000/
-- **Panel de administración**: http://127.0.0.1:8000/admin/
+- **Aplicación principal**: http://localhost:8000/
+- **Panel de administración**: http://localhost:8000/admin/
+
+> 💡 **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)
+
+---
+
+## 🐳 Comandos Docker
+
+### Desarrollo
+```bash
+# Iniciar aplicación
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f web
+
+# Parar aplicación
+docker-compose down
+
+# Ejecutar comandos Django
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+docker-compose exec web python manage.py shell
+```
+
+### Producción
+```bash
+# Desplegar en producción
+docker-compose -f docker-compose.prod.yml up -d
+
+# Ver estado de servicios
+docker-compose -f docker-compose.prod.yml ps
+
+# Backup de base de datos
+docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup.sql
+```
+
+> 📚 **Documentación completa**: [README_DOCKER.md](README_DOCKER.md)
 
 ---
 
@@ -119,19 +169,33 @@ hormigah/
 │       ├── 📝 forms.py             # Formularios con validación
 │       ├── 🔗 urls.py              # Rutas de la aplicación
 │       ├── 🛠️ utils/               # Utilidades modularizadas
-│       │   ├── util_dashboard.py   # Métricas y dashboard
-│       │   ├── util_chart_data.py  # Datos para gráficos
-│       │   ├── util_expense_list.py # Filtros y listado
-│       │   └── util_crud_operations.py # Operaciones CRUD + HTMX
 │       ├── 🎨 templates/expenses/  # Templates especializados
 │       ├── 📱 static/expenses/     # CSS y JS específicos
 │       └── 🔄 migrations/          # Migraciones de BD
 │
 ├── ⚙️ config/                      # Configuración Django
+│   ├── settings/                   # Settings modulares
+│   │   ├── base.py                 # Configuración base
+│   │   ├── local.py                # Desarrollo
+│   │   └── production.py           # Producción
+│   ├── urls.py                     # URLs principales
+│   ├── wsgi.py                     # WSGI para producción
+│   └── asgi.py                     # ASGI para async
+│
+├── 🐳 docker/                      # Configuración Docker
+│   ├── nginx.conf                  # Configuración Nginx
+│   └── entrypoint.sh               # Script de inicialización
+│
 ├── 🎨 static/                      # Archivos estáticos globales
 │   ├── css/custom.css              # Estilos personalizados
 │   └── js/dashboard.js             # JavaScript modularizado
-├── 🗄️ db.sqlite3                   # Base de datos SQLite
+│
+├── 📋 docker-compose.yml           # Docker desarrollo
+├── 📋 docker-compose.prod.yml      # Docker producción  
+├── 🐋 Dockerfile                   # Imagen de la aplicación
+├── 📝 .env.example                 # Variables de entorno ejemplo
+├── 📚 README_DOCKER.md             # Documentación Docker
+├── 🗄️ requirements.txt             # Dependencias Python
 └── 📋 manage.py                    # Script de gestión Django
 ```
 
@@ -139,8 +203,10 @@ hormigah/
 
 #### **Backend**
 - **Django 5.2.3**: Framework web robusto
-- **SQLite**: Base de datos ligera para desarrollo
+- **PostgreSQL**: Base de datos robusta para producción
+- **SQLite**: Base de datos para desarrollo manual
 - **Python 3.12**: Lenguaje base
+- **Gunicorn**: Servidor WSGI para producción
 
 #### **Frontend**
 - **HTMX**: Interactividad sin JavaScript complejo
@@ -148,10 +214,18 @@ hormigah/
 - **Chart.js**: Gráficos interactivos
 - **Alpine.js**: Interactividad ligera
 
+#### **Infraestructura**
+- **Docker**: Containerización completa
+- **Nginx**: Servidor web y proxy inverso
+- **PostgreSQL**: Base de datos principal
+- **Redis**: Cache (opcional)
+
 #### **Arquitectura**
 - **Modular**: Utils organizados por responsabilidad
 - **Responsive**: Diseño móvil-first
 - **Progressive Enhancement**: Funciona sin JS, mejor con JS
+- **Containerizada**: Docker-first development y deployment
+- **Multi-ambiente**: Configuraciones separadas dev/prod
 
 ---
 
