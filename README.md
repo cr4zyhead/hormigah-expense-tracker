@@ -280,41 +280,6 @@ test: agregar tests para filtros avanzados
 
 ---
 
-## 🗺️ Roadmap
-
-### 🔥 **Próximas Funcionalidades**
-- [ ] **Proyecciones anuales automáticas**
-- [ ] **Alertas de gastos excesivos**
-- [ ] **Exportación de datos** (CSV/PDF)
-- [ ] **Modo oscuro**
-- [ ] **PWA** (Progressive Web App)
-
-### 🎯 **Mejoras de UX**
-- [ ] **Onboarding interactivo**
-- [ ] **Tutorials guiados**
-- [ ] **Animaciones suaves**
-- [ ] **Shortcuts de teclado**
-
-### 🚀 **Optimizaciones**
-- [ ] **PostgreSQL** en producción
-- [ ] **Redis** para caché
-- [ ] **Background tasks** con Celery
-- [ ] **API REST** para móviles
-
----
-
-## 📊 Estadísticas del Proyecto
-
-```
-📈 Líneas de código: ~2,500
-🏗️ Archivos Python: 25+
-🎨 Templates: 15+
-⚡ Funcionalidades: 20+
-🧪 Tests: En desarrollo
-📱 Responsive: 100%
-```
-
----
 
 ## 📄 Licencia
 
