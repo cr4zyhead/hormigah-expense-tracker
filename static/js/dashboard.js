@@ -53,7 +53,7 @@ function initCategoryChart(data) {
                             const value = context.parsed;
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = ((value / total) * 100).toFixed(1);
-                            return context.label + ': $' + value.toLocaleString() + ' (' + percentage + '%)';
+                            return context.label + ': €' + value.toLocaleString() + ' (' + percentage + '%)';
                         }
                     }
                 }
@@ -99,7 +99,7 @@ function initTrendChart(data) {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return 'Gasto: $' + context.parsed.y.toLocaleString();
+                            return 'Gasto: €' + context.parsed.y.toLocaleString();
                         }
                     }
                 }
@@ -119,11 +119,11 @@ function initTrendChart(data) {
                     display: true,
                     title: {
                         display: true,
-                        text: 'Monto ($)'
+                        text: 'Monto (€)'
                     },
                     ticks: {
                         callback: function(value) {
-                            return '$' + value.toLocaleString();
+                            return '€' + value.toLocaleString();
                         }
                     }
                 }

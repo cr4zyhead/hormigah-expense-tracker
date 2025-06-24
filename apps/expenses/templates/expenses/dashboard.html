@@ -22,7 +22,7 @@
                     ➕ Agregar Gasto
                 </button>
                 <p class="text-sm text-gray-500">Mes actual</p>
-                <p class="text-2xl font-bold text-green-600">${{ monthly_total|floatformat:0 }}</p>
+                <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:0 }}</p>
             </div>
         </div>
     </div>
@@ -74,7 +74,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-blue-100">{{ period_label|default:"Total del Mes" }}</p>
-                        <p class="text-2xl font-bold">${{ period_total|floatformat:0 }}</p>
+                        <p class="text-2xl font-bold">€{{ period_total|floatformat:0 }}</p>
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-purple-100">Promedio Diario</p>
-                        <p class="text-2xl font-bold">${{ period_avg_daily|floatformat:0 }}</p>
+                        <p class="text-2xl font-bold">€{{ period_avg_daily|floatformat:0 }}</p>
                     </div>
                 </div>
             </div>
@@ -196,7 +196,7 @@
                                 {{ expense.date|date:"d/m/Y" }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                ${{ expense.amount|floatformat:0 }}
+                                €{{ expense.amount|floatformat:0 }}
                             </td>
                         </tr>
                         {% endfor %}
