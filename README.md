@@ -76,6 +76,40 @@ docker-compose up -d
 # 3. ¡Listo! Tu app está en http://localhost:8000
 ```
 
+## 🔒 Configuración SSL/HTTPS (Producción)
+
+### Dominio con DuckDNS
+1. Crear cuenta en [DuckDNS](https://duckdns.org)
+2. Configurar dominio: `tuapp.duckdns.org` → `tu-servidor-ip`
+
+### Certificado SSL
+```bash
+# En tu servidor
+sudo apt update && sudo apt install certbot
+sudo certbot certonly --standalone -d tuapp.duckdns.org
+```
+
+### Variables adicionales en .env.production
+```bash
+# Dominios permitidos
+ALLOWED_HOSTS=tu-servidor-ip,localhost,tuapp.duckdns.org
+
+# Orígenes de confianza CSRF  
+CSRF_TRUSTED_ORIGINS=https://tuapp.duckdns.org,http://tu-servidor-ip
+
+# Configuraciones de seguridad SSL
+SECURE_SSL_REDIRECT=True
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+```
+
+### Deployment con SSL
+```bash
+# Montar certificados y reiniciar
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d
+```
+
 ### 🔧 Configuración Completa
 ```bash
 # Crear superusuario (para admin)
