@@ -45,7 +45,7 @@ if [ "$DJANGO_SETTINGS_MODULE" = "config.settings.local" ] && [ "$LOAD_FIXTURES"
     python manage.py loaddata apps/expenses/fixtures/*.json 2>/dev/null || true
 fi
 
-print_message "¡Aplicación lista! 🚀"
+print_message "¡Aplicación lista!"
 
 # Ejecutar el comando pasado como argumento
 exec "$@" 
