@@ -151,7 +151,9 @@ python manage.py runserver
 
 ## 🐳 Comandos Docker
 
-### Desarrollo
+### 📋 Comandos Docker Estándar
+
+#### **Desarrollo**
 ```bash
 # Iniciar aplicación
 docker-compose up -d
@@ -168,7 +170,7 @@ docker-compose exec web python manage.py createsuperuser
 docker-compose exec web python manage.py shell
 ```
 
-### Producción
+#### **Producción**
 ```bash
 # Desplegar en producción
 docker-compose -f docker-compose.prod.yml up -d
@@ -180,7 +182,93 @@ docker-compose -f docker-compose.prod.yml ps
 docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup.sql
 ```
 
-> 📚 **Documentación completa**: [README_DOCKER.md](README_DOCKER.md)
+### 🚀 Scripts Helper (Alternativa)
+
+> 💡 **Opcional**: También puedes usar scripts que simplifican las operaciones más comunes
+
+#### **Desarrollo Local**
+```bash
+# Setup inicial
+cp .env.example .env.local
+./scripts/docker-dev.sh build
+./scripts/docker-dev.sh up
+
+# Configurar Django
+./scripts/docker-dev.sh migrate
+./scripts/docker-dev.sh createsuperuser
+
+# Desarrollo día a día
+./scripts/docker-dev.sh makemigrations
+./scripts/docker-dev.sh migrate
+./scripts/docker-dev.sh test
+
+# Utilidades
+./scripts/docker-dev.sh logs          # Ver logs
+./scripts/docker-dev.sh shell         # Django shell
+./scripts/docker-dev.sh bash          # Bash en contenedor
+./scripts/docker-dev.sh down          # Parar servicios
+./scripts/docker-dev.sh clean         # Limpiar sistema
+```
+
+#### **Producción**
+```bash
+# Deployment
+./scripts/docker-prod.sh build
+./scripts/docker-prod.sh up
+
+# Mantenimiento
+./scripts/docker-prod.sh migrate
+./scripts/docker-prod.sh collectstatic
+
+# Monitoreo
+./scripts/docker-prod.sh status       # Estado de servicios
+./scripts/docker-prod.sh logs         # Ver logs
+./scripts/docker-prod.sh backup       # Backup de BD
+
+# Actualizaciones
+./scripts/docker-prod.sh update       # Pull, build y restart
+```
+
+### 🔧 Workflow de Deployment
+
+#### **En el Servidor de Producción**
+```bash
+# 1. Conectar al servidor
+ssh root@tu-servidor-ip
+cd /ruta/a/tu/aplicacion
+
+# 2. Actualizar código
+git pull origin main
+
+# 3. Actualizar aplicación
+./scripts/docker-prod.sh update
+
+# 4. Verificar estado
+./scripts/docker-prod.sh status
+```
+
+#### **Monitoreo Continuo**
+```bash
+# Ver estado general
+./scripts/docker-prod.sh status
+
+# Revisar logs por errores
+./scripts/docker-prod.sh logs
+
+# Verificar salud de la aplicación
+./scripts/docker-prod.sh logs web
+```
+
+> 📚 **Documentación completa con más workflows**: [README_DOCKER.md](README_DOCKER.md)
+
+### 💡 Características de los Scripts
+
+Los scripts incluyen algunas características adicionales:
+
+- **Comandos más cortos**: `./scripts/docker-dev.sh up` vs `docker-compose up -d`
+- **Validaciones automáticas**: Verifican dependencias antes de ejecutar
+- **Feedback visual**: Mensajes con colores para mejor legibilidad
+- **Operaciones combinadas**: Como `update` que incluye pull, build y restart
 
 ---
 
