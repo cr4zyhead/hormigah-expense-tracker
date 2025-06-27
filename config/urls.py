@@ -17,22 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.views import LogoutView
-
-class CustomLogoutView(LogoutView):
-    """Vista personalizada de logout con mensaje de éxito"""
-    
-    def dispatch(self, request, *args, **kwargs):
-        from django.contrib import messages
-        if request.user.is_authenticated:
-            messages.success(request, f'¡Hasta luego, {request.user.username}! Sesión cerrada exitosamente. 👋')
-        return super().dispatch(request, *args, **kwargs)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # URLs de autenticación
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
-    path('accounts/logout/', CustomLogoutView.as_view(), name='logout'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     # URLs principales de la app
     path('', include('apps.expenses.urls')),
 ]
