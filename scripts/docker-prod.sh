@@ -14,19 +14,19 @@ NC='\033[0m' # No Color
 
 # Función para imprimir mensajes con color
 print_message() {
-    echo -e "${GREEN}🚀 [DOCKER-PROD]${NC} $1"
+    echo -e "${GREEN}[DOCKER-PROD]${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}⚠️  [WARNING]${NC} $1"
+    echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}❌ [ERROR]${NC} $1"
+    echo -e "${RED}[ERROR]${NC} $1"
 }
 
 print_info() {
-    echo -e "${BLUE}ℹ️  [INFO]${NC} $1"
+    echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 # Verificar que docker y docker-compose estén instalados
@@ -129,7 +129,7 @@ main() {
             fi
             ;;
         "help"|*)
-            echo "🚀 Script de producción con Docker"
+            echo "Script de producción con Docker"
             echo ""
             echo "Uso: $0 [comando]"
             echo ""

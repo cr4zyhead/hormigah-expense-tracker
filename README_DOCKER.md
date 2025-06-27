@@ -4,6 +4,61 @@
 
 Esta aplicación Django ha sido configurada para ejecutarse con Docker y PostgreSQL. Incluye configuraciones separadas para desarrollo y producción.
 
+## 🎯 Scripts Helper
+
+> 💡 **Opcional**: Para facilitar el trabajo con Docker, la aplicación incluye scripts que simplifican las operaciones más comunes:
+
+- **`scripts/docker-dev.sh`** - Para desarrollo local
+- **`scripts/docker-prod.sh`** - Para producción
+
+Estos scripts son una **alternativa opcional** a los comandos estándar de Docker Compose. Puedes elegir usar cualquiera de los dos enfoques según tu preferencia.
+
+### Comandos Disponibles
+
+#### Development (`docker-dev.sh`)
+```bash
+./scripts/docker-dev.sh build          # Construir imágenes
+./scripts/docker-dev.sh up             # Iniciar servicios
+./scripts/docker-dev.sh down           # Detener servicios
+./scripts/docker-dev.sh restart        # Reiniciar servicios
+./scripts/docker-dev.sh logs           # Ver logs
+./scripts/docker-dev.sh shell          # Django shell
+./scripts/docker-dev.sh bash           # Bash en contenedor
+./scripts/docker-dev.sh migrate        # Ejecutar migraciones
+./scripts/docker-dev.sh makemigrations # Crear migraciones
+./scripts/docker-dev.sh collectstatic  # Recopilar archivos estáticos
+./scripts/docker-dev.sh createsuperuser# Crear superusuario
+./scripts/docker-dev.sh test [app]     # Ejecutar tests
+./scripts/docker-dev.sh reset          # Reiniciar con datos limpios
+./scripts/docker-dev.sh clean          # Limpiar sistema Docker
+./scripts/docker-dev.sh help           # Mostrar ayuda
+```
+
+#### Producción (`docker-prod.sh`)
+```bash
+./scripts/docker-prod.sh build         # Construir imágenes para producción
+./scripts/docker-prod.sh up            # Iniciar servicios de producción
+./scripts/docker-prod.sh down          # Detener servicios de producción
+./scripts/docker-prod.sh restart       # Reiniciar servicios
+./scripts/docker-prod.sh logs          # Ver logs de producción
+./scripts/docker-prod.sh migrate       # Ejecutar migraciones
+./scripts/docker-prod.sh collectstatic # Recopilar archivos estáticos
+./scripts/docker-prod.sh backup        # Crear backup de la base de datos
+./scripts/docker-prod.sh restore <file># Restaurar base de datos desde backup
+./scripts/docker-prod.sh update        # Actualizar aplicación
+./scripts/docker-prod.sh status        # Ver estado de servicios
+./scripts/docker-prod.sh clean         # Limpiar sistema Docker
+./scripts/docker-prod.sh help          # Mostrar ayuda
+```
+
+### Características de los Scripts
+
+- **Comandos más cortos**: `./scripts/docker-dev.sh up` vs `docker-compose up -d`
+- **Validaciones automáticas**: Verifican dependencias y archivos necesarios
+- **Feedback visual**: Mensajes con colores y emojis para mejor UX
+- **Gestión de errores**: Manejo inteligente de errores comunes
+- **Confirmaciones de seguridad**: Para operaciones destructivas como `reset`
+
 ## Arquitectura
 
 ### Desarrollo (`docker-compose.yml`)
@@ -209,6 +264,106 @@ docker-compose exec web bash
 docker-compose exec db psql -U postgres -d gastos_hormiga_dev
 ```
 
+## 🚀 Workflows Completos
+
+### Desarrollo Local - Primer Setup
+```bash
+# 1. Configurar entorno
+cp .env.example .env.local
+
+# 2. Construir e iniciar
+./scripts/docker-dev.sh build
+./scripts/docker-dev.sh up
+
+# 3. Configurar Django
+./scripts/docker-dev.sh migrate
+./scripts/docker-dev.sh createsuperuser
+
+# 4. ¡Listo! Aplicación disponible en http://localhost:8000
+```
+
+### Desarrollo Local - Día a Día
+```bash
+# Iniciar trabajo
+./scripts/docker-dev.sh up
+
+# Crear/aplicar migraciones
+./scripts/docker-dev.sh makemigrations
+./scripts/docker-dev.sh migrate
+
+# Ejecutar tests
+./scripts/docker-dev.sh test
+
+# Ver logs si hay problemas
+./scripts/docker-dev.sh logs
+
+# Terminar trabajo
+./scripts/docker-dev.sh down
+```
+
+### Deployment en Producción
+```bash
+# 1. Preparar servidor
+ssh root@tu-servidor-ip
+cd /ruta/a/tu/aplicacion
+
+# 2. Configurar entorno
+cp .env.example .env.production
+# Editar .env.production con valores seguros
+
+# 3. Deploy inicial
+./scripts/docker-prod.sh build
+./scripts/docker-prod.sh up
+
+# 4. Verificar estado
+./scripts/docker-prod.sh status
+```
+
+### Actualización en Producción
+```bash
+# 1. Conectar al servidor
+ssh root@tu-servidor-ip
+cd /ruta/a/tu/aplicacion
+
+# 2. Actualizar código
+git pull origin main
+
+# 3. Actualizar aplicación (incluye pull, build, restart)
+./scripts/docker-prod.sh update
+
+# 4. Verificar estado
+./scripts/docker-prod.sh status
+./scripts/docker-prod.sh logs
+```
+
+### Monitoreo de Producción
+```bash
+# Chequeo rápido de salud
+./scripts/docker-prod.sh status
+
+# Ver logs recientes
+./scripts/docker-prod.sh logs
+
+# Ver logs específicos del servicio web
+./scripts/docker-prod.sh logs web
+
+# Crear backup de BD (recomendado antes de actualizaciones)
+./scripts/docker-prod.sh backup
+```
+
+### Solución de Problemas con Scripts
+```bash
+# Desarrollo: Reiniciar todo limpio
+./scripts/docker-dev.sh reset
+
+# Producción: Revisar problemas
+./scripts/docker-prod.sh logs
+./scripts/docker-prod.sh status
+
+# Ambos: Limpiar recursos Docker
+./scripts/docker-dev.sh clean     # o docker-prod.sh clean
+```
+
 ## Configuración Optimizada
 
 Esta configuración incluye:
@@ -216,6 +371,7 @@ Esta configuración incluye:
 - PostgreSQL como base de datos
 - Nginx para producción
 - Docker para todos los entornos
+- **Scripts helper para operaciones simplificadas**
 
 ### Servicios Opcionales Futuros
 Si necesitas agregar más funcionalidades:
