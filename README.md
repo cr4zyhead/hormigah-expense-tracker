@@ -438,6 +438,236 @@ python manage.py collectstatic
 
 ---
 
+## 🔧 Troubleshooting y Verificación
+
+### 🔍 **Verificar Estado de la Aplicación en Producción**
+
+#### **1. Estado de los Servicios**
+```bash
+# Ver estado de todos los contenedores
+docker-compose -f docker-compose.prod.yml ps
+
+# Resultado esperado:
+# gastos_hormiga_db_prod      ... Up (healthy)
+# gastos_hormiga_web_prod     ... Up             # ← Debe ser "Up", no "Restarting"  
+# gastos_hormiga_nginx_prod   ... Up
+```
+
+#### **2. Verificar Configuración Django**
+```bash
+# Verificar configuración de producción
+docker-compose -f docker-compose.prod.yml exec web python -c "
+import os
+from django.conf import settings
+print('=== VERIFICACIÓN DE CONFIGURACIÓN DE PRODUCCIÓN ===')
+print(f'DEBUG: {settings.DEBUG}')
+print(f'DJANGO_SETTINGS_MODULE: {os.environ.get(\"DJANGO_SETTINGS_MODULE\", \"No definido\")}')
+print(f'ALLOWED_HOSTS: {settings.ALLOWED_HOSTS}')
+print(f'SECRET_KEY: {settings.SECRET_KEY[:10]}... (primeros 10 caracteres)')
+"
+
+# Resultado esperado:
+# DEBUG: False
+# DJANGO_SETTINGS_MODULE: config.settings.production
+# ALLOWED_HOSTS: ['tu-ip', 'localhost', 'tu-dominio.com']
+```
+
+#### **3. Verificar Logs**
+```bash
+# Ver logs recientes del contenedor web
+docker-compose -f docker-compose.prod.yml logs --tail=20 web
+
+# Ver logs de todos los servicios
+docker-compose -f docker-compose.prod.yml logs
+
+# Seguir logs en tiempo real
+docker-compose -f docker-compose.prod.yml logs -f web
+```
+
+#### **4. Pruebas HTTP**
+```bash
+# Probar la aplicación desde el servidor
+curl -I http://localhost:8000
+
+# Probar desde Internet (reemplaza con tu IP/dominio)
+curl -I http://tu-servidor-ip
+curl -I http://tu-dominio.com
+```
+
+### 🚨 **Resolución de Problemas Comunes**
+
+#### **Problema: Contenedor Web en "Restarting"**
+
+**Síntomas:**
+```bash
+gastos_hormiga_web_prod     ... Restarting
+```
+
+**Diagnóstico:**
+```bash
+# Ver logs del contenedor web
+docker-compose -f docker-compose.prod.yml logs --tail=30 web
+
+# Verificar variables de entorno
+docker-compose -f docker-compose.prod.yml exec web env | grep DB_
+```
+
+**Soluciones:**
+```bash
+# 1. Verificar archivo .env.production
+cat .env.production | grep -E "(DB_HOST|DB_NAME|DB_USER)"
+
+# 2. Asegurar que DB_HOST=db (no localhost)
+# Editar .env.production si es necesario:
+# DB_HOST=db
+
+# 3. Recrear contenedores
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d
+
+# 4. Si persiste, reconstruir sin cache
+docker-compose -f docker-compose.prod.yml down --volumes
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### **Problema: Error de Conexión a Base de Datos**
+
+**Error típico:**
+```
+django.db.utils.OperationalError: connection to server at "localhost" failed
+```
+
+**Solución:**
+```bash
+# Verificar que DB_HOST esté configurado correctamente
+grep "DB_HOST" .env.production
+# Debe mostrar: DB_HOST=db (no localhost)
+
+# Verificar conectividad entre contenedores
+docker-compose -f docker-compose.prod.yml exec web ping db
+```
+
+#### **Problema: Configuraciones SSL/HTTPS**
+
+**Si tienes problemas de SSL, deshabilitarlo temporalmente:**
+```bash
+# En .env.production, cambiar a:
+SECURE_SSL_REDIRECT=False
+CSRF_COOKIE_SECURE=False
+SESSION_COOKIE_SECURE=False
+
+# Reiniciar contenedores
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### 🧹 **Limpieza y Mantenimiento**
+
+#### **Limpieza Completa de Docker**
+```bash
+# Parar todos los contenedores
+docker-compose -f docker-compose.prod.yml down --volumes --remove-orphans
+
+# Limpiar sistema Docker (cuidado: elimina todo)
+docker system prune -af --volumes
+
+# Reconstruir desde cero
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### **Backup de Base de Datos**
+```bash
+# Crear backup
+docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup_$(date +%Y%m%d_%H%M%S).sql
+
+# Restaurar desde backup
+docker-compose -f docker-compose.prod.yml exec -T db psql -U postgres gastos_hormiga_prod < backup_file.sql
+```
+
+### 📋 **Manejo de Archivos .env**
+
+#### **Configuración Recomendada para Producción:**
+```bash
+# En el servidor de producción:
+.env.production  # ← Archivo principal (usado por docker-compose.prod.yml)
+.env            # ← Respaldo opcional
+
+# Configuración en docker-compose.prod.yml:
+env_file:
+  - .env.production  # ← Configuración explícita
+```
+
+#### **Verificar Variables:**
+```bash
+# Ver variables que usa Docker
+docker-compose -f docker-compose.prod.yml config
+
+# Ver variables dentro del contenedor
+docker-compose -f docker-compose.prod.yml exec web env | grep -E "(DEBUG|DB_|DJANGO_)"
+```
+
+### 🔄 **Rollback y Reversión**
+
+#### **Si una Actualización Falla:**
+```bash
+# 1. Volver a versión anterior del código
+git log --oneline -5  # Ver últimos commits
+git checkout COMMIT_HASH_ANTERIOR
+
+# 2. Reconstruir con versión anterior
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
+
+# 3. Verificar estado
+docker-compose -f docker-compose.prod.yml ps
+```
+
+#### **Crear Punto de Restauración:**
+```bash
+# Antes de cambios importantes
+docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup_before_update.sql
+git tag -a v1.0.0 -m "Versión estable antes de actualización"
+git push origin v1.0.0
+```
+
+### 💡 **Consejos de Desarrollo**
+
+#### **Ambientes Separados:**
+- **Desarrollo Local**: `docker-compose up -d` (usa docker-compose.yml)
+- **Producción**: `docker-compose -f docker-compose.prod.yml up -d`
+
+#### **Comandos Útiles:**
+```bash
+# Crear superusuario en producción
+docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
+
+# Aplicar migraciones
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+
+# Verificar migraciones pendientes
+docker-compose -f docker-compose.prod.yml exec web python manage.py showmigrations
+
+# Acceder a Django shell
+docker-compose -f docker-compose.prod.yml exec web python manage.py shell
+```
+
+#### **Monitoreo Continuo:**
+```bash
+# Verificar estado regularmente
+docker-compose -f docker-compose.prod.yml ps
+
+# Monitorear logs en tiempo real
+docker-compose -f docker-compose.prod.yml logs -f web
+
+# Verificar uso de recursos
+docker stats
+```
+
+---
+
 ## 🤝 Contribuir
 
 ¡Las contribuciones son bienvenidas! 
