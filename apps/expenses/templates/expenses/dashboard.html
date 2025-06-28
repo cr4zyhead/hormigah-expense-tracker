@@ -184,8 +184,8 @@
                         <span class="text-6xl mb-4 block">🐜</span>
                         <p>No hay gastos en los últimos 30 días</p>
                         <button hx-get="{% url 'expenses:add_expense' %}" 
-                                hx-target="body" 
-                                hx-swap="beforeend"
+                                hx-target="#modal-container" 
+                                hx-indicator="#modal-loading"
                                 class="text-blue-600 hover:text-blue-800">
                             ¡Agrega tu primer gasto!
                         </button>
@@ -280,8 +280,8 @@
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No hay gastos registrados</h3>
                 <p class="text-gray-500 mb-4">¡Comienza a registrar tus gastos hormiga!</p>
                 <button hx-get="{% url 'expenses:add_expense' %}" 
-                        hx-target="body" 
-                        hx-swap="beforeend"
+                        hx-target="#modal-container" 
+                        hx-indicator="#modal-loading"
                         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                     Agregar primer gasto
                 </button>

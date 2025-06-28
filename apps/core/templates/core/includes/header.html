@@ -14,8 +14,8 @@
                 <div class="hidden md:flex space-x-6">
                     <a href="{% url 'expenses:dashboard' %}" class="text-gray-600 hover:text-gray-800">Dashboard</a>
                     <button hx-get="{% url 'expenses:add_expense' %}" 
-                            hx-target="body" 
-                            hx-swap="beforeend"
+                            hx-target="#modal-container" 
+                            hx-indicator="#modal-loading"
                             class="text-gray-600 hover:text-gray-800 cursor-pointer">
                         Agregar Gasto
                     </button>
@@ -84,8 +84,8 @@
                         📊 Dashboard
                     </a>
                     <button hx-get="{% url 'expenses:add_expense' %}" 
-                            hx-target="body" 
-                            hx-swap="beforeend"
+                            hx-target="#modal-container" 
+                            hx-indicator="#modal-loading"
                             class="block w-full text-left px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-md">
                         ➕ Agregar Gasto
                     </button>

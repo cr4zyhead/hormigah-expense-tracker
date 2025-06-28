@@ -175,8 +175,7 @@
                             <div class="flex justify-center space-x-1">
                                 <!-- Botón Editar -->
                                 <button hx-get="{% url 'expenses:edit_expense' expense.id %}" 
-                                        hx-target="body"
-                                        hx-swap="beforeend"
+                                        hx-target="#modal-container"
                                         hx-indicator="#edit-loading"
                                         class="text-blue-600 hover:text-blue-900 hover:bg-blue-50 p-2 rounded-lg transition-colors"
                                         title="Editar gasto">
@@ -243,8 +242,7 @@
             <div class="flex justify-end space-x-2">
                 <!-- Botón Editar -->
                 <button hx-get="{% url 'expenses:edit_expense' expense.id %}" 
-                        hx-target="body"
-                        hx-swap="beforeend"
+                        hx-target="#modal-container"
                         hx-indicator="#edit-loading"
                         class="flex items-center space-x-1 text-blue-600 hover:text-blue-900 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
                         title="Editar gasto">
@@ -307,8 +305,8 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">No tienes gastos registrados</h3>
             <p class="text-gray-500 mb-6">Comienza registrando tu primer gasto hormiga</p>
             <button hx-get="{% url 'expenses:add_expense' %}" 
-                    hx-target="body" 
-                    hx-swap="beforeend"
+                    hx-target="#modal-container" 
+                    hx-indicator="#modal-loading"
                     class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
                 ➕ Agregar tu primer gasto
             </button>
