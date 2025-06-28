@@ -47,6 +47,28 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Servicio n8n para reportes automáticos
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: gastos_hormiga_n8n_dev
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=Europe/Madrid
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_RUNNERS_ENABLED=true
+    env_file:
+      - .env.local
+    volumes:
+      - n8n_data:/home/node/.n8n
+    ports:
+      - "5678:5678"
+    depends_on:
+      - web
+    restart: unless-stopped
+
   # Servicios adicionales opcionales (descomenta si los necesitas):
   # 
   # redis:
@@ -65,6 +87,8 @@ volumes:
     name: gastos_hormiga_static_dev
   media_volume:
     name: gastos_hormiga_media_dev
+  n8n_data:
+    name: gastos_hormiga_n8n_data_dev
   # redis_data:
   #   name: gastos_hormiga_redis_data_dev
 
