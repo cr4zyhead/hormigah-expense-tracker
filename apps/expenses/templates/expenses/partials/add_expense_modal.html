@@ -7,9 +7,9 @@
                 <h3 class="text-lg font-semibold flex items-center">
                     ➕ Agregar Nuevo Gasto
                 </h3>
-                <button hx-get="/close-modal" 
-                        hx-target="#expense-modal" 
-                        hx-swap="outerHTML"
+                <button hx-get="{% url 'expenses:close_modal' %}" 
+                        hx-target="#modal-container" 
+                        hx-swap="innerHTML"
                         class="text-white hover:text-gray-200 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -21,8 +21,8 @@
         <!-- Contenido del Modal -->
         <div class="p-6">
             <form hx-post="{% url 'expenses:add_expense' %}" 
-                  hx-target="#expense-modal" 
-                  hx-swap="outerHTML"
+                  hx-target="#modal-container" 
+                  hx-swap="innerHTML"
                   hx-indicator="#modal-loading">
                 {% csrf_token %}
                 
@@ -105,9 +105,9 @@
                 <!-- Botones del Modal -->
                 <div class="flex justify-end space-x-3 mt-6 pt-4 border-t">
                     <button type="button" 
-                            hx-get="/close-modal" 
-                            hx-target="#expense-modal" 
-                            hx-swap="outerHTML"
+                            hx-get="{% url 'expenses:close_modal' %}" 
+                            hx-target="#modal-container" 
+                            hx-swap="innerHTML"
                             class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                         Cancelar
                     </button>
