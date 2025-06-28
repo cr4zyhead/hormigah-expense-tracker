@@ -43,6 +43,31 @@ services:
         condition: service_healthy
     restart: always
 
+  # Servicio n8n para automatización y reportes
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: gastos_hormiga_n8n_prod
+    environment:
+      - N8N_HOST=${N8N_HOST:-hormigah.duckdns.org}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-https}
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-https://hormigah.duckdns.org/n8n}
+      - GENERIC_TIMEZONE=${N8N_TIMEZONE:-Europe/Madrid}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_JWT_SECRET}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED:-true}
+    env_file:
+      - .env.production
+    volumes:
+      - n8n_data:/home/node/.n8n
+    expose:
+      - "5678"
+    depends_on:
+      - web
+      - db
+    restart: always
+
   # Servidor web Nginx (proxy inverso)
   nginx:
     image: nginx:alpine
@@ -77,6 +102,8 @@ volumes:
     name: gastos_hormiga_media_prod
   logs_volume:
     name: gastos_hormiga_logs_prod
+  n8n_data:
+    name: gastos_hormiga_n8n_data_prod
   # redis_data:
   #   name: gastos_hormiga_redis_data_prod
 
