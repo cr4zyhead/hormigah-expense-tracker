@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Expense
-from .forms import ExpenseForm
+from .models import Expense, Budget
+from .forms import ExpenseForm, BudgetForm
 # Imports específicos de utils modularizados
 from .utils.util_dashboard import get_dashboard_context
 from .utils.util_expense_list import get_expense_list_context
@@ -176,6 +176,50 @@ def edit_expense(request, expense_id):
             request, 
             'El gasto no existe o no tienes permisos para editarlo'
         )
+
+
+@login_required
+def manage_budget(request):
+    """
+    Vista sencilla para configurar el presupuesto del usuario
+    """
+    try:
+        budget = Budget.objects.get(user=request.user)
+    except Budget.DoesNotExist:
+        budget = None
+    
+    if request.method == 'POST':
+        form = BudgetForm(request.POST, instance=budget)
+        if form.is_valid():
+            budget = form.save(commit=False)
+            budget.user = request.user
+            budget.save()
+            
+            # Respuesta HTMX: recargar dashboard
+            if request.headers.get('HX-Request'):
+                messages.success(request, 'Presupuesto configurado exitosamente!')
+                response = render(request, 'expenses/partials/budget_success.html', {
+                    'budget': budget
+                })
+                response['HX-Trigger'] = 'refreshDashboard'  # Recargar métricas
+                return response
+            
+            messages.success(request, 'Presupuesto configurado exitosamente!')
+            return redirect('expenses:dashboard')
+    else:
+        form = BudgetForm(instance=budget)
+    
+    # Modal HTMX o página completa
+    if request.headers.get('HX-Request'):
+        return render(request, 'expenses/partials/budget_modal.html', {
+            'form': form,
+            'budget': budget
+        })
+    
+    return render(request, 'expenses/budget.html', {
+        'form': form,
+        'budget': budget
+    })
 
 
 

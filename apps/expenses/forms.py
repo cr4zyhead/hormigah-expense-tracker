@@ -1,5 +1,5 @@
 from django import forms
-from .models import Expense, Category
+from .models import Expense, Category, Budget
 from datetime import datetime, date, timedelta
 
 
@@ -205,5 +205,87 @@ class ExpenseFilterForm(forms.Form):
         # Validar que monto_mínimo no sea mayor que monto_máximo
         if min_amount and max_amount and min_amount > max_amount:
             raise forms.ValidationError("El monto mínimo no puede ser mayor que el monto máximo.")
+        
+        return cleaned_data
+
+
+class BudgetForm(forms.ModelForm):
+    """
+    Formulario para configurar el presupuesto mensual del usuario
+    """
+    
+    class Meta:
+        model = Budget
+        fields = ['monthly_limit', 'warning_percentage', 'critical_percentage']
+        widgets = {
+            'monthly_limit': forms.NumberInput(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+                'step': '0.01',
+                'min': '0',
+                'placeholder': '500.00'
+            }),
+            'warning_percentage': forms.NumberInput(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+                'min': '1',
+                'max': '100',
+                'placeholder': '75'
+            }),
+            'critical_percentage': forms.NumberInput(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500',
+                'min': '1',
+                'max': '100',
+                'placeholder': '90'
+            }),
+        }
+        labels = {
+            'monthly_limit': 'Límite Mensual (€)',
+            'warning_percentage': 'Alerta Amarilla (%)',
+            'critical_percentage': 'Alerta Roja (%)',
+        }
+        help_texts = {
+            'monthly_limit': 'Establece tu límite máximo de gastos por mes',
+            'warning_percentage': 'Porcentaje del límite para mostrar alerta amarilla (recomendado: 75%)',
+            'critical_percentage': 'Porcentaje del límite para mostrar alerta roja (recomendado: 90%)',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Valores por defecto inteligentes
+        if not self.instance.pk:
+            self.fields['warning_percentage'].initial = 75
+            self.fields['critical_percentage'].initial = 90
+    
+    def clean(self):
+        """
+        Validación personalizada para el formulario de presupuesto
+        """
+        cleaned_data = super().clean()
+        monthly_limit = cleaned_data.get('monthly_limit')
+        warning_percentage = cleaned_data.get('warning_percentage')
+        critical_percentage = cleaned_data.get('critical_percentage')
+        
+        # Validar que el límite mensual sea positivo
+        if monthly_limit and monthly_limit <= 0:
+            raise forms.ValidationError({
+                'monthly_limit': 'El límite mensual debe ser mayor que cero.'
+            })
+        
+        # Validar que warning_percentage sea menor que critical_percentage
+        if warning_percentage and critical_percentage:
+            if warning_percentage >= critical_percentage:
+                raise forms.ValidationError({
+                    'warning_percentage': 'El porcentaje de alerta debe ser menor que el crítico.'
+                })
+        
+        # Validar rangos de porcentajes
+        if warning_percentage and (warning_percentage < 1 or warning_percentage > 100):
+            raise forms.ValidationError({
+                'warning_percentage': 'El porcentaje debe estar entre 1 y 100.'
+            })
+        
+        if critical_percentage and (critical_percentage < 1 or critical_percentage > 100):
+            raise forms.ValidationError({
+                'critical_percentage': 'El porcentaje debe estar entre 1 y 100.'
+            })
         
         return cleaned_data 

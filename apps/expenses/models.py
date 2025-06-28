@@ -81,3 +81,92 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.amount}€ - {self.category.name} ({self.date})"
+
+
+class Budget(models.Model):
+    """Límite de presupuesto del usuario para controlar gastos"""
+    
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Usuario",
+        related_name="budget"
+    )
+    
+    monthly_limit = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Límite Mensual",
+        help_text="Límite máximo de gastos por mes en euros"
+    )
+    
+    # Configuración de alertas
+    warning_percentage = models.PositiveIntegerField(
+        default=75,
+        verbose_name="Porcentaje de Alerta",
+        help_text="Porcentaje del límite para mostrar alerta amarilla (ej: 75)"
+    )
+    
+    critical_percentage = models.PositiveIntegerField(
+        default=90,
+        verbose_name="Porcentaje Crítico",
+        help_text="Porcentaje del límite para mostrar alerta roja (ej: 90)"
+    )
+    
+    # Campos de auditoría
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado el")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado el")
+    
+    class Meta:
+        verbose_name = "Presupuesto"
+        verbose_name_plural = "Presupuestos"
+    
+    def clean(self):
+        """Validaciones personalizadas del modelo"""
+        super().clean()
+        if self.monthly_limit and self.monthly_limit <= 0:
+            raise ValidationError({
+                'monthly_limit': 'El límite mensual debe ser mayor que cero.'
+            })
+        
+        if self.warning_percentage >= self.critical_percentage:
+            raise ValidationError({
+                'warning_percentage': 'El porcentaje de alerta debe ser menor que el crítico.'
+            })
+    
+    def get_warning_amount(self):
+        """Calcula el monto de alerta amarilla"""
+        return (self.monthly_limit * self.warning_percentage) / 100
+    
+    def get_critical_amount(self):
+        """Calcula el monto de alerta roja"""
+        return (self.monthly_limit * self.critical_percentage) / 100
+    
+    def get_status_for_amount(self, current_amount):
+        """
+        Retorna el estado del presupuesto basado en el monto actual
+        
+        Returns:
+            str: 'safe', 'warning', 'critical', 'exceeded'
+        """
+        if current_amount >= self.monthly_limit:
+            return 'exceeded'
+        elif current_amount >= self.get_critical_amount():
+            return 'critical'
+        elif current_amount >= self.get_warning_amount():
+            return 'warning'
+        else:
+            return 'safe'
+    
+    def get_percentage_used(self, current_amount):
+        """Calcula el porcentaje usado del presupuesto"""
+        if self.monthly_limit <= 0:
+            return 0
+        return min(100, (current_amount / self.monthly_limit) * 100)
+    
+    def get_remaining_amount(self, current_amount):
+        """Calcula el monto restante del presupuesto"""
+        return max(0, self.monthly_limit - current_amount)
+    
+    def __str__(self):
+        return f"Presupuesto de {self.user.username}: €{self.monthly_limit}/mes"

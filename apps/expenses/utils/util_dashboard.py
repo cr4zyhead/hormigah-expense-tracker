@@ -9,7 +9,7 @@ Este módulo contiene toda la lógica relacionada con:
 
 from datetime import datetime, timedelta
 from django.db.models import Sum
-from ..models import Expense
+from ..models import Expense, Budget
 
 
 def get_period_dates(period):
@@ -146,4 +146,57 @@ def get_dashboard_context(user, period):
         'selected_period': period,
     }
     
-    return context 
+    # Añadir información de presupuesto
+    budget_info = get_budget_info(user, metrics['period_total'])
+    context.update(budget_info)
+    
+    return context
+
+
+def get_budget_info(user, current_month_total):
+    """
+    Obtiene información del presupuesto del usuario de forma sencilla
+    """
+    try:
+        budget = Budget.objects.get(user=user)
+        
+        # Calcular datos básicos
+        percentage_used = budget.get_percentage_used(current_month_total)
+        remaining_amount = budget.get_remaining_amount(current_month_total)
+        status = budget.get_status_for_amount(current_month_total)
+        
+        # Determinar color y mensaje según el estado
+        if status == 'safe':
+            color_class = 'text-green-600 bg-green-50 border-green-200'
+            icon = '✅'
+            message = f'¡Vas bien! Te quedan €{remaining_amount:.0f}'
+        elif status == 'warning':
+            color_class = 'text-yellow-600 bg-yellow-50 border-yellow-200'
+            icon = '⚠️'
+            message = f'¡Cuidado! Solo te quedan €{remaining_amount:.0f}'
+        elif status == 'critical':
+            color_class = 'text-red-600 bg-red-50 border-red-200'
+            icon = '🚨'
+            message = f'¡Límite casi alcanzado! Solo €{remaining_amount:.0f} restantes'
+        else:  # exceeded
+            color_class = 'text-red-600 bg-red-50 border-red-200'
+            icon = '🛑'
+            excess = current_month_total - budget.monthly_limit
+            message = f'¡Límite excedido! Has gastado €{excess:.0f} de más'
+        
+        return {
+            'has_budget': True,
+            'budget': budget,
+            'budget_percentage_used': percentage_used,
+            'budget_remaining': remaining_amount,
+            'budget_status': status,
+            'budget_color_class': color_class,
+            'budget_icon': icon,
+            'budget_message': message,
+        }
+        
+    except Budget.DoesNotExist:
+        return {
+            'has_budget': False,
+            'budget': None,
+        } 

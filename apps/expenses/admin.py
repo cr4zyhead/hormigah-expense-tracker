@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Expense
+from .models import Category, Expense, Budget
 
 
 @admin.register(Category)
@@ -24,3 +24,15 @@ class ExpenseAdmin(admin.ModelAdmin):
     fields = ['user', 'category', 'amount', 'date', 'description', 'location']
     readonly_fields = ['created_at', 'updated_at']
     autocomplete_fields = ['category']  # Para búsqueda rápida
+
+
+@admin.register(Budget)
+class BudgetAdmin(admin.ModelAdmin):
+    """Admin para gestionar presupuestos de usuarios"""
+    list_display = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage', 'created_at']
+    list_filter = ['created_at', 'updated_at']
+    search_fields = ['user__username', 'user__email']
+    ordering = ['-created_at']
+    fields = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage']
+    readonly_fields = ['created_at', 'updated_at']
+    autocomplete_fields = ['user']  # Para búsqueda rápida de usuarios

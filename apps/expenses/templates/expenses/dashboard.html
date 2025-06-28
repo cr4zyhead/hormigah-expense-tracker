@@ -6,24 +6,43 @@
 {% block content %}
 <div class="space-y-6">
     <!-- Header del Dashboard -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+    <div class="bg-white rounded-lg shadow-sm p-4 md:p-6">
+        <!-- Título principal -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div class="mb-3 sm:mb-0">
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-900 flex items-center">
                     🐜 Dashboard de Gastos
                 </h1>
-                <p class="text-gray-600 mt-1">Resumen de tus gastos hormiga</p>
+                <p class="text-gray-600 mt-1 text-sm md:text-base">Resumen de tus gastos hormiga</p>
             </div>
-            <div class="text-right">
-                <button hx-get="{% url 'expenses:add_expense' %}" 
-                        hx-target="#modal-container" 
-                        hx-indicator="#modal-loading"
-                        class="mb-2 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                    ➕ Agregar Gasto
-                </button>
+            
+            <!-- Total del mes (solo en desktop) -->
+            <div class="hidden sm:block text-right">
                 <p class="text-sm text-gray-500">Mes actual</p>
                 <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:0 }}</p>
             </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-2 sm:justify-end">
+            <button hx-get="{% url 'expenses:add_expense' %}" 
+                    hx-target="#modal-container" 
+                    hx-indicator="#modal-loading"
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                ➕ Agregar Gasto
+            </button>
+            <button hx-get="{% url 'expenses:manage_budget' %}" 
+                    hx-target="#modal-container" 
+                    hx-indicator="#modal-loading"
+                    class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
+                💰 Presupuesto
+            </button>
+        </div>
+        
+        <!-- Total del mes (solo en móvil) -->
+        <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 text-center">
+            <p class="text-sm text-gray-500">Mes actual</p>
+            <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:0 }}</p>
         </div>
     </div>
 
@@ -59,6 +78,47 @@
             </div>
         </div>
     </div>
+
+    <!-- Estado del Presupuesto -->
+    {% if has_budget %}
+        <div class="bg-white rounded-lg shadow-sm p-4 border {{ budget_color_class }}">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">{{ budget_icon }}</span>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">Estado del Presupuesto</h3>
+                        <p class="text-sm">{{ budget_message }}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-2xl font-bold">{{ budget_percentage_used|floatformat:0 }}%</p>
+                    <p class="text-sm text-gray-500">de €{{ budget.monthly_limit|floatformat:0 }}</p>
+                </div>
+            </div>
+            <!-- Barra de progreso sencilla -->
+            <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                <div class="{% if budget_status == 'safe' %}bg-green-500{% elif budget_status == 'warning' %}bg-yellow-500{% else %}bg-red-500{% endif %} h-2 rounded-full transition-all duration-300" 
+                     style="width: {{ budget_percentage_used|floatformat:0 }}%">
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">💡</span>
+                <div class="flex-1">
+                    <h3 class="text-sm font-medium text-blue-800">¿Quieres controlar mejor tus gastos?</h3>
+                    <p class="text-sm text-blue-600">Configura un presupuesto mensual y recibe alertas automáticas</p>
+                </div>
+                <button hx-get="{% url 'expenses:manage_budget' %}" 
+                        hx-target="#modal-container" 
+                        hx-indicator="#modal-loading"
+                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                    Configurar
+                </button>
+            </div>
+        </div>
+    {% endif %}
 
     <!-- Métricas Principales -->
     <div id="dashboard-metrics"
