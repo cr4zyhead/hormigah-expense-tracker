@@ -336,29 +336,39 @@ class TestCrudOperations:
 """
 Para ejecutar los tests de utilidades, usa estos comandos:
 
+** SI USAS DOCKER (recomendado), añade 'docker compose exec web' antes de cada comando **
+
 1. Ejecutar TODOS los tests de este archivo:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py -v
+   docker compose exec web pytest apps/expenses/tests/test_utils.py -v
 
 2. Ejecutar solo tests de Dashboard:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py::TestDashboardUtils -v
+   docker compose exec web pytest apps/expenses/tests/test_utils.py::TestDashboardUtils -v
 
-3. Ejecutar solo tests de ExpenseList:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py::TestExpenseListUtils -v
+3. Ejecutar solo tests de Budget:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py::TestBudgetUtils -v
 
-4. Ejecutar solo tests de CRUD Operations:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py::TestCrudOperations -v
+4. Ejecutar solo tests de ExpenseList:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py::TestExpenseListUtils -v
 
-5. Ejecutar un test específico:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py::TestDashboardUtils::test_calculate_dashboard_metrics -v
+5. Ejecutar solo tests de CRUD Operations:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py::TestCrudOperations -v
 
-6. Ejecutar solo tests que usan la base de datos:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py -m django_db -v
+6. Ejecutar un test específico:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py::TestBudgetUtils::test_get_budget_info_safe_status -v
 
-7. Ejecutar con cobertura de las utilidades:
-   pytest --ds=config.settings apps/expenses/tests/test_utils.py --cov=apps.expenses.utils -v
+7. Ejecutar solo tests que usan la base de datos:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py -m django_db -v
 
-8. Ejecutar desde la raíz del proyecto (más rápido):
-   pytest --ds=config.settings -k "test_utils" -v
+8. Ejecutar con cobertura de las utilidades:
+   docker compose exec web pytest apps/expenses/tests/test_utils.py --cov=apps.expenses.utils -v
+
+9. Ejecutar desde la raíz del proyecto (más rápido):
+   docker compose exec web pytest -k "test_utils" -v
+
+** SI NO USAS DOCKER, añade '--ds=config.settings' a cada comando **
+
+Ejemplo sin Docker:
+   pytest --ds=config.settings apps/expenses/tests/test_utils.py -v
 
 Consejos útiles:
 - Usa -v para output verbose (más detalles)
@@ -367,5 +377,7 @@ Consejos útiles:
 - Usa -x para parar en el primer fallo
 
 Ejemplo completo con todas las opciones:
-pytest --ds=config.settings apps/expenses/tests/test_utils.py -v -s --tb=short --cov=apps.expenses.utils
+docker compose exec web pytest apps/expenses/tests/test_utils.py -v -s --tb=short --cov=apps.expenses.utils
+
+Nota: Con Docker no necesitas --ds=config.settings porque la configuración ya está establecida.
 """ 

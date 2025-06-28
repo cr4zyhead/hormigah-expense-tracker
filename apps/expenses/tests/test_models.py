@@ -152,26 +152,35 @@ class TestExpenseModel:
 """
 Para ejecutar los tests de modelos, usa estos comandos:
 
+** SI USAS DOCKER (recomendado), añade 'docker compose exec web' antes de cada comando **
+
 1. Ejecutar TODOS los tests de este archivo:
-   pytest --ds=config.settings apps/expenses/tests/test_models.py -v
+   docker compose exec web pytest apps/expenses/tests/test_models.py -v
 
 2. Ejecutar solo tests de Category:
-   pytest --ds=config.settings apps/expenses/tests/test_models.py::TestCategoryModel -v
+   docker compose exec web pytest apps/expenses/tests/test_models.py::TestCategoryModel -v
 
 3. Ejecutar solo tests de Expense:
-   pytest --ds=config.settings apps/expenses/tests/test_models.py::TestExpenseModel -v
+   docker compose exec web pytest apps/expenses/tests/test_models.py::TestExpenseModel -v
 
-4. Ejecutar un test específico:
-   pytest --ds=config.settings apps/expenses/tests/test_models.py::TestExpenseModel::test_create_expense -v
+4. Ejecutar solo tests de Budget:
+   docker compose exec web pytest apps/expenses/tests/test_models.py::TestBudgetModel -v
 
-5. Ejecutar con cobertura de código:
-   pytest --ds=config.settings apps/expenses/tests/test_models.py --cov=apps.expenses.models -v
+5. Ejecutar un test específico:
+   docker compose exec web pytest apps/expenses/tests/test_models.py::TestBudgetModel::test_create_budget -v
 
-6. Ejecutar desde la raíz del proyecto (más rápido):
-   pytest --ds=config.settings -k "test_models" -v
+6. Ejecutar con cobertura de código:
+   docker compose exec web pytest apps/expenses/tests/test_models.py --cov=apps.expenses.models -v
 
-Nota: El parámetro --ds=config.settings es necesario para que Django configure correctamente
-la base de datos y settings durante las pruebas.
+7. Ejecutar desde la raíz del proyecto (más rápido):
+   docker compose exec web pytest -k "test_models" -v
+
+** SI NO USAS DOCKER, añade '--ds=config.settings' a cada comando **
+
+Ejemplo sin Docker:
+   pytest --ds=config.settings apps/expenses/tests/test_models.py -v
+
+Nota: Con Docker no necesitas --ds=config.settings porque la configuración ya está establecida.
 """
 
 
