@@ -64,11 +64,13 @@ Estos scripts son una **alternativa opcional** a los comandos estándar de Docke
 ### Desarrollo (`docker-compose.yml`)
 - **web**: Aplicación Django con hot reload
 - **db**: PostgreSQL 15
+- **n8n**: Herramienta de automatización de workflows
 
 ### Producción (`docker-compose.prod.yml`)
 - **web**: Aplicación Django con Gunicorn
 - **db**: PostgreSQL 15
 - **nginx**: Servidor web y proxy inverso
+- **n8n**: Automatización y reportes (accesible via /n8n/)
 
 ## Primeros Pasos
 
@@ -102,6 +104,7 @@ docker-compose exec web python manage.py createsuperuser
 ### 5. Acceder a la Aplicación
 - **Aplicación**: http://localhost:8000
 - **Panel Admin**: http://localhost:8000/admin
+- **n8n (Automatizaciones)**: http://localhost:5678
 
 ## Comandos de Desarrollo
 
@@ -132,6 +135,18 @@ docker-compose exec web python manage.py shell
 
 # Tests
 docker-compose exec web python manage.py test
+```
+
+### n8n
+```bash
+# Ver logs de n8n
+docker-compose logs -f n8n
+
+# Reiniciar n8n
+docker-compose restart n8n
+
+# Acceder al contenedor n8n
+docker-compose exec n8n sh
 ```
 
 ### Base de Datos
@@ -181,7 +196,8 @@ docker-compose -f docker-compose.prod.yml up -d
 ├── Dockerfile              # Imagen Django
 ├── .env.example           # Plantilla variables
 ├── .env.local             # Variables desarrollo
-└── .env.production        # Variables producción
+├── .env.production        # Variables producción
+└── README_N8N.md          # Documentación n8n
 ```
 
 ## Variables de Entorno
@@ -196,7 +212,13 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 DB_HOST=db
 DB_PORT=5432
+
+# n8n
+N8N_HOST=localhost
+N8N_PROTOCOL=http
 ```
+
+> 🤖 **Para configurar automatizaciones con n8n**, consulta [README_N8N.md](README_N8N.md)
 
 ### Producción (.env.production)
 ```bash

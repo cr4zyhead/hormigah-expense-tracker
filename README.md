@@ -9,6 +9,7 @@
 ![HTMX](https://img.shields.io/badge/HTMX-1.9-336791?style=for-the-badge&logo=htmx&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+![n8n](https://img.shields.io/badge/n8n-1.99.1-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
 
 [Demo](#instalación) • [Características](#características-principales) • [Arquitectura](#arquitectura) • [Contribuir](#contribuir)
 
@@ -55,6 +56,13 @@ Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualm
 - **Sistema de categorías** con colores personalizados
 - **Gestión de usuarios** con autenticación segura
 
+### Automatización y Reportes (n8n)
+- **Reportes automáticos** por email de gastos mensuales
+- **Alertas inteligentes** cuando superas presupuestos
+- **Integraciones** con servicios externos (Gmail, Slack, etc.)
+- **Workflows personalizados** para automatizar tareas repetitivas
+- **APIs disponibles** para crear automatizaciones avanzadas
+
 ---
 
 ## Instalación
@@ -74,6 +82,7 @@ cp .env.example .env.local
 docker-compose up -d
 
 # 3. ¡Listo! Tu app está en http://localhost:8000
+# 4. Accede a n8n para automatizaciones en http://localhost:5678
 ```
 
 ## Configuración SSL/HTTPS (Producción)
@@ -144,8 +153,10 @@ python manage.py runserver
 ### Acceso
 - **Aplicación principal**: http://localhost:8000/
 - **Panel de administración**: http://localhost:8000/admin/
+- **n8n (Automatizaciones)**: http://localhost:5678/
 
-> 💡 **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)
+> 💡 **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)  
+> 🤖 **Para configurar automatizaciones**, consulta [README_N8N.md](README_N8N.md)
 
 ---
 
@@ -180,6 +191,9 @@ docker-compose -f docker-compose.prod.yml ps
 
 # Backup de base de datos
 docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup.sql
+
+# Acceder a n8n para automatizaciones
+# https://tu-dominio.com/n8n/
 ```
 
 ### Scripts Helper (Alternativa)
@@ -339,6 +353,7 @@ hormigah/
 - **Docker**: Containerización completa
 - **Nginx**: Servidor web y proxy inverso
 - **PostgreSQL**: Base de datos principal
+- **n8n**: Automatización de workflows y reportes
 - **Redis**: Cache (opcional)
 
 #### **Arquitectura**
