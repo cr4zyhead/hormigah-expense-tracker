@@ -10,46 +10,46 @@
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
 
-[🚀 Demo](#-instalación) • [📊 Características](#-características-principales) • [🏗️ Arquitectura](#️-arquitectura) • [🤝 Contribuir](#-contribuir)
+[Demo](#instalación) • [Características](#características-principales) • [Arquitectura](#arquitectura) • [Contribuir](#contribuir)
 
 </div>
 
 ---
 
-## 🎯 ¿Qué son los "Gastos Hormiga"?
+## ¿Qué son los "Gastos Hormiga"?
 
 Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualmente parecen insignificantes, pero que acumulados pueden representar una parte considerable de nuestro presupuesto:
 
-- ☕ **Café diario**: $3 × 365 días = $1,095 al año
-- 🍕 **Delivery impulsivo**: $15 × 2 veces/semana = $1,560 al año  
-- 🚗 **Taxis innecesarios**: $8 × 3 veces/semana = $1,248 al año
-- 📱 **Suscripciones no usadas**: $10 × 12 meses = $120 al año
+- **Café diario**: $3 × 365 días = $1,095 al año
+- **Delivery impulsivo**: $15 × 2 veces/semana = $1,560 al año  
+- **Taxis innecesarios**: $8 × 3 veces/semana = $1,248 al año
+- **Suscripciones no usadas**: $10 × 12 meses = $120 al año
 
-**¡Total: $4,023 al año en gastos "pequeños"!** 😱
+**¡Total: $4,023 al año en gastos "pequeños"!**
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
-### 🏠 **Dashboard Inteligente**
+### Dashboard Inteligente
 - **Métricas en tiempo real** con filtros por período
 - **Gráficos interactivos** (dona y líneas) con Chart.js
 - **Auto-actualización** sin recargar página (HTMX)
 - **Responsive design** optimizado para móviles
 
-### 📊 **Análisis Visual**
+### Análisis Visual
 - **Distribución por categorías** con colores personalizados
 - **Tendencias temporales** para identificar patrones
 - **Proyecciones anuales** automáticas
 - **Comparativas mensuales** 
 
-### ⚡ **Experiencia de Usuario Moderna**
+### Experiencia de Usuario Moderna
 - **Interfaz HTMX** sin recargas de página
 - **Modales dinámicos** para CRUD completo
 - **Auto-refresh** en listas y métricas
 - **Navegación fluida** entre secciones
 
-### 🔧 **Funcionalidades Avanzadas**
+### Funcionalidades Avanzadas
 - **Filtros inteligentes** por fecha, categoría y monto
 - **CRUD completo** con validación en tiempo real
 - **Sistema de categorías** con colores personalizados
@@ -57,13 +57,13 @@ Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualm
 
 ---
 
-## 🚀 Instalación
+## Instalación
 
 ### Requisitos Previos
 - **Docker** y **Docker Compose**
 - **Git**
 
-### 🚀 Setup Rápido con Docker
+### Setup Rápido con Docker
 ```bash
 # 1. Clonar e iniciar
 git clone https://github.com/tu-usuario/hormigah.git
@@ -76,7 +76,7 @@ docker-compose up -d
 # 3. ¡Listo! Tu app está en http://localhost:8000
 ```
 
-## 🔒 Configuración SSL/HTTPS (Producción)
+## Configuración SSL/HTTPS (Producción)
 
 ### Dominio con DuckDNS
 1. Crear cuenta en [DuckDNS](https://duckdns.org)
@@ -110,7 +110,7 @@ docker-compose -f docker-compose.prod.yml down
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### 🔧 Configuración Completa
+### Configuración Completa
 ```bash
 # Crear superusuario (para admin)
 docker-compose exec web python manage.py createsuperuser
@@ -119,7 +119,7 @@ docker-compose exec web python manage.py createsuperuser
 docker-compose exec web python manage.py loaddata apps/expenses/fixtures/categories.json
 ```
 
-### 🐍 Setup Manual (Alternativo)
+### Setup Manual (Alternativo)
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/tu-usuario/hormigah.git
@@ -141,7 +141,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### 🌐 Acceso
+### Acceso
 - **Aplicación principal**: http://localhost:8000/
 - **Panel de administración**: http://localhost:8000/admin/
 
@@ -149,9 +149,9 @@ python manage.py runserver
 
 ---
 
-## 🐳 Comandos Docker
+## Comandos Docker
 
-### 📋 Comandos Docker Estándar
+### Comandos Docker Estándar
 
 #### **Desarrollo**
 ```bash
@@ -182,7 +182,7 @@ docker-compose -f docker-compose.prod.yml ps
 docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup.sql
 ```
 
-### 🚀 Scripts Helper (Alternativa)
+### Scripts Helper (Alternativa)
 
 > 💡 **Opcional**: También puedes usar scripts que simplifican las operaciones más comunes
 
@@ -229,7 +229,7 @@ cp .env.example .env.local
 ./scripts/docker-prod.sh update       # Pull, build y restart
 ```
 
-### 🔧 Workflow de Deployment
+### Workflow de Deployment
 
 #### **En el Servidor de Producción**
 ```bash
@@ -261,7 +261,7 @@ git pull origin main
 
 > 📚 **Documentación completa con más workflows**: [README_DOCKER.md](README_DOCKER.md)
 
-### 💡 Características de los Scripts
+### Características de los Scripts
 
 Los scripts incluyen algunas características adicionales:
 
@@ -272,30 +272,30 @@ Los scripts incluyen algunas características adicionales:
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
-### 📁 Estructura del Proyecto
+### Estructura del Proyecto
 ```
 hormigah/
-├── 🏠 apps/
-│   ├── 🔧 core/                     # Utilidades base y templates
+├── apps/
+│   ├── core/                     # Utilidades base y templates
 │   │   ├── templates/
 │   │   │   ├── base.html           # Template base con Tailwind
 │   │   │   ├── core/includes/      # Header y footer
 │   │   │   └── registration/       # Autenticación
 │   │   └── views.py                # Vistas compartidas
 │   │
-│   └── 💰 expenses/                 # App principal de gastos
-│       ├── 📊 models.py            # Category y Expense
-│       ├── 🎯 views.py             # Lógica de negocio
-│       ├── 📝 forms.py             # Formularios con validación
-│       ├── 🔗 urls.py              # Rutas de la aplicación
-│       ├── 🛠️ utils/               # Utilidades modularizadas
-│       ├── 🎨 templates/expenses/  # Templates especializados
-│       ├── 📱 static/expenses/     # CSS y JS específicos
-│       └── 🔄 migrations/          # Migraciones de BD
+│   └── expenses/                 # App principal de gastos
+│       ├── models.py            # Category y Expense
+│       ├── views.py             # Lógica de negocio
+│       ├── forms.py             # Formularios con validación
+│       ├── urls.py              # Rutas de la aplicación
+│       ├── utils/               # Utilidades modularizadas
+│       ├── templates/expenses/  # Templates especializados
+│       ├── static/expenses/     # CSS y JS específicos
+│       └── migrations/          # Migraciones de BD
 │
-├── ⚙️ config/                      # Configuración Django
+├── config/                      # Configuración Django
 │   ├── settings/                   # Settings modulares
 │   │   ├── base.py                 # Configuración base
 │   │   ├── local.py                # Desarrollo
@@ -304,24 +304,24 @@ hormigah/
 │   ├── wsgi.py                     # WSGI para producción
 │   └── asgi.py                     # ASGI para async
 │
-├── 🐳 docker/                      # Configuración Docker
+├── docker/                      # Configuración Docker
 │   ├── nginx.conf                  # Configuración Nginx
 │   └── entrypoint.sh               # Script de inicialización
 │
-├── 🎨 static/                      # Archivos estáticos globales
+├── static/                      # Archivos estáticos globales
 │   ├── css/custom.css              # Estilos personalizados
 │   └── js/dashboard.js             # JavaScript modularizado
 │
-├── 📋 docker-compose.yml           # Docker desarrollo
-├── 📋 docker-compose.prod.yml      # Docker producción  
-├── 🐋 Dockerfile                   # Imagen de la aplicación
-├── 📝 .env.example                 # Variables de entorno ejemplo
-├── 📚 README_DOCKER.md             # Documentación Docker
-├── 🗄️ requirements.txt             # Dependencias Python
-└── 📋 manage.py                    # Script de gestión Django
+├── docker-compose.yml           # Docker desarrollo
+├── docker-compose.prod.yml      # Docker producción  
+├── Dockerfile                   # Imagen de la aplicación
+├── .env.example                 # Variables de entorno ejemplo
+├── README_DOCKER.md             # Documentación Docker
+├── requirements.txt             # Dependencias Python
+└── manage.py                    # Script de gestión Django
 ```
 
-### 🧩 Tecnologías Utilizadas
+### Tecnologías Utilizadas
 
 #### **Backend**
 - **Django 5.2.3**: Framework web robusto
@@ -350,51 +350,51 @@ hormigah/
 
 ---
 
-## 🎮 Uso de la Aplicación
+## Uso de la Aplicación
 
 ### 1. **Dashboard Principal**
 ```
-🐜 Dashboard de Gastos
-├── 📊 Métricas del período seleccionado
-├── 🍩 Gráfico de distribución por categorías  
-├── 📈 Tendencia temporal de gastos
-└── 🕐 Lista de gastos recientes
+Dashboard de Gastos
+├── Métricas del período seleccionado
+├── Gráfico de distribución por categorías  
+├── Tendencia temporal de gastos
+└── Lista de gastos recientes
 ```
 
 ### 2. **Gestión de Gastos**
 ```
-💰 Operaciones CRUD
-├── ➕ Agregar nuevo gasto (modal HTMX)
-├── ✏️ Editar gasto existente (modal HTMX)
-├── 🗑️ Eliminar gasto (confirmación)
-└── 👁️ Ver detalles completos
+Operaciones CRUD
+├── Agregar nuevo gasto (modal HTMX)
+├── Editar gasto existente (modal HTMX)
+├── Eliminar gasto (confirmación)
+└── Ver detalles completos
 ```
 
 ### 3. **Filtros Avanzados**
 ```
-🔍 Sistema de Filtros
-├── 📅 Por período (Este mes, último mes, últimos 7/30 días)
-├── 🏷️ Por categoría (Café, Delivery, Transporte, etc.)
-├── 📅 Por rango de fechas personalizado
-└── 💵 Por rango de montos (min/max)
+Sistema de Filtros
+├── Por período (Este mes, último mes, últimos 7/30 días)
+├── Por categoría (Café, Delivery, Transporte, etc.)
+├── Por rango de fechas personalizado
+└── Por rango de montos (min/max)
 ```
 
 ---
 
-## 🔥 Funcionalidades Destacadas
+## Funcionalidades Destacadas
 
-### ⚡ **Auto-Refresh Inteligente**
+### Auto-Refresh Inteligente
 - Las listas se actualizan automáticamente al crear/editar gastos
 - Dashboard se recarga automáticamente tras cambios
 - Sin necesidad de recargar la página manualmente
 
-### 🎨 **Interfaz Moderna**
+### Interfaz Moderna
 - **Modales HTMX**: Operaciones sin cambiar de página
 - **Indicadores de carga**: Feedback visual durante operaciones
 - **Mensajes de éxito**: Confirmación clara de acciones
 - **Estados vacíos**: Guías útiles cuando no hay datos
 
-### 📱 **Responsive Design**
+### Responsive Design
 - **Mobile-first**: Optimizado para dispositivos móviles
 - **Navegación adaptativa**: Menú hamburguesa en móviles
 - **Tablas responsivas**: Scroll horizontal cuando es necesario
@@ -402,7 +402,7 @@ hormigah/
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Ejecutar tests
@@ -417,7 +417,7 @@ python manage.py check
 
 ---
 
-## 🚀 Deploy en Producción
+## Deploy en Producción
 
 ### Variables de Entorno Necesarias
 ```bash
@@ -438,9 +438,9 @@ python manage.py collectstatic
 
 ---
 
-## 🔧 Troubleshooting y Verificación
+## Troubleshooting y Verificación
 
-### 🔍 **Verificar Estado de la Aplicación en Producción**
+### Verificar Estado de la Aplicación en Producción
 
 #### **1. Estado de los Servicios**
 ```bash
@@ -494,7 +494,7 @@ curl -I http://tu-servidor-ip
 curl -I http://tu-dominio.com
 ```
 
-### 🚨 **Resolución de Problemas Comunes**
+### Resolución de Problemas Comunes
 
 #### **Problema: Contenedor Web en "Restarting"**
 
@@ -562,7 +562,7 @@ docker-compose -f docker-compose.prod.yml down
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### 🧹 **Limpieza y Mantenimiento**
+### Limpieza y Mantenimiento
 
 #### **Limpieza Completa de Docker**
 ```bash
@@ -586,7 +586,7 @@ docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hor
 docker-compose -f docker-compose.prod.yml exec -T db psql -U postgres gastos_hormiga_prod < backup_file.sql
 ```
 
-### 📋 **Manejo de Archivos .env**
+### Manejo de Archivos .env
 
 #### **Configuración Recomendada para Producción:**
 ```bash
@@ -608,7 +608,7 @@ docker-compose -f docker-compose.prod.yml config
 docker-compose -f docker-compose.prod.yml exec web env | grep -E "(DEBUG|DB_|DJANGO_)"
 ```
 
-### 🔄 **Rollback y Reversión**
+### Rollback y Reversión
 
 #### **Si una Actualización Falla:**
 ```bash
@@ -633,7 +633,7 @@ git tag -a v1.0.0 -m "Versión estable antes de actualización"
 git push origin v1.0.0
 ```
 
-### 💡 **Consejos de Desarrollo**
+### Consejos de Desarrollo
 
 #### **Ambientes Separados:**
 - **Desarrollo Local**: `docker-compose up -d` (usa docker-compose.yml)
@@ -668,21 +668,21 @@ docker stats
 
 ---
 
-## 🤝 Contribuir
+## Contribuir
 
 ¡Las contribuciones son bienvenidas! 
 
-### 🐛 Reportar Bugs
+### Reportar Bugs
 - Usar el [sistema de issues](../../issues)
 - Incluir pasos para reproducir
 - Especificar entorno (OS, Python, Django)
 
-### ✨ Proponer Features
+### Proponer Features
 - Describir el caso de uso
 - Explicar el beneficio para usuarios
 - Considerar impacto en UX
 
-### 🔧 Pull Requests
+### Pull Requests
 1. Fork del repositorio
 2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
 3. Commit con conventional commits
@@ -690,7 +690,7 @@ docker stats
 
 ---
 
-## 📝 Conventional Commits
+## Conventional Commits
 
 Este proyecto usa [Conventional Commits](https://conventionalcommits.org/):
 
@@ -705,14 +705,13 @@ test: agregar tests para filtros avanzados
 
 ---
 
-
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la **Licencia MIT**. Ver [LICENSE](LICENSE) para más detalles.
 
 ---
 
-## 🙏 Agradecimientos
+## Agradecimientos
 
 - **Django Team** por el framework increíble
 - **HTMX** por simplificar la interactividad web

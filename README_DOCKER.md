@@ -4,9 +4,9 @@
 
 Esta aplicación Django ha sido configurada para ejecutarse con Docker y PostgreSQL. Incluye configuraciones separadas para desarrollo y producción.
 
-## 🎯 Scripts Helper
+## Scripts Helper
 
-> 💡 **Opcional**: Para facilitar el trabajo con Docker, la aplicación incluye scripts que simplifican las operaciones más comunes:
+> **Opcional**: Para facilitar el trabajo con Docker, la aplicación incluye scripts que simplifican las operaciones más comunes:
 
 - **`scripts/docker-dev.sh`** - Para desarrollo local
 - **`scripts/docker-prod.sh`** - Para producción
@@ -55,7 +55,7 @@ Estos scripts son una **alternativa opcional** a los comandos estándar de Docke
 
 - **Comandos más cortos**: `./scripts/docker-dev.sh up` vs `docker-compose up -d`
 - **Validaciones automáticas**: Verifican dependencias y archivos necesarios
-- **Feedback visual**: Mensajes con colores y emojis para mejor UX
+- **Feedback visual**: Mensajes con colores para mejor experiencia de usuario
 - **Gestión de errores**: Manejo inteligente de errores comunes
 - **Confirmaciones de seguridad**: Para operaciones destructivas como `reset`
 
@@ -264,7 +264,7 @@ docker-compose exec web bash
 docker-compose exec db psql -U postgres -d gastos_hormiga_dev
 ```
 
-## 🚀 Workflows Completos
+## Workflows Completos
 
 ### Desarrollo Local - Primer Setup
 ```bash
