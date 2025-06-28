@@ -7,10 +7,11 @@ import pytest
 from datetime import datetime, date, timedelta
 from decimal import Decimal
 from django.contrib.auth.models import User
-from apps.expenses.models import Category, Expense
+from apps.expenses.models import Category, Expense, Budget
 from apps.expenses.utils.util_dashboard import (
     get_period_dates, 
-    calculate_dashboard_metrics
+    calculate_dashboard_metrics,
+    get_budget_info
 )
 from apps.expenses.utils.util_expense_list import (
     calculate_expense_statistics,
@@ -88,6 +89,125 @@ class TestDashboardUtils:
         assert metrics['period_avg_daily'] > 0
         assert 'recent_expenses' in metrics
         assert 'categories_summary' in metrics
+
+
+class TestBudgetUtils:
+    """Tests para utilidades de presupuesto"""
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_no_budget(self):
+        """Test get_budget_info cuando el usuario no tiene presupuesto"""
+        user = User.objects.create_user(username="testuser")
+        
+        budget_info = get_budget_info(user, Decimal('500.00'))
+        
+        assert budget_info['has_budget'] is False
+        assert budget_info['budget'] is None
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_safe_status(self):
+        """Test get_budget_info con estado 'safe'"""
+        user = User.objects.create_user(username="testuser")
+        budget = Budget.objects.create(
+            user=user,
+            monthly_limit=Decimal('1000.00'),
+            warning_percentage=75,
+            critical_percentage=90
+        )
+        
+        current_amount = Decimal('500.00')  # 50% del límite
+        budget_info = get_budget_info(user, current_amount)
+        
+        assert budget_info['has_budget'] is True
+        assert budget_info['budget'] == budget
+        assert budget_info['budget_status'] == 'safe'
+        assert budget_info['budget_percentage_used'] == 50.0
+        assert budget_info['budget_remaining'] == Decimal('500.00')
+        assert '✅' in budget_info['budget_icon']
+        assert 'text-green-600' in budget_info['budget_color_class']
+        assert '¡Vas bien!' in budget_info['budget_message']
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_warning_status(self):
+        """Test get_budget_info con estado 'warning'"""
+        user = User.objects.create_user(username="testuser")
+        Budget.objects.create(
+            user=user,
+            monthly_limit=Decimal('1000.00'),
+            warning_percentage=75,
+            critical_percentage=90
+        )
+        
+        current_amount = Decimal('800.00')  # 80% del límite
+        budget_info = get_budget_info(user, current_amount)
+        
+        assert budget_info['budget_status'] == 'warning'
+        assert budget_info['budget_percentage_used'] == 80.0
+        assert budget_info['budget_remaining'] == Decimal('200.00')
+        assert '⚠️' in budget_info['budget_icon']
+        assert 'text-yellow-600' in budget_info['budget_color_class']
+        assert '¡Cuidado!' in budget_info['budget_message']
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_critical_status(self):
+        """Test get_budget_info con estado 'critical'"""
+        user = User.objects.create_user(username="testuser")
+        Budget.objects.create(
+            user=user,
+            monthly_limit=Decimal('1000.00'),
+            warning_percentage=75,
+            critical_percentage=90
+        )
+        
+        current_amount = Decimal('950.00')  # 95% del límite
+        budget_info = get_budget_info(user, current_amount)
+        
+        assert budget_info['budget_status'] == 'critical'
+        assert budget_info['budget_percentage_used'] == 95.0
+        assert budget_info['budget_remaining'] == Decimal('50.00')
+        assert '🚨' in budget_info['budget_icon']
+        assert 'text-red-600' in budget_info['budget_color_class']
+        assert '¡Límite casi alcanzado!' in budget_info['budget_message']
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_exceeded_status(self):
+        """Test get_budget_info con estado 'exceeded'"""
+        user = User.objects.create_user(username="testuser")
+        Budget.objects.create(
+            user=user,
+            monthly_limit=Decimal('1000.00'),
+            warning_percentage=75,
+            critical_percentage=90
+        )
+        
+        current_amount = Decimal('1200.00')  # 120% del límite
+        budget_info = get_budget_info(user, current_amount)
+        
+        assert budget_info['budget_status'] == 'exceeded'
+        assert budget_info['budget_percentage_used'] == 100.0  # Máximo 100%
+        assert budget_info['budget_remaining'] == 0
+        assert '🛑' in budget_info['budget_icon']
+        assert 'text-red-600' in budget_info['budget_color_class']
+        assert '¡Límite excedido!' in budget_info['budget_message']
+        assert '€200' in budget_info['budget_message']  # Exceso calculado
+    
+    @pytest.mark.django_db
+    def test_get_budget_info_custom_percentages(self):
+        """Test get_budget_info con porcentajes personalizados"""
+        user = User.objects.create_user(username="testuser")
+        Budget.objects.create(
+            user=user,
+            monthly_limit=Decimal('2000.00'),
+            warning_percentage=60,  # Personalizado
+            critical_percentage=80  # Personalizado
+        )
+        
+        # Test alerta amarilla con porcentajes personalizados
+        current_amount = Decimal('1400.00')  # 70% del límite
+        budget_info = get_budget_info(user, current_amount)
+        
+        assert budget_info['budget_status'] == 'warning'  # Entre 60% y 80%
+        assert budget_info['budget_percentage_used'] == 70.0
 
 
 class TestExpenseListUtils:
