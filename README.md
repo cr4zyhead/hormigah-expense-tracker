@@ -57,11 +57,21 @@ Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualm
 - **Gestión de usuarios** con autenticación segura
 
 ### Automatización y Reportes (n8n)
-- **Reportes automáticos** por email de gastos mensuales
-- **Alertas inteligentes** cuando superas presupuestos
-- **Integraciones** con servicios externos (Gmail, Slack, etc.)
-- **Workflows personalizados** para automatizar tareas repetitivas
-- **APIs disponibles** para crear automatizaciones avanzadas
+
+#### Estado Actual - Implementado ✅
+- **Alertas de presupuesto al 90%**: Sistema automático que detecta cuando alcanzas/superas el 90% de tu presupuesto mensual
+- **Configuración por usuario**: Los usuarios pueden activar/desactivar alertas desde su perfil
+- **Webhook integrado**: Django envía automáticamente datos a n8n cuando se dispara una alerta
+- **Datos completos**: Incluye nombre, email, porcentaje usado, límite y gasto actual
+- **Configuración multi-entorno**: URLs configurables para desarrollo y producción
+
+#### Próximos Pasos - Por Implementar 🚧
+- **Configurar workflow en n8n** para recibir alertas y enviar emails
+- **Reportes automáticos** mensuales por email con resumen de gastos
+- **Alertas adicionales**: 50%, 75% del presupuesto (configurables)
+- **Integraciones externas**: Gmail, Slack, Telegram, etc.
+- **APIs REST completas** para consultas y automatizaciones avanzadas
+- **Reportes personalizados** (semanal, por categoría, comparativos)
 
 ---
 
@@ -396,6 +406,31 @@ Sistema de Filtros
 └── Por rango de montos (min/max)
 ```
 
+### 4. **Sistema de Alertas de Presupuesto**
+```
+Flujo de Alertas del 90%
+├── Usuario agrega un gasto → Django calcula porcentaje actual
+├── Si ≥90% y alertas habilitadas → Dispara webhook a n8n
+├── Payload incluye: user_id, email, percentage, budget_limit, current_spending
+└── n8n recibe datos y puede enviar email/notificación personalizada
+```
+
+#### **Configuración Técnica**
+- **Detección automática**: En `apps/expenses/utils/util_crud_operations.py`
+- **Configuración usuario**: Campo `email_alerts_enabled` en modelo `Budget`
+- **Webhook URL**: Configurable por entorno via `N8N_BASE_URL`
+- **Payload JSON**: Datos completos para personalizar alertas
+- **Manejo de errores**: No bloquea Django si n8n no responde
+
+#### **Variables de Entorno**
+```bash
+# Desarrollo
+N8N_BASE_URL=http://localhost:5678
+
+# Producción  
+N8N_BASE_URL=https://tu-dominio.com
+```
+
 ---
 
 ## Funcionalidades Destacadas
@@ -682,6 +717,78 @@ docker-compose -f docker-compose.prod.yml logs -f web
 # Verificar uso de recursos
 docker stats
 ```
+
+---
+
+## Próximos Pasos de Desarrollo
+
+### Completar Integración con n8n
+
+#### **1. Configurar Webhook en n8n (Pendiente)**
+```bash
+# Crear workflow en n8n que:
+1. Escuche en /webhook/budget-alert
+2. Reciba payload JSON de Django
+3. Procese datos del usuario (email, percentage, etc.)
+4. Envíe email personalizado al usuario
+```
+
+#### **2. Template de Email Sugerido**
+```html
+Asunto: ALERTA: Has alcanzado el 90% de tu presupuesto mensual
+
+Hola [user_name],
+
+Has alcanzado el [percentage]% de tu presupuesto mensual.
+
+Resumen de tu presupuesto:
+- Límite mensual: €[budget_limit]
+- Total gastado: €[current_spending]  
+- Cantidad restante: €[remaining]
+
+Recomendación: Revisa tus gastos recientes en [app_url]
+
+Saludos,
+Tu asistente de gastos Hormigah
+```
+
+#### **3. Payload JSON que Django Envía**
+```json
+{
+  "user_id": 1,
+  "user_name": "Juan Pérez",
+  "user_email": "juan@email.com",
+  "budget_limit": 500.00,
+  "current_spending": 455.50,
+  "percentage": 91.1,
+  "alert_type": "budget_90_percent",
+  "message": "Has alcanzado el 91.1% de tu presupuesto mensual",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### **4. Testing de la Integración**
+```bash
+# Para probar la integración completa:
+1. Configurar webhook en n8n local (http://localhost:5678)
+2. Agregar gasto que lleve al 90% del presupuesto
+3. Verificar que llega webhook a n8n
+4. Confirmar que se envía email
+```
+
+#### **5. Funcionalidades Futuras**
+- **Alertas múltiples**: 50%, 75%, 90%, 100%
+- **Reportes automáticos**: Resumen semanal/mensual
+- **API REST completa**: Endpoints para consultas externas
+- **Integraciones adicionales**: Slack, Telegram, Discord
+- **Alertas por categoría**: Cuando una categoría supera límite
+
+#### **6. Consideraciones de Producción**
+- **Rate limiting**: Evitar spam de webhooks
+- **Retry logic**: Reintentar si n8n no responde
+- **Monitoring**: Logs de webhooks enviados/fallidos
+- **Security**: Validar origen de webhooks
+- **Performance**: Queue para webhooks en alto volumen
 
 ---
 
