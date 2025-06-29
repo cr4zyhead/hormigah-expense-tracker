@@ -340,11 +340,17 @@ def send_webhook_to_n8n(user, budget, current_spending, percentage):
     }
     
     try:
+        # Headers con Bearer Token para autenticación
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {settings.N8N_WEBHOOK_TOKEN}'
+        }
+        
         response = requests.post(
             webhook_url,
             json=payload,
             timeout=10,  # Timeout de 10 segundos
-            headers={'Content-Type': 'application/json'}
+            headers=headers
         )
         
         # Log del resultado (opcional)

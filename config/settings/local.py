@@ -57,4 +57,8 @@ if DEBUG:
         pass
 
 # Configuración de n8n para desarrollo
-N8N_BASE_URL = os.getenv('N8N_BASE_URL', 'http://localhost:5678') 
+N8N_BASE_URL = os.getenv('N8N_BASE_URL', 'http://localhost:5678')
+
+# Bearer Token para autenticación de webhooks con n8n
+# En desarrollo puede ser un token simple
+N8N_WEBHOOK_TOKEN = os.getenv('N8N_WEBHOOK_TOKEN', 'dev-token-123') 

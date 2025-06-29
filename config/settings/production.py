@@ -90,4 +90,10 @@ LOGGING = {
 # En producción, es mejor requerir la variable de entorno
 N8N_BASE_URL = os.getenv('N8N_BASE_URL')
 if not N8N_BASE_URL:
-    raise ValueError("N8N_BASE_URL es requerida en producción") 
+    raise ValueError("N8N_BASE_URL es requerida en producción")
+
+# Bearer Token para autenticación de webhooks con n8n
+# En producción DEBE estar configurado por seguridad
+N8N_WEBHOOK_TOKEN = os.getenv('N8N_WEBHOOK_TOKEN')
+if not N8N_WEBHOOK_TOKEN:
+    raise ValueError("N8N_WEBHOOK_TOKEN es requerido en producción para seguridad") 
