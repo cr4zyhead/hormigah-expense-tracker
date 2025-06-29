@@ -128,6 +128,28 @@
                         <p class="mt-2 text-sm text-red-600">{{ form.email.errors.0 }}</p>
                     {% endif %}
                 </div>
+
+                <!-- Alertas por Email - Solo si el usuario tiene presupuesto -->
+                {% if form.email_alerts_enabled %}
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            {{ form.email_alerts_enabled }}
+                        </div>
+                        <div class="ml-3">
+                            <label for="{{ form.email_alerts_enabled.id_for_label }}" class="text-sm font-medium text-gray-700">
+                                {{ form.email_alerts_enabled.label }}
+                            </label>
+                            {% if form.email_alerts_enabled.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ form.email_alerts_enabled.help_text }}</p>
+                            {% endif %}
+                            {% if form.email_alerts_enabled.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.email_alerts_enabled.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             <!-- Botones de acción -->
@@ -165,4 +187,26 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-hide mensajes de éxito después de 3 segundos
+document.addEventListener('DOMContentLoaded', function() {
+    const successMessages = document.querySelectorAll('.alert-success, .bg-green-50');
+    
+    successMessages.forEach(function(message) {
+        // Después de 3 segundos, hacer fade-out
+        setTimeout(function() {
+            message.style.transition = 'opacity 0.5s ease-out';
+            message.style.opacity = '0';
+            
+            // Después del fade-out, remover completamente del DOM
+            setTimeout(function() {
+                message.remove();
+            }, 500);
+        }, 3000); // 3 segundos
+    });
+});
+</script>
 {% endblock %} 

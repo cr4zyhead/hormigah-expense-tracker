@@ -113,6 +113,13 @@ class Budget(models.Model):
         help_text="Porcentaje del límite para mostrar alerta roja (ej: 90)"
     )
     
+    # Configuración de notificaciones por email
+    email_alerts_enabled = models.BooleanField(
+        default=False,
+        verbose_name="Alertas por Email",
+        help_text="Recibir notificaciones por email al superar el porcentaje crítico"
+    )
+    
     # Campos de auditoría
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado el")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado el")
