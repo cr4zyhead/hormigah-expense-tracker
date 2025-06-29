@@ -29,10 +29,10 @@ class ExpenseAdmin(admin.ModelAdmin):
 @admin.register(Budget)
 class BudgetAdmin(admin.ModelAdmin):
     """Admin para gestionar presupuestos de usuarios"""
-    list_display = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage', 'created_at']
-    list_filter = ['created_at', 'updated_at']
+    list_display = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage', 'email_alerts_enabled', 'created_at']
+    list_filter = ['email_alerts_enabled', 'created_at', 'updated_at']
     search_fields = ['user__username', 'user__email']
     ordering = ['-created_at']
-    fields = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage']
+    fields = ['user', 'monthly_limit', 'warning_percentage', 'critical_percentage', 'email_alerts_enabled']
     readonly_fields = ['created_at', 'updated_at']
     autocomplete_fields = ['user']  # Para búsqueda rápida de usuarios
