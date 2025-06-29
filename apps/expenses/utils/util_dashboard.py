@@ -168,19 +168,19 @@ def get_budget_info(user, current_month_total):
         # Determinar color y mensaje según el estado
         if status == 'safe':
             color_class = 'text-green-600 bg-green-50 border-green-200'
-            icon = '✅'
+            icon = 'OK'
             message = f'¡Vas bien! Te quedan €{remaining_amount:.0f}'
         elif status == 'warning':
             color_class = 'text-yellow-600 bg-yellow-50 border-yellow-200'
-            icon = '⚠️'
+            icon = 'WARNING'
             message = f'¡Cuidado! Solo te quedan €{remaining_amount:.0f}'
         elif status == 'critical':
             color_class = 'text-red-600 bg-red-50 border-red-200'
-            icon = '🚨'
+            icon = 'CRITICAL'
             message = f'¡Límite casi alcanzado! Solo €{remaining_amount:.0f} restantes'
         else:  # exceeded
             color_class = 'text-red-600 bg-red-50 border-red-200'
-            icon = '🛑'
+            icon = 'EXCEEDED'
             excess = current_month_total - budget.monthly_limit
             message = f'¡Límite excedido! Has gastado €{excess:.0f} de más'
         
