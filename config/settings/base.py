@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # Local apps
     'apps.core',
     'apps.expenses',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'America/Mexico_City'
+TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_TZ = True
 

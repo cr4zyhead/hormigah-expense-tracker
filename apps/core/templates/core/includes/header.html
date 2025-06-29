@@ -54,12 +54,16 @@
                             id="userDropdown" 
                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden"
                         >
+                            <a href="{% url 'users:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                📝 Mi Perfil
+                            </a>
                             {% if user.is_staff %}
+                                <hr class="border-gray-200">
                                 <a href="/admin/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     ⚙️ Panel Admin
                                 </a>
-                                <hr class="border-gray-200">
                             {% endif %}
+                            <hr class="border-gray-200">
                             <!-- Formulario de logout (POST request) -->
                             <form method="post" action="{% url 'logout' %}" class="w-full">
                                 {% csrf_token %}
