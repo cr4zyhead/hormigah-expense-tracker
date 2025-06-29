@@ -11,8 +11,11 @@ Este módulo contiene funciones especializadas en:
 from django.shortcuts import render
 from django.contrib import messages
 from django.shortcuts import redirect
-from ..models import Expense
-
+from django.utils import timezone
+from django.db.models import Sum
+from django.conf import settings
+import requests
+from ..models import Expense, Budget
 
 def get_expense_for_user(expense_id, user):
     """
@@ -280,10 +283,6 @@ def check_budget_alert(user):
     Args:
         user: Usuario actual
     """
-    import requests
-    from django.utils import timezone
-    from django.db.models import Sum
-    from ..models import Budget
     
     try:
         # Obtener el presupuesto del usuario
@@ -323,7 +322,6 @@ def send_webhook_to_n8n(user, budget, current_spending, percentage):
         current_spending: Gasto actual del mes
         percentage: Porcentaje usado del presupuesto
     """
-    from django.conf import settings
     
     # Construir URL del webhook específico
     # Para más webhooks: f"{settings.N8N_BASE_URL}/webhook/other-endpoint"
@@ -351,11 +349,11 @@ def send_webhook_to_n8n(user, budget, current_spending, percentage):
         
         # Log del resultado (opcional)
         if response.status_code == 200:
-            print(f"✅ Webhook enviado exitosamente para {user.username}")
+            print(f"[SUCCESS] Webhook enviado exitosamente para {user.username}")
         else:
-            print(f"⚠️ Error en webhook: {response.status_code} - {response.text}")
+            print(f"[WARNING] Error en webhook: {response.status_code} - {response.text}")
             
     except requests.exceptions.RequestException as e:
         # No fallar si el webhook falla - solo logging
-        print(f"❌ Error enviando webhook: {e}")
+        print(f"[ERROR] Error enviando webhook: {e}")
         pass 
