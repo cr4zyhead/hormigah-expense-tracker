@@ -54,4 +54,7 @@ if DEBUG:
         MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
         INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
     except ImportError:
-        pass 
+        pass
+
+# Configuración de n8n para desarrollo
+N8N_BASE_URL = os.getenv('N8N_BASE_URL', 'http://localhost:5678') 

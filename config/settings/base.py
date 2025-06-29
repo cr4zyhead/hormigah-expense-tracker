@@ -104,5 +104,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Configuración de n8n webhooks
-N8N_BASE_URL = os.getenv('N8N_BASE_URL', 'http://localhost:5678') 
+ 

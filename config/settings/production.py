@@ -84,4 +84,10 @@ LOGGING = {
             'propagate': False,
         },
     },
-} 
+}
+
+# Configuración de n8n para producción
+# En producción, es mejor requerir la variable de entorno
+N8N_BASE_URL = os.getenv('N8N_BASE_URL')
+if not N8N_BASE_URL:
+    raise ValueError("N8N_BASE_URL es requerida en producción") 
