@@ -53,6 +53,10 @@ def handle_expense_creation(form_data, user):
         expense = form.save(commit=False)
         expense.user = user
         expense.save()
+        
+        # Verificar alerta de presupuesto del 90%
+        check_budget_alert(user)
+        
         return expense, form, True
     
     return None, form, False
@@ -265,4 +269,93 @@ def create_htmx_delete_response(request, context):
     Returns:
         HttpResponse: Respuesta con lista actualizada
     """
-    return render(request, 'expenses/partials/expense_list_content.html', context) 
+    return render(request, 'expenses/partials/expense_list_content.html', context)
+
+
+def check_budget_alert(user):
+    """
+    Verifica si el usuario ha alcanzado o superado el 90% de su presupuesto
+    y envía webhook a n8n si es necesario
+    
+    Args:
+        user: Usuario actual
+    """
+    import requests
+    from django.utils import timezone
+    from django.db.models import Sum
+    from ..models import Budget
+    
+    try:
+        # Obtener el presupuesto del usuario
+        budget = Budget.objects.get(user=user)
+        
+        # Solo proceder si tiene alertas habilitadas
+        if not budget.email_alerts_enabled:
+            return
+        
+        # Calcular gastos del mes actual
+        now = timezone.now()
+        current_month_expenses = Expense.objects.filter(
+            user=user,
+            date__year=now.year,
+            date__month=now.month
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        
+        # Calcular porcentaje
+        percentage = (current_month_expenses / budget.limit) * 100
+        
+        # Verificar si alcanzó o superó el 90%
+        if percentage >= 90:
+            send_webhook_to_n8n(user, budget, current_month_expenses, percentage)
+            
+    except Budget.DoesNotExist:
+        # Usuario no tiene presupuesto configurado
+        pass
+
+
+def send_webhook_to_n8n(user, budget, current_spending, percentage):
+    """
+    Envía webhook a n8n con los datos de alerta de presupuesto
+    
+    Args:
+        user: Usuario que superó el límite
+        budget: Objeto Budget del usuario
+        current_spending: Gasto actual del mes
+        percentage: Porcentaje usado del presupuesto
+    """
+    from django.conf import settings
+    
+    # Construir URL del webhook específico
+    # Para más webhooks: f"{settings.N8N_BASE_URL}/webhook/other-endpoint"
+    webhook_url = f"{settings.N8N_BASE_URL}/webhook/budget-alert"
+    
+    payload = {
+        'user_id': user.id,
+        'user_name': user.get_full_name() or user.username,
+        'user_email': user.email,
+        'budget_limit': float(budget.limit),
+        'current_spending': float(current_spending),
+        'percentage': round(percentage, 2),
+        'alert_type': 'budget_90_percent',
+        'message': f'Has alcanzado el {percentage:.1f}% de tu presupuesto mensual',
+        'timestamp': timezone.now().isoformat()
+    }
+    
+    try:
+        response = requests.post(
+            webhook_url,
+            json=payload,
+            timeout=10,  # Timeout de 10 segundos
+            headers={'Content-Type': 'application/json'}
+        )
+        
+        # Log del resultado (opcional)
+        if response.status_code == 200:
+            print(f"✅ Webhook enviado exitosamente para {user.username}")
+        else:
+            print(f"⚠️ Error en webhook: {response.status_code} - {response.text}")
+            
+    except requests.exceptions.RequestException as e:
+        # No fallar si el webhook falla - solo logging
+        print(f"❌ Error enviando webhook: {e}")
+        pass 
