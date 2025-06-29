@@ -4,60 +4,9 @@
 
 Esta aplicación Django ha sido configurada para ejecutarse con Docker y PostgreSQL. Incluye configuraciones separadas para desarrollo y producción.
 
-## Scripts Helper
+## Comandos Docker Compose
 
-> **Opcional**: Para facilitar el trabajo con Docker, la aplicación incluye scripts que simplifican las operaciones más comunes:
-
-- **`scripts/docker-dev.sh`** - Para desarrollo local
-- **`scripts/docker-prod.sh`** - Para producción
-
-Estos scripts son una **alternativa opcional** a los comandos estándar de Docker Compose. Puedes elegir usar cualquiera de los dos enfoques según tu preferencia.
-
-### Comandos Disponibles
-
-#### Development (`docker-dev.sh`)
-```bash
-./scripts/docker-dev.sh build          # Construir imágenes
-./scripts/docker-dev.sh up             # Iniciar servicios
-./scripts/docker-dev.sh down           # Detener servicios
-./scripts/docker-dev.sh restart        # Reiniciar servicios
-./scripts/docker-dev.sh logs           # Ver logs
-./scripts/docker-dev.sh shell          # Django shell
-./scripts/docker-dev.sh bash           # Bash en contenedor
-./scripts/docker-dev.sh migrate        # Ejecutar migraciones
-./scripts/docker-dev.sh makemigrations # Crear migraciones
-./scripts/docker-dev.sh collectstatic  # Recopilar archivos estáticos
-./scripts/docker-dev.sh createsuperuser# Crear superusuario
-./scripts/docker-dev.sh test [app]     # Ejecutar tests
-./scripts/docker-dev.sh reset          # Reiniciar con datos limpios
-./scripts/docker-dev.sh clean          # Limpiar sistema Docker
-./scripts/docker-dev.sh help           # Mostrar ayuda
-```
-
-#### Producción (`docker-prod.sh`)
-```bash
-./scripts/docker-prod.sh build         # Construir imágenes para producción
-./scripts/docker-prod.sh up            # Iniciar servicios de producción
-./scripts/docker-prod.sh down          # Detener servicios de producción
-./scripts/docker-prod.sh restart       # Reiniciar servicios
-./scripts/docker-prod.sh logs          # Ver logs de producción
-./scripts/docker-prod.sh migrate       # Ejecutar migraciones
-./scripts/docker-prod.sh collectstatic # Recopilar archivos estáticos
-./scripts/docker-prod.sh backup        # Crear backup de la base de datos
-./scripts/docker-prod.sh restore <file># Restaurar base de datos desde backup
-./scripts/docker-prod.sh update        # Actualizar aplicación
-./scripts/docker-prod.sh status        # Ver estado de servicios
-./scripts/docker-prod.sh clean         # Limpiar sistema Docker
-./scripts/docker-prod.sh help          # Mostrar ayuda
-```
-
-### Características de los Scripts
-
-- **Comandos más cortos**: `./scripts/docker-dev.sh up` vs `docker-compose up -d`
-- **Validaciones automáticas**: Verifican dependencias y archivos necesarios
-- **Feedback visual**: Mensajes con colores para mejor experiencia de usuario
-- **Gestión de errores**: Manejo inteligente de errores comunes
-- **Confirmaciones de seguridad**: Para operaciones destructivas como `reset`
+Esta aplicación utiliza **Docker Compose** para gestionar los servicios. Usa los comandos estándar según el entorno:
 
 ## Arquitectura
 
@@ -93,7 +42,12 @@ cp .env.example .env.local
 
 ### 3. Iniciar en Desarrollo
 ```bash
+# Construir e iniciar servicios
+docker-compose build
 docker-compose up -d
+
+# Ejecutar migraciones
+docker-compose exec web python manage.py migrate
 ```
 
 ### 4. Crear Superusuario
@@ -218,7 +172,7 @@ N8N_HOST=localhost
 N8N_PROTOCOL=http
 ```
 
-> 🤖 **Para configurar automatizaciones con n8n**, consulta [README_N8N.md](README_N8N.md)
+> **Para configurar automatizaciones con n8n**, consulta [README_N8N.md](README_N8N.md)
 
 ### Producción (.env.production)
 ```bash
@@ -294,12 +248,12 @@ docker-compose exec db psql -U postgres -d gastos_hormiga_dev
 cp .env.example .env.local
 
 # 2. Construir e iniciar
-./scripts/docker-dev.sh build
-./scripts/docker-dev.sh up
+docker-compose build
+docker-compose up -d
 
 # 3. Configurar Django
-./scripts/docker-dev.sh migrate
-./scripts/docker-dev.sh createsuperuser
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
 
 # 4. ¡Listo! Aplicación disponible en http://localhost:8000
 ```
@@ -307,20 +261,20 @@ cp .env.example .env.local
 ### Desarrollo Local - Día a Día
 ```bash
 # Iniciar trabajo
-./scripts/docker-dev.sh up
+docker-compose up -d
 
 # Crear/aplicar migraciones
-./scripts/docker-dev.sh makemigrations
-./scripts/docker-dev.sh migrate
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
 
 # Ejecutar tests
-./scripts/docker-dev.sh test
+docker-compose exec web python manage.py test
 
 # Ver logs si hay problemas
-./scripts/docker-dev.sh logs
+docker-compose logs -f web
 
 # Terminar trabajo
-./scripts/docker-dev.sh down
+docker-compose down
 ```
 
 ### Deployment en Producción
@@ -334,11 +288,11 @@ cp .env.example .env.production
 # Editar .env.production con valores seguros
 
 # 3. Deploy inicial
-./scripts/docker-prod.sh build
-./scripts/docker-prod.sh up
+docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml up -d
 
 # 4. Verificar estado
-./scripts/docker-prod.sh status
+docker-compose -f docker-compose.prod.yml ps
 ```
 
 ### Actualización en Producción
@@ -350,40 +304,44 @@ cd /ruta/a/tu/aplicacion
 # 2. Actualizar código
 git pull origin main
 
-# 3. Actualizar aplicación (incluye pull, build, restart)
-./scripts/docker-prod.sh update
+# 3. Actualizar aplicación
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
 
 # 4. Verificar estado
-./scripts/docker-prod.sh status
-./scripts/docker-prod.sh logs
+docker-compose -f docker-compose.prod.yml ps
+docker-compose -f docker-compose.prod.yml logs web
 ```
 
 ### Monitoreo de Producción
 ```bash
 # Chequeo rápido de salud
-./scripts/docker-prod.sh status
+docker-compose -f docker-compose.prod.yml ps
 
 # Ver logs recientes
-./scripts/docker-prod.sh logs
+docker-compose -f docker-compose.prod.yml logs --tail=20
 
 # Ver logs específicos del servicio web
-./scripts/docker-prod.sh logs web
+docker-compose -f docker-compose.prod.yml logs -f web
 
-# Crear backup de BD (recomendado antes de actualizaciones)
-./scripts/docker-prod.sh backup
+# Crear backup de BD
+docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
-### Solución de Problemas con Scripts
+### Solución de Problemas
 ```bash
 # Desarrollo: Reiniciar todo limpio
-./scripts/docker-dev.sh reset
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
 
 # Producción: Revisar problemas
-./scripts/docker-prod.sh logs
-./scripts/docker-prod.sh status
+docker-compose -f docker-compose.prod.yml logs web
+docker-compose -f docker-compose.prod.yml ps
 
-# Ambos: Limpiar recursos Docker
-./scripts/docker-dev.sh clean     # o docker-prod.sh clean
+# Limpiar recursos Docker
+docker system prune -f
 ```
 
 ## Configuración Optimizada
@@ -392,8 +350,8 @@ Esta configuración incluye:
 - Django como framework web principal
 - PostgreSQL como base de datos
 - Nginx para producción
-- Docker para todos los entornos
-- **Scripts helper para operaciones simplificadas**
+- Docker Compose para gestión de servicios
+- n8n para automatizaciones
 
 ### Servicios Opcionales Futuros
 Si necesitas agregar más funcionalidades:

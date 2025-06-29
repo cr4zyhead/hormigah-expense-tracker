@@ -155,8 +155,8 @@ python manage.py runserver
 - **Panel de administración**: http://localhost:8000/admin/
 - **n8n (Automatizaciones)**: http://localhost:5678/
 
-> 💡 **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)  
-> 🤖 **Para configurar automatizaciones**, consulta [README_N8N.md](README_N8N.md)
+> **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)
+> **Para configurar automatizaciones**, consulta [README_N8N.md](README_N8N.md)
 
 ---
 
@@ -198,49 +198,49 @@ docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hor
 
 ### Scripts Helper (Alternativa)
 
-> 💡 **Opcional**: También puedes usar scripts que simplifican las operaciones más comunes
+> **Opcional**: También puedes usar scripts que simplifican las operaciones más comunes
 
 #### **Desarrollo Local**
 ```bash
 # Setup inicial
 cp .env.example .env.local
-./scripts/docker-dev.sh build
-./scripts/docker-dev.sh up
+docker-compose build
+docker-compose up -d
 
 # Configurar Django
-./scripts/docker-dev.sh migrate
-./scripts/docker-dev.sh createsuperuser
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
 
 # Desarrollo día a día
-./scripts/docker-dev.sh makemigrations
-./scripts/docker-dev.sh migrate
-./scripts/docker-dev.sh test
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py test
 
 # Utilidades
-./scripts/docker-dev.sh logs          # Ver logs
-./scripts/docker-dev.sh shell         # Django shell
-./scripts/docker-dev.sh bash          # Bash en contenedor
-./scripts/docker-dev.sh down          # Parar servicios
-./scripts/docker-dev.sh clean         # Limpiar sistema
+docker-compose logs -f web            # Ver logs
+docker-compose exec web python manage.py shell  # Django shell
+docker-compose exec web bash          # Bash en contenedor
+docker-compose down                    # Parar servicios
 ```
 
 #### **Producción**
 ```bash
 # Deployment
-./scripts/docker-prod.sh build
-./scripts/docker-prod.sh up
+docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml up -d
 
 # Mantenimiento
-./scripts/docker-prod.sh migrate
-./scripts/docker-prod.sh collectstatic
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
 
 # Monitoreo
-./scripts/docker-prod.sh status       # Estado de servicios
-./scripts/docker-prod.sh logs         # Ver logs
-./scripts/docker-prod.sh backup       # Backup de BD
+docker-compose -f docker-compose.prod.yml ps     # Estado de servicios
+docker-compose -f docker-compose.prod.yml logs web  # Ver logs
 
 # Actualizaciones
-./scripts/docker-prod.sh update       # Pull, build y restart
+git pull origin main
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ### Workflow de Deployment
@@ -255,22 +255,24 @@ cd /ruta/a/tu/aplicacion
 git pull origin main
 
 # 3. Actualizar aplicación
-./scripts/docker-prod.sh update
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml build --no-cache
+docker-compose -f docker-compose.prod.yml up -d
 
 # 4. Verificar estado
-./scripts/docker-prod.sh status
+docker-compose -f docker-compose.prod.yml ps
 ```
 
 #### **Monitoreo Continuo**
 ```bash
 # Ver estado general
-./scripts/docker-prod.sh status
+docker-compose -f docker-compose.prod.yml ps
 
 # Revisar logs por errores
-./scripts/docker-prod.sh logs
+docker-compose -f docker-compose.prod.yml logs --tail=20
 
 # Verificar salud de la aplicación
-./scripts/docker-prod.sh logs web
+docker-compose -f docker-compose.prod.yml logs -f web
 ```
 
 > 📚 **Documentación completa con más workflows**: [README_DOCKER.md](README_DOCKER.md)
@@ -737,8 +739,8 @@ Este proyecto está bajo la **Licencia MIT**. Ver [LICENSE](LICENSE) para más d
 
 <div align="center">
 
-**¿Te gusta el proyecto? ¡Dale una ⭐ en GitHub!**
+**¿Te gusta el proyecto? ¡Dale una estrella en GitHub!**
 
-**Desarrollado con ❤️ para ayudarte a controlar tus gastos hormiga**
+**Desarrollado para ayudarte a controlar tus gastos hormiga**
 
 </div> 

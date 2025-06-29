@@ -15,11 +15,11 @@
 
 **n8n** es una herramienta de automatización de workflows que te permite conectar diferentes servicios y automatizar tareas sin escribir código. En el contexto de Gastos Hormiga, n8n te permite:
 
-- 📧 **Enviar reportes automáticos** de gastos por email
-- 🚨 **Crear alertas** cuando superes presupuestos
-- 📊 **Generar informes** mensuales automáticamente
-- 🔗 **Integrar** con servicios externos (Gmail, Slack, Telegram, etc.)
-- 💾 **Automatizar backups** de datos
+- **Enviar reportes automáticos** de gastos por email
+- **Crear alertas** cuando superes presupuestos
+- **Generar informes** mensuales automáticamente
+- **Integrar** con servicios externos (Gmail, Slack, Telegram, etc.)
+- **Automatizar backups** de datos
 
 ---
 
@@ -47,8 +47,8 @@ Al acceder por primera vez a n8n, necesitarás:
    - Contraseña segura (8+ caracteres, número, mayúscula)
 
 2. **Configuración recomendada**:
-   - ✅ Activar notificaciones de seguridad
-   - ✅ Permitir telemetría (opcional)
+   - Activar notificaciones de seguridad
+   - Permitir telemetría (opcional)
 
 ### 2. Configuración de Credenciales
 
@@ -72,7 +72,7 @@ Para usar n8n con servicios externos, necesitarás configurar credenciales:
 
 ## Workflows Predefinidos
 
-### 🔄 **Workflow 1: Reporte Mensual Automático**
+### **Workflow 1: Reporte Mensual Automático**
 
 **Función**: Envía un email con resumen de gastos cada primer día del mes
 
@@ -88,7 +88,7 @@ Para usar n8n con servicios externos, necesitarás configurar credenciales:
 - Comparación con mes anterior
 - Top 5 gastos más altos
 
-### 📊 **Workflow 2: Alerta de Presupuesto**
+### **Workflow 2: Alerta de Presupuesto**
 
 **Función**: Notifica cuando el gasto mensual supera el 80% del presupuesto
 
@@ -99,7 +99,7 @@ Para usar n8n con servicios externos, necesitarás configurar credenciales:
 4. **If** → ¿Supera 80%?
 5. **Gmail/Slack** → Enviar alerta
 
-### 📈 **Workflow 3: Backup Semanal**
+### **Workflow 3: Backup Semanal**
 
 **Función**: Crea backup de datos cada domingo
 
@@ -252,27 +252,27 @@ return {
 
 ## Integraciones Populares
 
-### 📧 **Email (Gmail)**
+### **Email (Gmail)**
 - **Reportes automáticos**: Resúmenes mensuales
 - **Alertas de presupuesto**: Notificaciones inmediatas
 - **Confirmaciones**: Backup completado, etc.
 
-### 💬 **Slack/Discord**
+### **Slack/Discord**
 - **Notificaciones en tiempo real**: Gastos grandes
 - **Reportes en canal**: Resúmenes diarios/semanales
 - **Alertas de equipo**: Si compartes presupuesto
 
-### 📱 **Telegram**
+### **Telegram**
 - **Bot personal**: Comandos para consultar gastos
 - **Alertas móviles**: Notificaciones push
 - **Reportes rápidos**: Resúmenes por comando
 
-### ☁️ **Google Drive/Dropbox**
+### **Google Drive/Dropbox**
 - **Backup automático**: Datos semanales
 - **Reportes en PDF**: Guardar automáticamente
 - **Sincronización**: Compartir con familia/contador
 
-### 📊 **Google Sheets**
+### **Google Sheets**
 - **Datos en tiempo real**: Sincronizar gastos
 - **Análisis avanzado**: Pivots y gráficos
 - **Reportes visuales**: Para presentaciones
@@ -347,19 +347,19 @@ docker-compose restart n8n
 
 ## Seguridad y Buenas Prácticas
 
-### **🔒 Seguridad**
+### **Seguridad**
 - **Usuario único**: Solo crear una cuenta administrador
 - **Contraseña fuerte**: Usar gestor de contraseñas
 - **HTTPS**: Siempre usar SSL en producción
 - **Firewall**: n8n solo accesible por ti
 
-### **📋 Buenas Prácticas**
+### **Buenas Prácticas**
 - **Nombres descriptivos**: Para workflows y credenciales
 - **Documentación**: Agregar notas en workflows complejos
 - **Testing**: Probar workflows antes de activar
 - **Monitoreo**: Revisar ejecuciones periódicamente
 
-### **💾 Backup de n8n**
+### **Backup de n8n**
 ```bash
 # Backup de datos de n8n
 docker run --rm -v gastos_hormiga_n8n_data_prod:/data -v $(pwd):/backup ubuntu tar czf /backup/n8n_backup.tar.gz -C /data .
@@ -372,17 +372,17 @@ docker run --rm -v gastos_hormiga_n8n_data_prod:/data -v $(pwd):/backup ubuntu t
 
 ## Workflows Avanzados
 
-### **🤖 Análisis Inteligente de Gastos**
+### **Análisis Inteligente de Gastos**
 ```
 Cron (diario) → Django API → AI/ML Processing → Insights Email
 ```
 
-### **📊 Dashboard en Tiempo Real**
+### **Dashboard en Tiempo Real**
 ```
 Webhook → Process Data → Update Google Sheets → Slack Notification
 ```
 
-### **💰 Optimizer de Gastos**
+### **Optimizer de Gastos**
 ```
 Monthly Trigger → Analyze Patterns → Generate Recommendations → Email Report
 ```
@@ -424,8 +424,8 @@ Monthly Trigger → Analyze Patterns → Generate Recommendations → Email Repo
 
 <div align="center">
 
-**¡Automatiza tus gastos y ahorra tiempo! 🚀**
+**¡Automatiza tus gastos y ahorra tiempo!**
 
-*Desarrollado con ❤️ para hacer tu control de gastos más inteligente*
+*Desarrollado para hacer tu control de gastos más inteligente*
 
 </div> 
