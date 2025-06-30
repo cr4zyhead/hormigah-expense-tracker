@@ -41,6 +41,25 @@ services:
         condition: service_healthy
     restart: always
 
+  # n8n para automación y webhooks
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: gastos_hormiga_n8n_prod
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - WEBHOOK_URL=https://${N8N_HOST}/
+      - GENERIC_TIMEZONE=America/Mexico_City
+    volumes:
+      - n8n_data:/home/node/.n8n
+    expose:
+      - "5678"
+    restart: always
+
   # Nginx con SSL
   nginx:
     image: nginx:alpine
@@ -56,6 +75,7 @@ services:
       - "443:443"
     depends_on:
       - web
+      - n8n
     restart: always
 
   # Certbot para SSL automático
@@ -78,6 +98,8 @@ volumes:
     name: gastos_hormiga_media_prod
   logs_volume:
     name: gastos_hormiga_logs_prod
+  n8n_data:
+    name: gastos_hormiga_n8n_data_prod
   certbot_certs:
     name: gastos_hormiga_ssl_certs
   certbot_webroot:

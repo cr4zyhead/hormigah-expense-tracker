@@ -92,6 +92,9 @@ N8N_BASE_URL = os.getenv('N8N_BASE_URL')
 if not N8N_BASE_URL:
     raise ValueError("N8N_BASE_URL es requerida en producción")
 
+# URL interna para webhooks (comunicación Docker)
+N8N_INTERNAL_URL = os.getenv('N8N_INTERNAL_URL', 'http://n8n:5678')
+
 # Bearer Token para autenticación de webhooks con n8n
 # En producción DEBE estar configurado por seguridad
 N8N_WEBHOOK_TOKEN = os.getenv('N8N_WEBHOOK_TOKEN')

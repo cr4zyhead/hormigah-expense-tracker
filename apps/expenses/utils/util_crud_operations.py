@@ -324,8 +324,9 @@ def send_webhook_to_n8n(user, budget, current_spending, percentage):
     """
     
     # Construir URL del webhook específico
-    # Para más webhooks: f"{settings.N8N_BASE_URL}/webhook/other-endpoint"
-    webhook_url = f"{settings.N8N_BASE_URL}/webhook/budget-alert"
+    # Usar URL interna para comunicación Docker, fallback a URL base
+    base_url = getattr(settings, 'N8N_INTERNAL_URL', settings.N8N_BASE_URL)
+    webhook_url = f"{base_url}/webhook/budget-alert"
     
     payload = {
         'user_id': user.id,
