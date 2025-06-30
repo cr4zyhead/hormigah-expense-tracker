@@ -31,9 +31,9 @@ def test_budget_webhook():
     3. Django llama a send_webhook_to_n8n() desde util_crud_operations.py
     """
     
-    # URL del webhook de n8n (TEST URL mientras está en "Listen for test event")
+    # URL del webhook de n8n (TEST URL para "Listen for test event")
     # IMPORTANTE: Desde Docker usar 'n8n:5678', desde host usar 'localhost:5678'
-    # Para testing temporal usar: http://n8n:5678/webhook-test/budget-alert (requiere "Listen for test event")
+    # Para testing usar: http://n8n:5678/webhook-test/budget-alert
     webhook_url = "http://n8n:5678/webhook-test/budget-alert"
     
     # Payload de prueba simulando alerta del 90%
@@ -41,7 +41,7 @@ def test_budget_webhook():
     payload = {
         'user_id': 1,                                        # ID del usuario en Django
         'user_name': 'Usuario Prueba',                       # Nombre completo o username
-        'user_email': 'test@example.com',                    # Email para enviar alerta
+        'user_email': 'joseolmostech@gmail.com',            # Email para enviar alerta
         'budget_limit': 500.00,                              # Límite mensual configurado
         'current_spending': 465.50,                          # Gastos actuales del mes
         'percentage': 93.1,                                  # Porcentaje calculado (465.5/500*100)
