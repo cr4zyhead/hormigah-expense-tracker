@@ -301,7 +301,7 @@ def check_budget_alert(user):
         ).aggregate(total=Sum('amount'))['total'] or 0
         
         # Calcular porcentaje
-        percentage = (current_month_expenses / budget.limit) * 100
+        percentage = (current_month_expenses / budget.monthly_limit) * 100
         
         # Verificar si alcanzó o superó el 90%
         if percentage >= 90:
@@ -332,7 +332,7 @@ def send_webhook_to_n8n(user, budget, current_spending, percentage):
         'user_id': user.id,
         'user_name': user.get_full_name() or user.username,
         'user_email': user.email,
-        'budget_limit': float(budget.limit),
+        'budget_limit': float(budget.monthly_limit),
         'current_spending': float(current_spending),
         'percentage': round(percentage, 2),
         'alert_type': 'budget_90_percent',
