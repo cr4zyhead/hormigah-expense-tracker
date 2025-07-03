@@ -1,197 +1,171 @@
 # Hormigah - Control Inteligente de Gastos Hormiga
 
-<div align="center">
-
-**Una aplicación web moderna para controlar esos pequeños gastos diarios que pasan desapercibidos pero que al final del año suman cantidades importantes.**
+Una aplicación web moderna para controlar esos pequeños gastos diarios que pasan desapercibidos pero que al final del año suman cantidades importantes.
 
 ![Django](https://img.shields.io/badge/Django-5.2.3-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![HTMX](https://img.shields.io/badge/HTMX-1.9-336791?style=for-the-badge&logo=htmx&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
-![n8n](https://img.shields.io/badge/n8n-1.99.1-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
 
-[Demo](#instalación) • [Características](#características-principales) • [Arquitectura](#arquitectura) • [Contribuir](#contribuir)
+## Concepto: Gastos Hormiga
 
-</div>
+Los **gastos hormiga** son pequeños desembolsos cotidianos que individualmente parecen insignificantes, pero acumulados representan una parte considerable del presupuesto:
 
----
+- Café diario: $3 × 365 días = $1,095 al año
+- Delivery impulsivo: $15 × 2 veces/semana = $1,560 al año  
+- Taxis innecesarios: $8 × 3 veces/semana = $1,248 al año
+- Suscripciones no usadas: $10 × 12 meses = $120 al año
 
-## ¿Qué son los "Gastos Hormiga"?
-
-Los **gastos hormiga** son esos pequeños desembolsos cotidianos que individualmente parecen insignificantes, pero que acumulados pueden representar una parte considerable de nuestro presupuesto:
-
-- **Café diario**: $3 × 365 días = $1,095 al año
-- **Delivery impulsivo**: $15 × 2 veces/semana = $1,560 al año  
-- **Taxis innecesarios**: $8 × 3 veces/semana = $1,248 al año
-- **Suscripciones no usadas**: $10 × 12 meses = $120 al año
-
-**¡Total: $4,023 al año en gastos "pequeños"!**
-
----
+**Total: $4,023 al año en gastos "pequeños"**
 
 ## Características Principales
 
 ### Dashboard Inteligente
-- **Métricas en tiempo real** con filtros por período
-- **Gráficos interactivos** (dona y líneas) con Chart.js
-- **Auto-actualización** sin recargar página (HTMX)
-- **Responsive design** optimizado para móviles
+- Métricas en tiempo real con filtros por período
+- Gráficos interactivos (dona y líneas) con Chart.js
+- Auto-actualización sin recargar página (HTMX)
+- Diseño responsive optimizado para móviles
 
 ### Análisis Visual
-- **Distribución por categorías** con colores personalizados
-- **Tendencias temporales** para identificar patrones
-- **Proyecciones anuales** automáticas
-- **Comparativas mensuales** 
+- Distribución por categorías con colores personalizados
+- Tendencias temporales para identificar patrones
+- Proyecciones anuales automáticas
+- Comparativas mensuales
 
-### Experiencia de Usuario Moderna
-- **Interfaz HTMX** sin recargas de página
-- **Modales dinámicos** para CRUD completo
-- **Auto-refresh** en listas y métricas
-- **Navegación fluida** entre secciones
+### Experiencia de Usuario
+- Interfaz HTMX sin recargas de página
+- Modales dinámicos para operaciones CRUD
+- Auto-refresh en listas y métricas
+- Navegación fluida entre secciones
 
 ### Funcionalidades Avanzadas
-- **Filtros inteligentes** por fecha, categoría y monto
-- **CRUD completo** con validación en tiempo real
-- **Sistema de categorías** con colores personalizados
-- **Gestión de usuarios** con autenticación segura
+- Filtros inteligentes por fecha, categoría y monto
+- CRUD completo con validación en tiempo real
+- Sistema de categorías con colores personalizados
+- Gestión de usuarios con autenticación segura
+- Sistema de alertas de presupuesto automatizado
 
-### Automatización y Reportes (n8n)
+## Tecnologías
 
-#### Estado Actual - Implementado ✅
-- **Alertas de presupuesto al 90%**: Sistema automático que detecta cuando alcanzas/superas el 90% de tu presupuesto mensual
-- **Configuración por usuario**: Los usuarios pueden activar/desactivar alertas desde su perfil
-- **Webhook integrado**: Django envía automáticamente datos a n8n cuando se dispara una alerta
-- **Datos completos**: Incluye nombre, email, porcentaje usado, límite y gasto actual
-- **Configuración multi-entorno**: URLs configurables para desarrollo y producción
+### Backend
+- **Django 5.2.3**: Framework web robusto
+- **PostgreSQL**: Base de datos para desarrollo y producción
+- **Python 3.12**: Lenguaje base
+- **Gunicorn**: Servidor WSGI para producción
 
-#### Próximos Pasos - Por Implementar 🚧
-- **Configurar workflow en n8n** para recibir alertas y enviar emails
-- **Reportes automáticos** mensuales por email con resumen de gastos
-- **Alertas adicionales**: 50%, 75% del presupuesto (configurables)
-- **Integraciones externas**: Gmail, Slack, Telegram, etc.
-- **APIs REST completas** para consultas y automatizaciones avanzadas
-- **Reportes personalizados** (semanal, por categoría, comparativos)
+### Frontend
+- **HTMX**: Interactividad sin JavaScript complejo
+- **Tailwind CSS**: Framework de utilidades CSS
+- **Chart.js**: Gráficos interactivos
+- **Alpine.js**: Interactividad ligera
 
----
+### Infraestructura
+- **Docker**: Containerización completa
+- **Nginx**: Servidor web y proxy inverso
+- **n8n**: Automatización de workflows y reportes (opcional)
 
 ## Instalación
 
 ### Requisitos Previos
-- **Docker** y **Docker Compose**
-- **Git**
+- Docker y Docker Compose
+- Git
 
-### Setup Rápido con Docker
+### Setup Rápido
 ```bash
-# 1. Clonar e iniciar
+# Clonar repositorio
 git clone https://github.com/tu-usuario/hormigah.git
 cd hormigah
 
-# 2. Configurar y ejecutar
+# Configurar variables de entorno
 cp .env.example .env.local
+
+# Iniciar aplicación
 docker-compose up -d
 
-# 3. ¡Listo! Tu app está en http://localhost:8000
-# 4. Accede a n8n para automatizaciones en http://localhost:5678
-```
-
-## Configuración SSL/HTTPS (Producción)
-
-### Dominio con DuckDNS
-1. Crear cuenta en [DuckDNS](https://duckdns.org)
-2. Configurar dominio: `tuapp.duckdns.org` → `tu-servidor-ip`
-
-### Certificado SSL
-```bash
-# En tu servidor
-sudo apt update && sudo apt install certbot
-sudo certbot certonly --standalone -d tuapp.duckdns.org
-```
-
-### Variables adicionales en .env.production
-```bash
-# Dominios permitidos
-ALLOWED_HOSTS=tu-servidor-ip,localhost,tuapp.duckdns.org
-
-# Orígenes de confianza CSRF  
-CSRF_TRUSTED_ORIGINS=https://tuapp.duckdns.org,http://tu-servidor-ip
-
-# Configuraciones de seguridad SSL
-SECURE_SSL_REDIRECT=True
-CSRF_COOKIE_SECURE=True
-SESSION_COOKIE_SECURE=True
-```
-
-### Deployment con SSL
-```bash
-# Montar certificados y reiniciar
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Configuración Completa
-```bash
-# Crear superusuario (para admin)
+# Configurar Django
+docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py createsuperuser
-
-# Cargar datos de ejemplo (opcional)
-docker-compose exec web python manage.py loaddata apps/expenses/fixtures/categories.json
-```
-
-### Setup Manual (Alternativo)
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/hormigah.git
-cd hormigah
-
-# 2. Crear y activar entorno virtual
-python -m venv venv
-# Windows: venv\Scripts\activate
-# Linux/Mac: source venv/bin/activate
-
-# 3. Instalar dependencias
-pip install -r requirements.txt
-
-# 4. Configurar base de datos
-python manage.py migrate
-python manage.py createsuperuser
-
-# 5. Ejecutar aplicación
-python manage.py runserver
 ```
 
 ### Acceso
 - **Aplicación principal**: http://localhost:8000/
 - **Panel de administración**: http://localhost:8000/admin/
-- **n8n (Automatizaciones)**: http://localhost:5678/
 
-> **Para deployment en producción**, consulta [README_DOCKER.md](README_DOCKER.md)
-> **Para configurar automatizaciones**, consulta [README_N8N.md](README_N8N.md)
+## Estructura del Proyecto
 
----
+```
+hormigah/
+├── apps/
+│   ├── core/                     # Utilidades base y templates
+│   ├── expenses/                 # App principal de gastos
+│   │   ├── models.py            # Category y Expense
+│   │   ├── views.py             # Lógica de negocio
+│   │   ├── forms.py             # Formularios con validación
+│   │   ├── utils/               # Utilidades modularizadas
+│   │   ├── templates/           # Templates especializados
+│   │   └── static/              # CSS y JS específicos
+│   └── users/                   # Gestión de usuarios
+├── config/                      # Configuración Django
+│   ├── settings/                # Settings modulares
+│   │   ├── base.py             # Configuración base
+│   │   ├── local.py            # Desarrollo
+│   │   └── production.py       # Producción
+│   └── urls.py                 # URLs principales
+├── static/                      # Archivos estáticos globales
+├── docker-compose.yml           # Docker desarrollo
+├── docker-compose.prod.yml      # Docker producción
+├── Dockerfile                   # Imagen de la aplicación
+└── requirements.txt             # Dependencias Python
+```
 
-## Comandos Docker
+## Uso de la Aplicación
 
-### Comandos Docker Estándar
+### Dashboard Principal
+- Métricas del período seleccionado
+- Gráfico de distribución por categorías  
+- Tendencia temporal de gastos
+- Lista de gastos recientes
 
-#### **Desarrollo**
+### Gestión de Gastos
+- Agregar nuevo gasto (modal HTMX)
+- Editar gasto existente (modal HTMX)
+- Eliminar gasto (confirmación)
+- Ver detalles completos
+
+### Filtros Avanzados
+- Por período (Este mes, último mes, últimos 7/30 días)
+- Por categoría (Café, Delivery, Transporte, etc.)
+- Por rango de fechas personalizado
+- Por rango de montos (min/max)
+
+### Sistema de Alertas
+- Alertas automáticas al alcanzar el 90% del presupuesto mensual
+- Configuración por usuario (activar/desactivar)
+- Integración con n8n para automatización de notificaciones
+
+## Comandos Útiles
+
+### Desarrollo
 ```bash
-# Iniciar aplicación
+# Iniciar servicios
 docker-compose up -d
 
 # Ver logs
 docker-compose logs -f web
 
-# Parar aplicación
-docker-compose down
-
-# Ejecutar comandos Django
+# Ejecutar migraciones
+docker-compose exec web python manage.py makemigrations
 docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
+
+# Ejecutar tests
+docker-compose exec web python manage.py test
+
+# Acceder a Django shell
 docker-compose exec web python manage.py shell
 ```
 
-#### **Producción**
+### Producción
 ```bash
 # Desplegar en producción
 docker-compose -f docker-compose.prod.yml up -d
@@ -199,605 +173,41 @@ docker-compose -f docker-compose.prod.yml up -d
 # Ver estado de servicios
 docker-compose -f docker-compose.prod.yml ps
 
-# Backup de base de datos
-docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup.sql
-
-# Acceder a n8n para automatizaciones
-# https://tu-dominio.com/n8n/
+# Ver logs
+docker-compose -f docker-compose.prod.yml logs web
 ```
-
-### Scripts Helper (Alternativa)
-
-> **Opcional**: También puedes usar scripts que simplifican las operaciones más comunes
-
-#### **Desarrollo Local**
-```bash
-# Setup inicial
-cp .env.example .env.local
-docker-compose build
-docker-compose up -d
-
-# Configurar Django
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-
-# Desarrollo día a día
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py test
-
-# Utilidades
-docker-compose logs -f web            # Ver logs
-docker-compose exec web python manage.py shell  # Django shell
-docker-compose exec web bash          # Bash en contenedor
-docker-compose down                    # Parar servicios
-```
-
-#### **Producción**
-```bash
-# Deployment
-docker-compose -f docker-compose.prod.yml build
-docker-compose -f docker-compose.prod.yml up -d
-
-# Mantenimiento
-docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
-docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --noinput
-
-# Monitoreo
-docker-compose -f docker-compose.prod.yml ps     # Estado de servicios
-docker-compose -f docker-compose.prod.yml logs web  # Ver logs
-
-# Actualizaciones
-git pull origin main
-docker-compose -f docker-compose.prod.yml build --no-cache
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Workflow de Deployment
-
-#### **En el Servidor de Producción**
-```bash
-# 1. Conectar al servidor
-ssh root@tu-servidor-ip
-cd /ruta/a/tu/aplicacion
-
-# 2. Actualizar código
-git pull origin main
-
-# 3. Actualizar aplicación
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml build --no-cache
-docker-compose -f docker-compose.prod.yml up -d
-
-# 4. Verificar estado
-docker-compose -f docker-compose.prod.yml ps
-```
-
-#### **Monitoreo Continuo**
-```bash
-# Ver estado general
-docker-compose -f docker-compose.prod.yml ps
-
-# Revisar logs por errores
-docker-compose -f docker-compose.prod.yml logs --tail=20
-
-# Verificar salud de la aplicación
-docker-compose -f docker-compose.prod.yml logs -f web
-```
-
-> 📚 **Documentación completa con más workflows**: [README_DOCKER.md](README_DOCKER.md)
-
-### Características de los Scripts
-
-Los scripts incluyen algunas características adicionales:
-
-- **Comandos más cortos**: `./scripts/docker-dev.sh up` vs `docker-compose up -d`
-- **Validaciones automáticas**: Verifican dependencias antes de ejecutar
-- **Feedback visual**: Mensajes con colores para mejor legibilidad
-- **Operaciones combinadas**: Como `update` que incluye pull, build y restart
-
----
-
-## Arquitectura
-
-### Estructura del Proyecto
-```
-hormigah/
-├── apps/
-│   ├── core/                     # Utilidades base y templates
-│   │   ├── templates/
-│   │   │   ├── base.html           # Template base con Tailwind
-│   │   │   ├── core/includes/      # Header y footer
-│   │   │   └── registration/       # Autenticación
-│   │   └── views.py                # Vistas compartidas
-│   │
-│   └── expenses/                 # App principal de gastos
-│       ├── models.py            # Category y Expense
-│       ├── views.py             # Lógica de negocio
-│       ├── forms.py             # Formularios con validación
-│       ├── urls.py              # Rutas de la aplicación
-│       ├── utils/               # Utilidades modularizadas
-│       ├── templates/expenses/  # Templates especializados
-│       ├── static/expenses/     # CSS y JS específicos
-│       └── migrations/          # Migraciones de BD
-│
-├── config/                      # Configuración Django
-│   ├── settings/                   # Settings modulares
-│   │   ├── base.py                 # Configuración base
-│   │   ├── local.py                # Desarrollo
-│   │   └── production.py           # Producción
-│   ├── urls.py                     # URLs principales
-│   ├── wsgi.py                     # WSGI para producción
-│   └── asgi.py                     # ASGI para async
-│
-├── docker/                      # Configuración Docker
-│   ├── nginx.conf                  # Configuración Nginx
-│   └── entrypoint.sh               # Script de inicialización
-│
-├── static/                      # Archivos estáticos globales
-│   ├── css/custom.css              # Estilos personalizados
-│   └── js/dashboard.js             # JavaScript modularizado
-│
-├── docker-compose.yml           # Docker desarrollo
-├── docker-compose.prod.yml      # Docker producción  
-├── Dockerfile                   # Imagen de la aplicación
-├── .env.example                 # Variables de entorno ejemplo
-├── README_DOCKER.md             # Documentación Docker
-├── requirements.txt             # Dependencias Python
-└── manage.py                    # Script de gestión Django
-```
-
-### Tecnologías Utilizadas
-
-#### **Backend**
-- **Django 5.2.3**: Framework web robusto
-- **PostgreSQL**: Base de datos para desarrollo y producción
-- **Python 3.12**: Lenguaje base
-- **Gunicorn**: Servidor WSGI para producción
-
-#### **Frontend**
-- **HTMX**: Interactividad sin JavaScript complejo
-- **Tailwind CSS**: Framework de utilidades CSS
-- **Chart.js**: Gráficos interactivos
-- **Alpine.js**: Interactividad ligera
-
-#### **Infraestructura**
-- **Docker**: Containerización completa
-- **Nginx**: Servidor web y proxy inverso
-- **PostgreSQL**: Base de datos principal
-- **n8n**: Automatización de workflows y reportes
-- **Redis**: Cache (opcional)
-
-#### **Arquitectura**
-- **Modular**: Utils organizados por responsabilidad
-- **Responsive**: Diseño móvil-first
-- **Progressive Enhancement**: Funciona sin JS, mejor con JS
-- **Containerizada**: Docker-first development y deployment
-- **Multi-ambiente**: Configuraciones separadas dev/prod
-
----
-
-## Uso de la Aplicación
-
-### 1. **Dashboard Principal**
-```
-Dashboard de Gastos
-├── Métricas del período seleccionado
-├── Gráfico de distribución por categorías  
-├── Tendencia temporal de gastos
-└── Lista de gastos recientes
-```
-
-### 2. **Gestión de Gastos**
-```
-Operaciones CRUD
-├── Agregar nuevo gasto (modal HTMX)
-├── Editar gasto existente (modal HTMX)
-├── Eliminar gasto (confirmación)
-└── Ver detalles completos
-```
-
-### 3. **Filtros Avanzados**
-```
-Sistema de Filtros
-├── Por período (Este mes, último mes, últimos 7/30 días)
-├── Por categoría (Café, Delivery, Transporte, etc.)
-├── Por rango de fechas personalizado
-└── Por rango de montos (min/max)
-```
-
-### 4. **Sistema de Alertas de Presupuesto**
-```
-Flujo de Alertas del 90%
-├── Usuario agrega un gasto → Django calcula porcentaje actual
-├── Si ≥90% y alertas habilitadas → Dispara webhook a n8n
-├── Payload incluye: user_id, email, percentage, budget_limit, current_spending
-└── n8n recibe datos y puede enviar email/notificación personalizada
-```
-
-#### **Configuración Técnica**
-- **Detección automática**: En `apps/expenses/utils/util_crud_operations.py`
-- **Configuración usuario**: Campo `email_alerts_enabled` en modelo `Budget`
-- **Webhook URL**: Configurable por entorno via `N8N_BASE_URL`
-- **Payload JSON**: Datos completos para personalizar alertas
-- **Manejo de errores**: No bloquea Django si n8n no responde
-
-#### **Variables de Entorno**
-```bash
-# Desarrollo
-N8N_BASE_URL=http://localhost:5678
-
-# Producción  
-N8N_BASE_URL=https://tu-dominio.com
-```
-
----
-
-## Funcionalidades Destacadas
-
-### Auto-Refresh Inteligente
-- Las listas se actualizan automáticamente al crear/editar gastos
-- Dashboard se recarga automáticamente tras cambios
-- Sin necesidad de recargar la página manualmente
-
-### Interfaz Moderna
-- **Modales HTMX**: Operaciones sin cambiar de página
-- **Indicadores de carga**: Feedback visual durante operaciones
-- **Mensajes de éxito**: Confirmación clara de acciones
-- **Estados vacíos**: Guías útiles cuando no hay datos
-
-### Responsive Design
-- **Mobile-first**: Optimizado para dispositivos móviles
-- **Navegación adaptativa**: Menú hamburguesa en móviles
-- **Tablas responsivas**: Scroll horizontal cuando es necesario
-- **Touch-friendly**: Botones y controles optimizados para tocar
-
----
 
 ## Testing
 
 ```bash
-# Ejecutar tests
+# Ejecutar todos los tests
 python manage.py test
 
-# Test específicos de expenses
+# Tests específicos de expenses
 python manage.py test apps.expenses
 
 # Verificar configuración
 python manage.py check
 ```
 
----
-
-## Deploy en Producción
-
-### Variables de Entorno Necesarias
-```bash
-SECRET_KEY=tu-clave-secreta-super-segura
-DEBUG=False
-ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com
-DATABASE_URL=postgres://user:pass@host:port/db
-```
-
-### Configuración de Archivos Estáticos
-```bash
-# Recopilar archivos estáticos
-python manage.py collectstatic
-
-# Configurar servidor web (Nginx/Apache)
-# Servir archivos estáticos directamente
-```
-
----
-
-## Troubleshooting y Verificación
-
-### Verificar Estado de la Aplicación en Producción
-
-#### **1. Estado de los Servicios**
-```bash
-# Ver estado de todos los contenedores
-docker-compose -f docker-compose.prod.yml ps
-
-# Resultado esperado:
-# gastos_hormiga_db_prod      ... Up (healthy)
-# gastos_hormiga_web_prod     ... Up             # ← Debe ser "Up", no "Restarting"  
-# gastos_hormiga_nginx_prod   ... Up
-```
-
-#### **2. Verificar Configuración Django**
-```bash
-# Verificar configuración de producción
-docker-compose -f docker-compose.prod.yml exec web python -c "
-import os
-from django.conf import settings
-print('=== VERIFICACIÓN DE CONFIGURACIÓN DE PRODUCCIÓN ===')
-print(f'DEBUG: {settings.DEBUG}')
-print(f'DJANGO_SETTINGS_MODULE: {os.environ.get(\"DJANGO_SETTINGS_MODULE\", \"No definido\")}')
-print(f'ALLOWED_HOSTS: {settings.ALLOWED_HOSTS}')
-print(f'SECRET_KEY: {settings.SECRET_KEY[:10]}... (primeros 10 caracteres)')
-"
-
-# Resultado esperado:
-# DEBUG: False
-# DJANGO_SETTINGS_MODULE: config.settings.production
-# ALLOWED_HOSTS: ['tu-ip', 'localhost', 'tu-dominio.com']
-```
-
-#### **3. Verificar Logs**
-```bash
-# Ver logs recientes del contenedor web
-docker-compose -f docker-compose.prod.yml logs --tail=20 web
-
-# Ver logs de todos los servicios
-docker-compose -f docker-compose.prod.yml logs
-
-# Seguir logs en tiempo real
-docker-compose -f docker-compose.prod.yml logs -f web
-```
-
-#### **4. Pruebas HTTP**
-```bash
-# Probar la aplicación desde el servidor
-curl -I http://localhost:8000
-
-# Probar desde Internet (reemplaza con tu IP/dominio)
-curl -I http://tu-servidor-ip
-curl -I http://tu-dominio.com
-```
-
-### Resolución de Problemas Comunes
-
-#### **Problema: Contenedor Web en "Restarting"**
-
-**Síntomas:**
-```bash
-gastos_hormiga_web_prod     ... Restarting
-```
-
-**Diagnóstico:**
-```bash
-# Ver logs del contenedor web
-docker-compose -f docker-compose.prod.yml logs --tail=30 web
-
-# Verificar variables de entorno
-docker-compose -f docker-compose.prod.yml exec web env | grep DB_
-```
-
-**Soluciones:**
-```bash
-# 1. Verificar archivo .env.production
-cat .env.production | grep -E "(DB_HOST|DB_NAME|DB_USER)"
-
-# 2. Asegurar que DB_HOST=db (no localhost)
-# Editar .env.production si es necesario:
-# DB_HOST=db
-
-# 3. Recrear contenedores
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml up -d
-
-# 4. Si persiste, reconstruir sin cache
-docker-compose -f docker-compose.prod.yml down --volumes
-docker-compose -f docker-compose.prod.yml build --no-cache
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-#### **Problema: Error de Conexión a Base de Datos**
-
-**Error típico:**
-```
-django.db.utils.OperationalError: connection to server at "localhost" failed
-```
-
-**Solución:**
-```bash
-# Verificar que DB_HOST esté configurado correctamente
-grep "DB_HOST" .env.production
-# Debe mostrar: DB_HOST=db (no localhost)
-
-# Verificar conectividad entre contenedores
-docker-compose -f docker-compose.prod.yml exec web ping db
-```
-
-#### **Problema: Configuraciones SSL/HTTPS**
-
-**Si tienes problemas de SSL, deshabilitarlo temporalmente:**
-```bash
-# En .env.production, cambiar a:
-SECURE_SSL_REDIRECT=False
-CSRF_COOKIE_SECURE=False
-SESSION_COOKIE_SECURE=False
-
-# Reiniciar contenedores
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### Limpieza y Mantenimiento
-
-#### **Limpieza Completa de Docker**
-```bash
-# Parar todos los contenedores
-docker-compose -f docker-compose.prod.yml down --volumes --remove-orphans
-
-# Limpiar sistema Docker (cuidado: elimina todo)
-docker system prune -af --volumes
-
-# Reconstruir desde cero
-docker-compose -f docker-compose.prod.yml build --no-cache
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-#### **Backup de Base de Datos**
-```bash
-# Crear backup
-docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup_$(date +%Y%m%d_%H%M%S).sql
-
-# Restaurar desde backup
-docker-compose -f docker-compose.prod.yml exec -T db psql -U postgres gastos_hormiga_prod < backup_file.sql
-```
-
-### Manejo de Archivos .env
-
-#### **Configuración Recomendada para Producción:**
-```bash
-# En el servidor de producción:
-.env.production  # ← Archivo principal (usado por docker-compose.prod.yml)
-.env            # ← Respaldo opcional
-
-# Configuración en docker-compose.prod.yml:
-env_file:
-  - .env.production  # ← Configuración explícita
-```
-
-#### **Verificar Variables:**
-```bash
-# Ver variables que usa Docker
-docker-compose -f docker-compose.prod.yml config
-
-# Ver variables dentro del contenedor
-docker-compose -f docker-compose.prod.yml exec web env | grep -E "(DEBUG|DB_|DJANGO_)"
-```
-
-### Rollback y Reversión
-
-#### **Si una Actualización Falla:**
-```bash
-# 1. Volver a versión anterior del código
-git log --oneline -5  # Ver últimos commits
-git checkout COMMIT_HASH_ANTERIOR
-
-# 2. Reconstruir con versión anterior
-docker-compose -f docker-compose.prod.yml down
-docker-compose -f docker-compose.prod.yml build --no-cache
-docker-compose -f docker-compose.prod.yml up -d
-
-# 3. Verificar estado
-docker-compose -f docker-compose.prod.yml ps
-```
-
-#### **Crear Punto de Restauración:**
-```bash
-# Antes de cambios importantes
-docker-compose -f docker-compose.prod.yml exec db pg_dump -U postgres gastos_hormiga_prod > backup_before_update.sql
-git tag -a v1.0.0 -m "Versión estable antes de actualización"
-git push origin v1.0.0
-```
-
-### Consejos de Desarrollo
-
-#### **Ambientes Separados:**
-- **Desarrollo Local**: `docker-compose up -d` (usa docker-compose.yml)
-- **Producción**: `docker-compose -f docker-compose.prod.yml up -d`
-
-#### **Comandos Útiles:**
-```bash
-# Crear superusuario en producción
-docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
-
-# Aplicar migraciones
-docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
-
-# Verificar migraciones pendientes
-docker-compose -f docker-compose.prod.yml exec web python manage.py showmigrations
-
-# Acceder a Django shell
-docker-compose -f docker-compose.prod.yml exec web python manage.py shell
-```
-
-#### **Monitoreo Continuo:**
-```bash
-# Verificar estado regularmente
-docker-compose -f docker-compose.prod.yml ps
-
-# Monitorear logs en tiempo real
-docker-compose -f docker-compose.prod.yml logs -f web
-
-# Verificar uso de recursos
-docker stats
-```
-
----
-
-## Próximos Pasos de Desarrollo
-
-### Completar Integración con n8n
-
-#### **1. Configurar Webhook en n8n (Pendiente)**
-```bash
-# Crear workflow en n8n que:
-1. Escuche en /webhook/budget-alert
-2. Reciba payload JSON de Django
-3. Procese datos del usuario (email, percentage, etc.)
-4. Envíe email personalizado al usuario
-```
-
-#### **2. Template de Email Sugerido**
-```html
-Asunto: ALERTA: Has alcanzado el 90% de tu presupuesto mensual
-
-Hola [user_name],
-
-Has alcanzado el [percentage]% de tu presupuesto mensual.
-
-Resumen de tu presupuesto:
-- Límite mensual: €[budget_limit]
-- Total gastado: €[current_spending]  
-- Cantidad restante: €[remaining]
-
-Recomendación: Revisa tus gastos recientes en [app_url]
-
-Saludos,
-Tu asistente de gastos Hormigah
-```
-
-#### **3. Payload JSON que Django Envía**
-```json
-{
-  "user_id": 1,
-  "user_name": "Juan Pérez",
-  "user_email": "juan@email.com",
-  "budget_limit": 500.00,
-  "current_spending": 455.50,
-  "percentage": 91.1,
-  "alert_type": "budget_90_percent",
-  "message": "Has alcanzado el 91.1% de tu presupuesto mensual",
-  "timestamp": "2024-01-15T10:30:00Z"
-}
-```
-
-#### **4. Testing de la Integración**
-```bash
-# Para probar la integración completa:
-1. Configurar webhook en n8n local (http://localhost:5678)
-2. Agregar gasto que lleve al 90% del presupuesto
-3. Verificar que llega webhook a n8n
-4. Confirmar que se envía email
-```
-
-#### **5. Funcionalidades Futuras**
-- **Alertas múltiples**: 50%, 75%, 90%, 100%
-- **Reportes automáticos**: Resumen semanal/mensual
-- **API REST completa**: Endpoints para consultas externas
-- **Integraciones adicionales**: Slack, Telegram, Discord
-- **Alertas por categoría**: Cuando una categoría supera límite
-
-#### **6. Consideraciones de Producción**
-- **Rate limiting**: Evitar spam de webhooks
-- **Retry logic**: Reintentar si n8n no responde
-- **Monitoring**: Logs de webhooks enviados/fallidos
-- **Security**: Validar origen de webhooks
-- **Performance**: Queue para webhooks en alto volumen
-
----
+## Arquitectura
+
+### Patrones de Diseño
+- **Modular**: Utils organizados por responsabilidad
+- **Responsive**: Diseño móvil-first
+- **Progressive Enhancement**: Funciona sin JS, mejor con JS
+- **Containerizada**: Docker-first development y deployment
+
+### Funcionalidades Destacadas
+- **Auto-Refresh Inteligente**: Las listas se actualizan automáticamente
+- **Interfaz Moderna**: Modales HTMX sin cambiar de página
+- **Responsive Design**: Optimizado para todos los dispositivos
+- **Sistema de Automatización**: Integración con n8n para reportes y alertas
 
 ## Contribuir
 
-¡Las contribuciones son bienvenidas! 
-
 ### Reportar Bugs
-- Usar el [sistema de issues](../../issues)
+- Usar el sistema de issues
 - Incluir pasos para reproducir
 - Especificar entorno (OS, Python, Django)
 
@@ -812,8 +222,6 @@ Tu asistente de gastos Hormigah
 3. Commit con conventional commits
 4. Push y crear PR
 
----
-
 ## Conventional Commits
 
 Este proyecto usa [Conventional Commits](https://conventionalcommits.org/):
@@ -827,27 +235,13 @@ style: mejorar responsive design en móviles
 test: agregar tests para filtros avanzados
 ```
 
----
-
 ## Licencia
 
 Este proyecto está bajo la **Licencia MIT**. Ver [LICENSE](LICENSE) para más detalles.
 
----
-
 ## Agradecimientos
 
-- **Django Team** por el framework increíble
-- **HTMX** por simplificar la interactividad web
-- **Tailwind CSS** por el sistema de diseño
-- **Chart.js** por los gráficos hermosos
-
----
-
-<div align="center">
-
-**¿Te gusta el proyecto? ¡Dale una estrella en GitHub!**
-
-**Desarrollado para ayudarte a controlar tus gastos hormiga**
-
-</div> 
+- Django Team por el framework increíble
+- HTMX por simplificar la interactividad web
+- Tailwind CSS por el sistema de diseño
+- Chart.js por los gráficos hermosos
