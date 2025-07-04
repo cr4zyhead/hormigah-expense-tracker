@@ -27,4 +27,6 @@ urlpatterns = [
     path('', include('apps.expenses.urls')),
     # URLs de usuarios
     path('users/', include('apps.users.urls')),
+    # URLs de la API REST para reportes n8n
+    path('api/', include('apps.expenses.api.urls')),
 ]
