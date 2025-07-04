@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third party apps
+    'rest_framework',
+    'drf_spectacular',
     # Local apps
     'apps.core',
     'apps.expenses',
@@ -103,5 +106,35 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuración de autenticación
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Configuración de Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Configuración de drf-spectacular
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Gastos Hormiga API',
+    'DESCRIPTION': 'API REST para obtener datos de usuarios y gastos para reportes automáticos con n8n',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    # Configuración de autenticación Bearer Token
+    'AUTHENTICATION_WHITELIST': [
+        'apps.expenses.api.authentication.BearerTokenAuthentication',
+    ],
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Token de autenticación Bearer. Formato: Bearer <token>',
+        }
+    },
+    'SECURITY': [
+        {'Bearer': []},
+    ],
+}
 
  

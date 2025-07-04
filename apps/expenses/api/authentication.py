@@ -61,8 +61,8 @@ class BearerTokenAuthentication(authentication.BaseAuthentication):
         if token != expected_token:
             raise exceptions.AuthenticationFailed('Token Bearer inválido.')
             
-        # Retornar usuario "virtual" para n8n
-        # No necesitamos un usuario real, solo validar el token
+        # Retornar None como usuario ya que usamos AllowAny
+        # Solo necesitamos validar el token, no un usuario específico
         return (None, token)
     
     def authenticate_header(self, request):

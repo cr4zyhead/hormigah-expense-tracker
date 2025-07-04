@@ -7,7 +7,7 @@ para que n8n pueda obtener los datos necesarios para los reportes.
 
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from django.db.models import Exists, OuterRef
 from django.utils import timezone
@@ -41,7 +41,7 @@ class ActiveUsersView(generics.ListAPIView):
     
     serializer_class = UserActiveSerializer
     authentication_classes = [BearerTokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     
     def get_queryset(self):
         """
@@ -125,7 +125,7 @@ class UserCompleteView(generics.RetrieveAPIView):
     
     serializer_class = UserCompleteSerializer
     authentication_classes = [BearerTokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     lookup_field = 'id'
     
     def get_queryset(self):
