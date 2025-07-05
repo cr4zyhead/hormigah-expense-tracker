@@ -222,7 +222,8 @@
         </h2>
         
         {% if recent_expenses %}
-            <div class="overflow-x-auto">
+            <!-- Vista de tabla para desktop -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -262,6 +263,27 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Vista de tarjetas para móvil -->
+            <div class="md:hidden space-y-4">
+                {% for expense in recent_expenses %}
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium text-gray-900 text-sm">{{ expense.description }}</h4>
+                        <span class="text-lg font-bold text-gray-900">€{{ expense.amount|floatformat:0 }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" 
+                                  style="background-color: {{ expense.category.color }}20; color: {{ expense.category.color }};">
+                                {{ expense.category.name }}
+                            </span>
+                        </div>
+                        <span class="text-gray-500">{{ expense.date|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
             
             <div class="mt-4 text-center space-x-3">
