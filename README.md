@@ -1,12 +1,13 @@
 # Hormigah - Control Inteligente de Gastos Hormiga
 
-Una aplicación web moderna para controlar esos pequeños gastos diarios que pasan desapercibidos pero que al final del año suman cantidades importantes.
+Una aplicación web moderna para controlar esos pequeños gastos diarios que pasan desapercibidos pero que al final del año suman cantidades importantes. Incluye sistema de automatización con n8n para reportes mensuales inteligentes con IA.
 
 ![Django](https://img.shields.io/badge/Django-5.2.3-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![HTMX](https://img.shields.io/badge/HTMX-1.9-336791?style=for-the-badge&logo=htmx&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+![n8n](https://img.shields.io/badge/n8n-Automation-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
 
 ## Concepto: Gastos Hormiga
 
@@ -45,6 +46,9 @@ Los **gastos hormiga** son pequeños desembolsos cotidianos que individualmente 
 - Sistema de categorías con colores personalizados
 - Gestión de usuarios con autenticación segura
 - Sistema de alertas de presupuesto automatizado
+- **API REST**: Endpoints para integración con n8n y otras herramientas
+- **Reportes Automatizados**: Generación mensual de reportes con IA
+- **Webhooks**: Sistema de notificaciones automáticas
 
 ## Tecnologías
 
@@ -63,7 +67,7 @@ Los **gastos hormiga** son pequeños desembolsos cotidianos que individualmente 
 ### Infraestructura
 - **Docker**: Containerización completa
 - **Nginx**: Servidor web y proxy inverso
-- **n8n**: Automatización de workflows y reportes (opcional)
+- **n8n**: Automatización de workflows y reportes mensuales con IA
 
 ## Instalación
 
@@ -99,8 +103,13 @@ hormigah/
 ├── apps/
 │   ├── core/                     # Utilidades base y templates
 │   ├── expenses/                 # App principal de gastos
-│   │   ├── models.py            # Category y Expense
-│   │   ├── views.py             # Lógica de negocio
+│   │   ├── api/                 # API REST para n8n
+│   │   │   ├── authentication.py # Bearer token auth
+│   │   │   ├── serializers.py   # DRF serializers
+│   │   │   ├── views.py         # API views
+│   │   │   └── urls.py          # API endpoints
+│   │   ├── models.py            # Category, Expense, Budget
+│   │   ├── views.py             # Lógica de negocio web
 │   │   ├── forms.py             # Formularios con validación
 │   │   ├── utils/               # Utilidades modularizadas
 │   │   ├── templates/           # Templates especializados
@@ -108,15 +117,15 @@ hormigah/
 │   └── users/                   # Gestión de usuarios
 ├── config/                      # Configuración Django
 │   ├── settings/                # Settings modulares
-│   │   ├── base.py             # Configuración base
+│   │   ├── base.py             # Configuración base + API REST
 │   │   ├── local.py            # Desarrollo
 │   │   └── production.py       # Producción
-│   └── urls.py                 # URLs principales
+│   └── urls.py                 # URLs principales + API
 ├── static/                      # Archivos estáticos globales
 ├── docker-compose.yml           # Docker desarrollo
-├── docker-compose.prod.yml      # Docker producción
+├── docker-compose.prod.yml      # Docker producción + n8n
 ├── Dockerfile                   # Imagen de la aplicación
-└── requirements.txt             # Dependencias Python
+└── requirements.txt             # Dependencias Python + DRF
 ```
 
 ## Uso de la Aplicación
@@ -139,10 +148,12 @@ hormigah/
 - Por rango de fechas personalizado
 - Por rango de montos (min/max)
 
-### Sistema de Alertas
+### Sistema de Alertas y Reportes
 - Alertas automáticas al alcanzar el 90% del presupuesto mensual
 - Configuración por usuario (activar/desactivar)
-- Integración con n8n para automatización de notificaciones
+- **Reportes Mensuales Automatizados**: n8n + OpenAI + Gmail
+- **API REST**: Integración completa para herramientas externas
+- **Análisis Inteligente**: IA personalizada por usuario y período
 
 ## Comandos Útiles
 
@@ -165,83 +176,123 @@ docker-compose exec web python manage.py test
 docker-compose exec web python manage.py shell
 ```
 
-### Producción
+### Producción con n8n
 ```bash
-# Desplegar en producción
+# Desplegar aplicación + n8n
 docker-compose -f docker-compose.prod.yml up -d
 
-# Ver estado de servicios
+# Ver estado de todos los servicios
 docker-compose -f docker-compose.prod.yml ps
 
-# Ver logs
+# Ver logs específicos
 docker-compose -f docker-compose.prod.yml logs web
+docker-compose -f docker-compose.prod.yml logs n8n
+
+# Acceder a n8n
+# http://tu-dominio.com:5678
 ```
 
-## Testing
+### API Testing
+```bash
+# Test endpoint usuarios activos
+curl -H "Authorization: Bearer {token}" http://localhost:8000/api/users/active/
+
+# Test endpoint usuario completo  
+curl -H "Authorization: Bearer {token}" http://localhost:8000/api/users/1/complete/
+
+# Verificar documentación API
+curl http://localhost:8000/api/docs/
+```
+
+## API REST
+
+### Endpoints Disponibles
+
+#### Listar Usuarios Activos
+```
+GET /api/users/active/
+Authorization: Bearer {N8N_API_TOKEN}
+```
+
+Retorna usuarios que:
+- Tienen presupuesto configurado
+- Tienen alertas por email activadas  
+- Han registrado gastos en los últimos 30 días
+
+#### Obtener Datos Completos de Usuario
+```
+GET /api/users/{id}/complete/
+Authorization: Bearer {N8N_API_TOKEN}
+```
+
+Retorna datos completos incluyendo:
+- Información del usuario y presupuesto
+- Historial completo de gastos
+- Resúmenes mensuales y por categorías
+- Estadísticas y tendencias
+
+#### Documentación Interactiva
+- **Swagger UI**: http://localhost:8000/api/docs/
+- **OpenAPI Schema**: http://localhost:8000/api/schema/
+
+### Autenticación API
+- **Desarrollo**: Token fijo en settings
+- **Producción**: Token seguro via variables de entorno
+- **Tipo**: Bearer Token personalizado
+
+## Automatización con n8n
+
+### Workflow de Reportes Mensuales
+
+El sistema incluye un workflow completo de n8n que:
+
+1. **Schedule Trigger**: Se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM
+2. **Detección de Usuarios**: Obtiene lista de usuarios activos via API REST
+3. **Análisis Individual**: Para cada usuario obtiene sus datos completos
+4. **Filtrado Temporal**: Procesa únicamente los gastos del mes anterior
+5. **Análisis con IA**: GPT-3.5-turbo genera reporte personalizado
+6. **Envío por Email**: Gmail con diseño HTML profesional
+
+### Características del Reporte IA
+
+- **Análisis Temporal Preciso**: Solo analiza el mes anterior, no el actual
+- **Métricas Financieras**: Total gastado, porcentaje del presupuesto usado
+- **Desglose por Categorías**: Análisis detallado de cada tipo de gasto
+- **Recomendaciones Personalizadas**: Sugerencias específicas del usuario
+- **Diseño Profesional**: Email HTML con identidad visual corporativa
+
+### Configuración n8n
+
+```javascript
+// Filtrado temporal en nodo Code
+const allExpenses = $input.all()[0].json.complete_history.all_expenses || [];
+const now = new Date();
+const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+const nextMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+const expensesFiltered = allExpenses.filter(expense => {
+    const expenseDate = new Date(expense.date);
+    return expenseDate >= prevMonth && expenseDate < nextMonth;
+});
+```
+
+### Variables de Entorno Requeridas
 
 ```bash
-# Ejecutar todos los tests
-python manage.py test
+# API REST
+N8N_API_TOKEN=tu-token-seguro-aqui
 
-# Tests específicos de expenses
-python manage.py test apps.expenses
+# Webhooks (existente)
+N8N_WEBHOOK_TOKEN=tu-webhook-token-aqui
 
-# Verificar configuración
-python manage.py check
+# n8n URLs
+N8N_BASE_URL=http://localhost:5678
 ```
-
-## Arquitectura
-
-### Patrones de Diseño
-- **Modular**: Utils organizados por responsabilidad
-- **Responsive**: Diseño móvil-first
-- **Progressive Enhancement**: Funciona sin JS, mejor con JS
-- **Containerizada**: Docker-first development y deployment
 
 ### Funcionalidades Destacadas
 - **Auto-Refresh Inteligente**: Las listas se actualizan automáticamente
 - **Interfaz Moderna**: Modales HTMX sin cambiar de página
 - **Responsive Design**: Optimizado para todos los dispositivos
-- **Sistema de Automatización**: Integración con n8n para reportes y alertas
-
-## Contribuir
-
-### Reportar Bugs
-- Usar el sistema de issues
-- Incluir pasos para reproducir
-- Especificar entorno (OS, Python, Django)
-
-### Proponer Features
-- Describir el caso de uso
-- Explicar el beneficio para usuarios
-- Considerar impacto en UX
-
-### Pull Requests
-1. Fork del repositorio
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit con conventional commits
-4. Push y crear PR
-
-## Conventional Commits
-
-Este proyecto usa [Conventional Commits](https://conventionalcommits.org/):
-
-```bash
-feat: agregar filtro por rango de fechas
-fix: corregir auto-refresh en dashboard  
-docs: actualizar README con nuevas funcionalidades
-refactor: modularizar utils en archivos especializados
-style: mejorar responsive design en móviles
-test: agregar tests para filtros avanzados
-```
-
-## Licencia
-
-Este proyecto está bajo la **Licencia MIT**. Ver [LICENSE](LICENSE) para más detalles.
-
-## Agradecimientos
-
-- Django Team por el framework increíble
-- HTMX por simplificar la interactividad web
-- Tailwind CSS por el sistema de diseño
-- Chart.js por los gráficos hermosos
+- **Sistema de Automatización Completo**: n8n + API REST + IA
+- **Reportes Mensuales Automatizados**: Análisis personalizado con GPT
+- **Integración Gmail**: Emails HTML profesionales automáticos

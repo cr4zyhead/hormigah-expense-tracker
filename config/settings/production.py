@@ -99,4 +99,10 @@ N8N_INTERNAL_URL = os.getenv('N8N_INTERNAL_URL', 'http://n8n:5678')
 # En producción DEBE estar configurado por seguridad
 N8N_WEBHOOK_TOKEN = os.getenv('N8N_WEBHOOK_TOKEN')
 if not N8N_WEBHOOK_TOKEN:
-    raise ValueError("N8N_WEBHOOK_TOKEN es requerido en producción para seguridad") 
+    raise ValueError("N8N_WEBHOOK_TOKEN es requerido en producción para seguridad")
+
+# Bearer Token para autenticación de API REST con n8n
+# Token separado para mayor seguridad
+N8N_API_TOKEN = os.getenv('N8N_API_TOKEN')
+if not N8N_API_TOKEN:
+    raise ValueError("N8N_API_TOKEN es requerido en producción para seguridad") 
