@@ -328,7 +328,7 @@ Retorna datos completos incluyendo:
 
 El sistema incluye dos workflows principales de n8n para automatización completa:
 
-![Workflow de Reportes n8n](screenshots/features/reports-n8n.png)
+![Workflow de Reportes n8n](screenshots/n8n/reports-n8n.png)
 
 #### 1. **Reportes Mensuales Automatizados**
 - **Schedule Trigger**: Se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM
