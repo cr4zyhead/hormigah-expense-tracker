@@ -60,7 +60,7 @@ def get_period_dates(period):
     return start_date, end_date, period_label
 
 
-def calculate_dashboard_metrics(user, start_date, end_date):
+def calculate_dashboard_metrics(user, start_date, end_date, period=None):
     """
     Calcula todas las métricas del dashboard para el período especificado
     
@@ -68,6 +68,7 @@ def calculate_dashboard_metrics(user, start_date, end_date):
         user: Usuario actual
         start_date: Fecha de inicio del período
         end_date: Fecha de fin del período
+        period: Período seleccionado (para ajustar cálculo de promedio diario)
     
     Returns:
         dict: Diccionario con todas las métricas calculadas
@@ -84,7 +85,15 @@ def calculate_dashboard_metrics(user, start_date, end_date):
     period_expenses_count = period_expenses.count()
     
     # Calcular promedio diario
-    period_days = (end_date - start_date).days + 1
+    # Para el mes actual, usar solo los días transcurridos hasta hoy
+    if period == 'current_month':
+        today = datetime.now().date()
+        # Si estamos en el mes actual, usar los días desde el inicio del mes hasta hoy
+        period_days = (today - start_date).days + 1
+    else:
+        # Para otros períodos, usar el rango completo
+        period_days = (end_date - start_date).days + 1
+    
     period_avg_daily = period_total / period_days if period_days > 0 else 0
     
     # Gastos recientes del usuario actual (independiente del período)
@@ -126,7 +135,7 @@ def get_dashboard_context(user, period):
     start_date, end_date, period_label = get_period_dates(period)
     
     # Calcular métricas
-    metrics = calculate_dashboard_metrics(user, start_date, end_date)
+    metrics = calculate_dashboard_metrics(user, start_date, end_date, period)
     
     # Filtrar gastos del período para los gráficos
     period_expenses = Expense.objects.filter(
