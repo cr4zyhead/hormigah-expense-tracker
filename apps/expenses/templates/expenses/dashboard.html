@@ -172,7 +172,7 @@
         <!-- Gráfico de Dona - Gastos por Categoría -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                🍩 Gastos por Categoría (30 días)
+                🍩 Gastos por Categoría ({{ period_label|default:"Este mes" }})
             </h2>
             {% if categories_summary %}
                 <div class="h-80">
@@ -182,7 +182,7 @@
                 <div class="h-80 flex items-center justify-center text-gray-500">
                     <div class="text-center">
                         <span class="text-6xl mb-4 block">🐜</span>
-                        <p>No hay gastos en los últimos 30 días</p>
+                        <p>No hay gastos en {{ period_label|default:"este mes"|lower }}</p>
                         <button hx-get="{% url 'expenses:add_expense' %}" 
                                 hx-target="#modal-container" 
                                 hx-indicator="#modal-loading"
@@ -197,7 +197,7 @@
         <!-- Gráfico de Líneas - Tendencia de Gastos -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                📈 Tendencia de Gastos (30 días)
+                📈 Tendencia de Gastos ({{ period_label|default:"Este mes" }})
             </h2>
             {% if chart_dates_json != "[]" %}
                 <div class="h-80">
