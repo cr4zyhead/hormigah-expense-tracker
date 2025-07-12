@@ -71,29 +71,36 @@ La aplicación cuenta con un diseño completamente responsive que se adapta perf
 #### Interfaz Principal Mobile
 Dashboard optimizado para pantallas pequeñas con navegación intuitiva.
 
-![Dashboard Mobile](screenshots/mobile/dashboard-mobile.png)
+<img src="screenshots/mobile/dashboard-mobile.png" alt="Dashboard Mobile" width="300">
 
 #### Navegación Mobile
 Menú hamburguesa con acceso rápido a todas las funcionalidades.
 
-![Mobile Menu](screenshots/mobile/mobile-menu.png)
+<img src="screenshots/mobile/mobile-menu.png" alt="Mobile Menu" width="300">
 
 #### Acceso Mobile
 Página de login optimizada para dispositivos táctiles.
 
-![Login Mobile](screenshots/mobile/login-mobile.png)
+<img src="screenshots/mobile/login-mobile.png" alt="Login Mobile" width="300">
 
 #### Gestión de Gastos Mobile
 Lista de gastos y formularios adaptados para móviles.
 
-| Lista de Gastos | Agregar Gasto |
-|-----------------|---------------|
-| ![Expense List Mobile](screenshots/mobile/expense-list-mobile.png) | ![Add Expense Mobile](screenshots/mobile/add-expense-mobile.png) |
+<table>
+<tr>
+<td><strong>Lista de Gastos</strong></td>
+<td><strong>Agregar Gasto</strong></td>
+</tr>
+<tr>
+<td><img src="screenshots/mobile/expense-list-mobile.png" alt="Expense List Mobile" width="300"></td>
+<td><img src="screenshots/mobile/add-expense-mobile.png" alt="Add Expense Mobile" width="300"></td>
+</tr>
+</table>
 
 #### Configuración Mobile
 Perfil de usuario y configuraciones optimizadas para móvil.
 
-![User Profile Mobile](screenshots/mobile/user-profile-mobile.png)
+<img src="screenshots/mobile/user-profile-mobile.png" alt="User Profile Mobile" width="300">
 
 ## Características Principales
 
