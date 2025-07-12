@@ -20,7 +20,7 @@ Los **gastos hormiga** son pequeños desembolsos cotidianos que individualmente 
 
 **Total: €3,360 al año en gastos "pequeños"**
 
-## 📸 Screenshots
+## Screenshots
 
 ### Dashboard Principal
 La vista principal con métricas en tiempo real, gráficos interactivos y lista de gastos recientes.
@@ -64,7 +64,7 @@ Sistema de filtros inteligentes por período, categoría y monto.
 
 ![Filtros Activos](screenshots/desktop/expense-filters-active-desktop.png)
 
-### 📱 Versión Mobile
+### Versión Mobile
 
 La aplicación cuenta con un diseño completamente responsive que se adapta perfectamente a dispositivos móviles.
 
@@ -324,52 +324,34 @@ Retorna datos completos incluyendo:
 
 ## Automatización con n8n
 
-### Workflow de Reportes Mensuales
+### Workflows Automatizados
 
-El sistema incluye un workflow completo de n8n que:
+El sistema incluye dos workflows principales de n8n para automatización completa:
 
-1. **Schedule Trigger**: Se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM
-2. **Detección de Usuarios**: Obtiene lista de usuarios activos via API REST
-3. **Análisis Individual**: Para cada usuario obtiene sus datos completos
-4. **Filtrado Temporal**: Procesa únicamente los gastos del mes anterior
-5. **Análisis con IA**: GPT-3.5-turbo genera reporte personalizado
-6. **Envío por Email**: Gmail con diseño HTML profesional
+![Workflow de Reportes n8n](screenshots/features/reports-n8n.png)
 
-### Características del Reporte IA
+#### 1. **Reportes Mensuales Automatizados**
+- **Schedule Trigger**: Se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM
+- **Detección de Usuarios**: Obtiene lista de usuarios activos via API REST
+- **Análisis Individual**: Para cada usuario obtiene sus datos completos
+- **Filtrado Temporal**: Procesa únicamente los gastos del mes anterior
+- **Análisis con IA**: GPT-3.5-turbo genera reporte personalizado
+- **Envío por Email**: Gmail con diseño HTML profesional
+
+#### 2. **Alertas de Presupuesto (90%)**
+- **Webhook Trigger**: Activado cuando Django detecta que un usuario supera el 90% del presupuesto
+- **Procesamiento Inmediato**: Recibe datos del usuario y presupuesto actual
+- **Envío de Alerta**: Email inmediato via Gmail notificando el límite alcanzado
+- **Prevención de Gastos**: Ayuda a evitar superar el presupuesto mensual
+
+### Características del Sistema IA
 
 - **Análisis Temporal Preciso**: Solo analiza el mes anterior, no el actual
 - **Métricas Financieras**: Total gastado, porcentaje del presupuesto usado
 - **Desglose por Categorías**: Análisis detallado de cada tipo de gasto
 - **Recomendaciones Personalizadas**: Sugerencias específicas del usuario
-- **Diseño Profesional**: Email HTML con identidad visual corporativa
-
-### Configuración n8n
-
-```javascript
-// Filtrado temporal en nodo Code
-const allExpenses = $input.all()[0].json.complete_history.all_expenses || [];
-const now = new Date();
-const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-const nextMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-const expensesFiltered = allExpenses.filter(expense => {
-    const expenseDate = new Date(expense.date);
-    return expenseDate >= prevMonth && expenseDate < nextMonth;
-});
-```
-
-### Variables de Entorno Requeridas
-
-```bash
-# API REST
-N8N_API_TOKEN=tu-token-seguro-aqui
-
-# Webhooks (existente)
-N8N_WEBHOOK_TOKEN=tu-webhook-token-aqui
-
-# n8n URLs
-N8N_BASE_URL=http://localhost:5678
-```
+- **Alertas en Tiempo Real**: Notificaciones automáticas al alcanzar límites
+- **Diseño Profesional**: Emails HTML con identidad visual corporativa
 
 ### Funcionalidades Destacadas
 - **Auto-Refresh Inteligente**: Las listas se actualizan automáticamente
