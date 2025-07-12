@@ -13,12 +13,87 @@ Una aplicación web moderna para controlar esos pequeños gastos diarios que pas
 
 Los **gastos hormiga** son pequeños desembolsos cotidianos que individualmente parecen insignificantes, pero acumulados representan una parte considerable del presupuesto:
 
-- Café diario: $3 × 365 días = $1,095 al año
-- Delivery impulsivo: $15 × 2 veces/semana = $1,560 al año  
-- Taxis innecesarios: $8 × 3 veces/semana = $1,248 al año
-- Suscripciones no usadas: $10 × 12 meses = $120 al año
+- Café diario: €2,50 × 365 días = €912 al año
+- Delivery impulsivo: €12 × 2 veces/semana = €1,248 al año  
+- Taxis innecesarios: €7 × 3 veces/semana = €1,092 al año
+- Suscripciones no usadas: €9 × 12 meses = €108 al año
 
-**Total: $4,023 al año en gastos "pequeños"**
+**Total: €3,360 al año en gastos "pequeños"**
+
+## 📸 Screenshots
+
+### Dashboard Principal
+La vista principal con métricas en tiempo real, gráficos interactivos y lista de gastos recientes.
+
+![Dashboard Principal](screenshots/desktop/dashboard-complete-desktop.png)
+
+### Gestión de Gastos
+Lista completa de gastos con filtros avanzados y funcionalidad CRUD completa.
+
+![Lista de Gastos](screenshots/desktop/expense-list-desktop.png)
+
+### Modales Interactivos (HTMX)
+Formularios dinámicos que se abren sin recargar la página.
+
+| Agregar Gasto | Editar Gasto |
+|---------------|--------------|
+| ![Agregar Gasto](screenshots/desktop/add-expense-modal-desktop.png) | ![Editar Gasto](screenshots/desktop/edit-expense-modal-desktop.png) |
+
+### Perfil de Usuario
+Configuración personal y alertas automáticas para reportes mensuales.
+
+![Perfil de Usuario](screenshots/desktop/user-profile-desktop.png)
+
+### Funcionalidades Clave
+
+#### Acceso y Autenticación
+Página de login con diseño limpio y profesional.
+
+![Login](screenshots/desktop/login-desktop.png)
+
+#### Gestión de Presupuesto
+Modal para configurar presupuesto mensual y alertas automáticas.
+
+![Presupuesto](screenshots/desktop/budget-modal-desktop.png)
+
+#### Diseño Responsive
+La aplicación se adapta perfectamente a dispositivos móviles con navegación optimizada y formularios táctiles.
+
+#### Filtros Avanzados
+Sistema de filtros inteligentes por período, categoría y monto.
+
+![Filtros Activos](screenshots/desktop/expense-filters-active-desktop.png)
+
+### 📱 Versión Mobile
+
+La aplicación cuenta con un diseño completamente responsive que se adapta perfectamente a dispositivos móviles.
+
+#### Interfaz Principal Mobile
+Dashboard optimizado para pantallas pequeñas con navegación intuitiva.
+
+![Dashboard Mobile](screenshots/mobile/dashboard-mobile.png)
+
+#### Navegación Mobile
+Menú hamburguesa con acceso rápido a todas las funcionalidades.
+
+![Mobile Menu](screenshots/mobile/mobile-menu.png)
+
+#### Acceso Mobile
+Página de login optimizada para dispositivos táctiles.
+
+![Login Mobile](screenshots/mobile/login-mobile.png)
+
+#### Gestión de Gastos Mobile
+Lista de gastos y formularios adaptados para móviles.
+
+| Lista de Gastos | Agregar Gasto |
+|-----------------|---------------|
+| ![Expense List Mobile](screenshots/mobile/expense-list-mobile.png) | ![Add Expense Mobile](screenshots/mobile/add-expense-mobile.png) |
+
+#### Configuración Mobile
+Perfil de usuario y configuraciones optimizadas para móvil.
+
+![User Profile Mobile](screenshots/mobile/user-profile-mobile.png)
 
 ## Características Principales
 
