@@ -3,6 +3,7 @@
 Una aplicación web moderna para controlar esos pequeños gastos diarios que pasan desapercibidos pero que al final del año suman cantidades importantes. Incluye sistema de automatización con n8n para reportes mensuales inteligentes con IA.
 
 ![Django](https://img.shields.io/badge/Django-5.2.3-092E20?style=for-the-badge&logo=django&logoColor=white)
+![DRF](https://img.shields.io/badge/Django%20REST-Framework-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![HTMX](https://img.shields.io/badge/HTMX-1.9-336791?style=for-the-badge&logo=htmx&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
@@ -128,7 +129,7 @@ Perfil de usuario y configuraciones optimizadas para móvil.
 - Sistema de categorías con colores personalizados
 - Gestión de usuarios con autenticación segura
 - Sistema de alertas de presupuesto automatizado
-- **API REST**: Endpoints para integración con n8n y otras herramientas
+- **API REST**: Endpoints específicos para integración con n8n
 - **Reportes Automatizados**: Generación mensual de reportes con IA
 - **Webhooks**: Sistema de notificaciones automáticas
 
@@ -136,6 +137,7 @@ Perfil de usuario y configuraciones optimizadas para móvil.
 
 ### Backend
 - **Django 5.2.3**: Framework web robusto
+- **Django REST Framework**: API REST para integración con n8n
 - **PostgreSQL**: Base de datos para desarrollo y producción
 - **Python 3.12**: Lenguaje base
 - **Gunicorn**: Servidor WSGI para producción
@@ -234,7 +236,7 @@ hormigah/
 - Alertas automáticas al alcanzar el 90% del presupuesto mensual
 - Configuración por usuario (activar/desactivar)
 - **Reportes Mensuales Automatizados**: n8n + OpenAI + Gmail
-- **API REST**: Integración completa para herramientas externas
+- **API REST**: Integración específica para n8n
 - **Análisis Inteligente**: IA personalizada por usuario y período
 
 ## Comandos Útiles
@@ -286,7 +288,9 @@ curl -H "Authorization: Bearer {token}" http://localhost:8000/api/users/1/comple
 curl http://localhost:8000/api/docs/
 ```
 
-## API REST
+## API REST (Django REST Framework)
+
+La aplicación incluye **2 endpoints específicos** desarrollados con Django REST Framework para que n8n pueda generar reportes automáticos.
 
 ### Endpoints Disponibles
 
@@ -296,7 +300,9 @@ GET /api/users/active/
 Authorization: Bearer {N8N_API_TOKEN}
 ```
 
-Retorna usuarios que:
+**Propósito**: Obtener lista de usuarios elegibles para reportes automáticos
+
+**Retorna usuarios que**:
 - Tienen presupuesto configurado
 - Tienen alertas por email activadas  
 - Han registrado gastos en los últimos 30 días
@@ -307,7 +313,9 @@ GET /api/users/{id}/complete/
 Authorization: Bearer {N8N_API_TOKEN}
 ```
 
-Retorna datos completos incluyendo:
+**Propósito**: Obtener todos los datos necesarios para generar reportes con IA
+
+**Retorna datos completos incluyendo**:
 - Información del usuario y presupuesto
 - Historial completo de gastos
 - Resúmenes mensuales y por categorías
@@ -332,8 +340,8 @@ El sistema incluye dos workflows principales de n8n para automatización complet
 
 #### 1. **Reportes Mensuales Automatizados**
 - **Schedule Trigger**: Se ejecuta automáticamente el día 1 de cada mes a las 9:00 AM
-- **Detección de Usuarios**: Obtiene lista de usuarios activos via API REST
-- **Análisis Individual**: Para cada usuario obtiene sus datos completos
+- **Detección de Usuarios**: Consume endpoint `/api/users/active/` para obtener usuarios elegibles
+- **Análisis Individual**: Para cada usuario consume `/api/users/{id}/complete/` para obtener datos completos
 - **Filtrado Temporal**: Procesa únicamente los gastos del mes anterior
 - **Análisis con IA**: GPT-3.5-turbo genera reporte personalizado
 - **Envío por Email**: Gmail con diseño HTML profesional
