@@ -7,7 +7,7 @@
             </div>
             <div class="ml-4">
                 <p class="text-blue-100">{{ period_label|default:"Total del Mes" }}</p>
-                <p class="text-2xl font-bold">€{{ period_total|floatformat:0 }}</p>
+                <p class="text-2xl font-bold">€{{ period_total|floatformat:2 }}</p>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
             </div>
             <div class="ml-4">
                 <p class="text-purple-100">Promedio Diario</p>
-                <p class="text-2xl font-bold">€{{ period_avg_daily|floatformat:0 }}</p>
+                <p class="text-2xl font-bold">€{{ period_avg_daily|floatformat:2 }}</p>
             </div>
         </div>
     </div>

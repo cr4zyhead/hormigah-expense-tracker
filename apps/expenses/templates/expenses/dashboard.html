@@ -19,7 +19,7 @@
             <!-- Total del mes (solo en desktop) -->
             <div class="hidden sm:block text-right">
                 <p class="text-sm text-gray-500">Mes actual</p>
-                <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:0 }}</p>
+                <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:2 }}</p>
             </div>
         </div>
         
@@ -42,7 +42,7 @@
         <!-- Total del mes (solo en móvil) -->
         <div class="sm:hidden mt-4 pt-4 border-t border-gray-200 text-center">
             <p class="text-sm text-gray-500">Mes actual</p>
-            <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:0 }}</p>
+            <p class="text-2xl font-bold text-green-600">€{{ monthly_total|floatformat:2 }}</p>
         </div>
     </div>
 
@@ -92,7 +92,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-2xl font-bold">{{ budget_percentage_used|floatformat:0 }}%</p>
-                    <p class="text-sm text-gray-500">de €{{ budget.monthly_limit|floatformat:0 }}</p>
+                    <p class="text-sm text-gray-500">de €{{ budget.monthly_limit|floatformat:2 }}</p>
                 </div>
             </div>
             <!-- Barra de progreso sencilla -->
@@ -134,7 +134,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-blue-100">{{ period_label|default:"Total del Mes" }}</p>
-                        <p class="text-2xl font-bold">€{{ period_total|floatformat:0 }}</p>
+                        <p class="text-2xl font-bold">€{{ period_total|floatformat:2 }}</p>
                     </div>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-purple-100">Promedio Diario</p>
-                        <p class="text-2xl font-bold">€{{ period_avg_daily|floatformat:0 }}</p>
+                        <p class="text-2xl font-bold">€{{ period_avg_daily|floatformat:2 }}</p>
                     </div>
                 </div>
             </div>
@@ -257,7 +257,7 @@
                                 {{ expense.date|date:"d/m/Y" }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                €{{ expense.amount|floatformat:0 }}
+                                €{{ expense.amount|floatformat:2 }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -271,7 +271,7 @@
                 <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div class="flex items-center justify-between mb-2">
                         <h4 class="font-medium text-gray-900 text-sm">{{ expense.description }}</h4>
-                        <span class="text-lg font-bold text-gray-900">€{{ expense.amount|floatformat:0 }}</span>
+                        <span class="text-lg font-bold text-gray-900">€{{ expense.amount|floatformat:2 }}</span>
                     </div>
                     <div class="flex items-center justify-between text-sm">
                         <div class="flex items-center space-x-2">
