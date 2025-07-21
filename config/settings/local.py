@@ -52,7 +52,21 @@ if DEBUG:
         import debug_toolbar
         INSTALLED_APPS += ['debug_toolbar']
         MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
-        INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
+        
+        # Configuración mejorada para Docker
+        INTERNAL_IPS = [
+            '127.0.0.1',
+            'localhost',
+        ]
+        
+        # Para Docker: detectar automáticamente la IP del gateway
+        import socket
+        hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+        INTERNAL_IPS += [ip[: ip.rfind(".")] + ".1" for ip in ips]
+        
+        # Rangos comunes de Docker
+        INTERNAL_IPS += ['172.17.0.1', '172.18.0.1', '172.19.0.1', '172.20.0.1']
+        
     except ImportError:
         pass
 
