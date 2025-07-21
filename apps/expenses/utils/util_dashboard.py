@@ -78,7 +78,7 @@ def calculate_dashboard_metrics(user, start_date, end_date, period=None):
         user=user,
         date__gte=start_date,
         date__lte=end_date
-    )
+    ).select_related('category')
     
     # Calcular métricas básicas del período
     period_total = period_expenses.aggregate(total=Sum('amount'))['total'] or 0
@@ -97,7 +97,7 @@ def calculate_dashboard_metrics(user, start_date, end_date, period=None):
     period_avg_daily = period_total / period_days if period_days > 0 else 0
     
     # Gastos recientes del usuario actual (independiente del período)
-    recent_expenses = Expense.objects.filter(user=user).order_by('-date')[:10]
+    recent_expenses = Expense.objects.filter(user=user).select_related('category').order_by('-date')[:10]
     
     # Gastos por categoría en el período seleccionado
     categories_summary = period_expenses.values('category__name', 'category__color').annotate(
@@ -142,7 +142,7 @@ def get_dashboard_context(user, period):
         user=user,
         date__gte=start_date,
         date__lte=end_date
-    )
+    ).select_related('category')
     
     # Preparar datos de gráficos
     chart_data = prepare_chart_data(metrics['categories_summary'], period_expenses)

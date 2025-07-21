@@ -122,7 +122,7 @@ def get_expense_list_context(user, request_params):
         dict: Context completo para el template
     """
     # Obtener todos los gastos del usuario
-    expenses = Expense.objects.filter(user=user)
+    expenses = Expense.objects.filter(user=user).select_related('category')
     
     # Inicializar formulario de filtros
     filter_form = ExpenseFilterForm(request_params or None)
