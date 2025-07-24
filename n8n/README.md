@@ -39,15 +39,25 @@ Workflow programado que genera reportes mensuales automáticos para todos los us
 
 ## Configuración
 
-Antes de importar estos workflows:
+Después de importar los workflows en n8n:
 
-1. Reemplaza `YOUR_API_TOKEN_HERE` con tu token de API real
-2. Cambia `https://your-domain.com` por tu dominio
-3. Configura las credenciales necesarias:
-   - Gmail OAuth2
-   - OpenAI API
-   - Header Authentication (para webhooks)
-4. Actualiza `your-app@example.com` con tu email real
+### 1. Configurar URLs en nodos HTTP Request
+- Abrir nodo "Get Active Users" → cambiar URL por tu dominio real
+- Abrir nodo "Get User Details" → cambiar URL por tu dominio real
+
+### 2. Crear credenciales en n8n
+Ir a Credenciales → Crear nuevas:
+- **Gmail OAuth2** para envío de emails
+- **OpenAI API** para análisis con IA  
+- **Header Authentication** para webhooks
+
+### 3. Actualizar tokens de autenticación
+En nodos HTTP Request → Headers → Authorization:
+- Reemplazar `YOUR_API_TOKEN_HERE` con tu Bearer token real
+
+### 4. Personalizar emails
+En nodo "Send Report Email" → Message:
+- Cambiar `your-app@example.com` por tu email real
 
 ## Uso
 
