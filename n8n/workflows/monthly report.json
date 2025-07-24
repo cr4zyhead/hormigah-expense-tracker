@@ -1,0 +1,233 @@
+{
+  "name": "monthly report",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 1 * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b39cd834-b68e-4261-abdf-9cd56ebb3901",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "users",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "e8d80166-bfd7-4873-868e-20e8def3754c",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "https://your-domain.com/api/users/active/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN_HERE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c04a72ef-b9b8-4262-ae1d-d5dbf6e7784a",
+      "name": "Get Active Users"
+    },
+    {
+      "parameters": {
+        "url": "=https://your-domain.com/api/users/{{ $json.id }}/complete/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_TOKEN_HERE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "037ab522-de56-42c4-82a1-4694f187406e",
+      "name": "Get User Details"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener todos los gastos del usuario\nconst allExpenses = $input.all()[0].json.complete_history.all_expenses || [];\n\n// Obtener el mes anterior al actual\nconst now = new Date();\nconst prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);\nconst prevMonthNum = prevMonth.getMonth() + 1; // 1-12\nconst prevYear = prevMonth.getFullYear();\n\n// Filtrar gastos del mes anterior\nconst filteredExpenses = allExpenses.filter(expense => {\n  const date = new Date(expense.date);\n  return (date.getMonth() + 1 === prevMonthNum) && (date.getFullYear() === prevYear);\n});\n\n// Calcular totales del mes anterior\nconst totalSpent = filteredExpenses.reduce((sum, expense) => sum + parseFloat(expense.amount || 0), 0);\n\nconst monthlyBudget = parseFloat($input.all()[0].json.budget.monthly_limit || 0);\nconst percentageUsed = monthlyBudget > 0 ? (totalSpent / monthlyBudget * 100).toFixed(2) : 0;\n\nconst monthToAnalyze = prevMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });\n\n// Agrupar gastos por categoría\nconst categories = {};\nfilteredExpenses.forEach(expense => {\n  const category = expense.category?.name || 'Uncategorized';\n  if (!categories[category]) {\n    categories[category] = 0;\n  }\n  categories[category] += parseFloat(expense.amount || 0);\n});\n\n// Preparar datos para OpenAI\nconst dataForAI = {\n  user: $input.all()[0].json.username,\n  monthly_budget: monthlyBudget,\n  analyzed_month: monthToAnalyze,\n  previous_month_expenses: filteredExpenses,\n  total_spent: totalSpent,\n  percentage_used: percentageUsed,\n  remaining_money: monthlyBudget - totalSpent,\n  number_of_expenses: filteredExpenses.length,\n  categories_summary: categories,\n  has_data: filteredExpenses.length > 0\n};\n\n// Retornar en formato correcto para n8n\nreturn [\n  {\n    json: {\n      ...dataForAI,\n      email: $input.all()[0].json.email,\n      username: $input.all()[0].json.username,\n      budget: $input.all()[0].json.budget,\n      complete_history: $input.all()[0].json.complete_history\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "ee0dd0e8-92c9-4544-a55f-bfcd81c706f9",
+      "name": "Filter Monthly Data"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Eres un asistente financiero experto. Analiza únicamente los datos del mes {{ $json.analyzed_month }} y genera un reporte retrospectivo personalizado, amigable y motivador.\n\nDATOS DEL MES {{ $json.analyzed_month.toUpperCase() }}:\n- Usuario: {{ $json.user }}\n- Presupuesto mensual: €{{ $json.monthly_budget }}\n- Total gastado en {{ $json.analyzed_month }}: €{{ $json.total_spent }}\n- Porcentaje usado: {{ $json.percentage_used }}%\n- Número de gastos: {{ $json.number_of_expenses }}\n- Categorías: {{ JSON.stringify($json.categories_summary) }}\n\nINSTRUCCIONES IMPORTANTES:\n1. Analiza ÚNICAMENTE los gastos de {{ $json.analyzed_month }}\n2. Si no hay gastos (has_data = {{ $json.has_data }}), explica que fue un mes sin actividad registrada\n3. No menciones otros meses ni hagas comparaciones temporales\n4. Usa el nombre real del usuario: {{ $json.user }}\n5. Enfócate en el rendimiento específico de {{ $json.analyzed_month }}\n\nFORMATO DE RESPUESTA:\n- Saludo personalizado: \"¡Hola {{ $json.user }}!\"\n- Análisis específico: \"En {{ $json.analyzed_month }} gastaste €{{ $json.total_spent }}...\"\n- Resumen del mes (gastos vs presupuesto)\n- Análisis por categorías principales\n- Recomendaciones para el futuro\n- Mensaje motivador final\n\nIMPORTANTE: Solo habla de {{ $json.analyzed_month }}. No menciones \"mes pasado\" ni \"otros meses\".\n\nResponde en español, máximo 300 palabras, tono conversacional y positivo."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "3accc410-b46a-46e5-b71b-491ea3e62533",
+      "name": "AI Analysis",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Filter Monthly Data').item.json.email }}",
+        "subject": "=📊 Tu reporte de {{ $('Filter Monthly Data').item.json.analyzed_month }} - Gastos Hormiga",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }\n        .header { background: #2196F3; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }\n        .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }\n        .highlight { background: #e3f2fd; padding: 10px; border-left: 4px solid #2196F3; margin: 10px 0; white-space: pre-line; }\n        .user-info { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 5px; margin: 15px 0; }\n        .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h2>🐜 Gastos Hormiga - Reporte Mensual</h2>\n        <p>Hola <strong>{{ $('Filter Monthly Data').item.json.user }}</strong>! 👋</p>\n    </div>\n    <div class=\"content\">\n        <div class=\"user-info\">\n            <h3>📊 Resumen de {{ $('Filter Monthly Data').item.json.analyzed_month }}:</h3>\n            <p><strong>👤 Usuario:</strong> {{ $('Filter Monthly Data').item.json.user }}</p>\n            <p><strong>💰 Presupuesto mensual:</strong> €{{ $('Filter Monthly Data').item.json.monthly_budget }}</p>\n            <p><strong>📈 Total gastado en {{ $('Filter Monthly Data').item.json.analyzed_month }}:</strong> €{{ $('Filter Monthly Data').item.json.total_spent }}</p>\n            <p><strong>📊 Porcentaje usado:</strong> {{ $('Filter Monthly Data').item.json.percentage_used }}%</p>\n            <p><strong>🧾 Número de gastos:</strong> {{ $('Filter Monthly Data').item.json.number_of_expenses }}</p>\n            <p><strong>💰 Dinero restante:</strong> €{{ $('Filter Monthly Data').item.json.remaining_money }}</p>\n        </div>\n        \n        <h3>🤖 Análisis personalizado:</h3>\n        <div class=\"highlight\">\n            {{ $json.message.content }}\n        </div>\n        \n        <p><strong>📅 Generado:</strong> {{ new Date().toLocaleDateString('es-ES', { \n            weekday: 'long', \n            year: 'numeric', \n            month: 'long', \n            day: 'numeric' \n        }) }}</p>\n    </div>\n    <div class=\"footer\">\n        <p>Este reporte ha sido generado automáticamente para <strong>{{ $('Filter Monthly Data').item.json.user }}</strong></p>\n        <p>💡 <em>Tip: Mantén el control de tus finanzas registrando todos tus gastos pequeños</em></p>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1460,
+        0
+      ],
+      "id": "2d498cf9-c9f0-4f96-b3c4-c1ea64d202b1",
+      "name": "Send Report Email",
+      "webhookId": "EXAMPLE_WEBHOOK_ID",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Active Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get User Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Active Users": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get User Details": {
+      "main": [
+        [
+          {
+            "node": "Filter Monthly Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Monthly Data": {
+      "main": [
+        [
+          {
+            "node": "AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Analysis": {
+      "main": [
+        [
+          {
+            "node": "Send Report Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "EXAMPLE_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "EXAMPLE_INSTANCE_ID"
+  },
+  "id": "EXAMPLE_WORKFLOW_ID",
+  "tags": []
+}

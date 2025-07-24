@@ -1,0 +1,76 @@
+{
+  "name": "Budget Alert Emails",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "budget-alert",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        -200
+      ],
+      "id": "02dba742-45dc-4be5-a000-8f18eba1272c",
+      "name": "Webhook",
+      "webhookId": "EXAMPLE_WEBHOOK_ID",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HEADER_AUTH_CREDENTIAL_ID",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.user_email }}",
+        "subject": "=⚠️ Alerta de Presupuesto -   {{ $json.body.percentage }}% gastado",
+        "message": "=<h2>🚨 Alerta de Presupuesto</h2>  <p>Hola <strong>{{ $json.body.user_name }}</strong>,</p>  <p>{{ $json.body.message }}</p>  <h3>📊 Detalles de tu presupuesto:</h3> <ul>   <li><strong>Presupuesto mensual:</strong> {{ $json.body.budget_limit }}€</li>   <li><strong>Gastado hasta ahora:</strong> {{ $json.body.current_spending }}€</li>   <li><strong>Porcentaje utilizado:</strong> {{ $json.body.percentage }}%</li> </ul>  <div style=\"background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;\">   <p style=\"margin: 0; color: #856404;\">     💡 <strong>Recomendación:</strong> Controla tus gastos para no sobrepasar tu límite mensual.   </p> </div>  <hr> <p style=\"font-size: 12px; color: #6c757d;\">   <strong>Hormigah - Gestor de Gastos</strong><br>   Sistema de alertas automáticas<br>   your-app@example.com </p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -260,
+        -200
+      ],
+      "id": "187848b2-15ac-4e46-abad-d13df0da8662",
+      "name": "Send a message",
+      "webhookId": "EXAMPLE_WEBHOOK_ID_2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "EXAMPLE_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "EXAMPLE_INSTANCE_ID"
+  },
+  "id": "EXAMPLE_WORKFLOW_ID",
+  "tags": []
+}
