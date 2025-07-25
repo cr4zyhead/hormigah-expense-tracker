@@ -368,7 +368,3 @@ El sistema incluye dos workflows principales de n8n para automatización complet
 - **Sistema de Automatización Completo**: n8n + API REST + IA
 - **Reportes Mensuales Automatizados**: Análisis personalizado con GPT
 - **Integración Gmail**: Emails HTML profesionales automáticos
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
