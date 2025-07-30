@@ -41,7 +41,7 @@ def test_budget_webhook():
     payload = {
         'user_id': 1,                                        # ID del usuario en Django
         'user_name': 'Usuario Prueba',                       # Nombre completo o username
-        'user_email': 'joseolmostech@gmail.com',            # Email para enviar alerta
+        'user_email': 'pruebas.test@example.com',            # Email para enviar alerta
         'budget_limit': 500.00,                              # Límite mensual configurado
         'current_spending': 465.50,                          # Gastos actuales del mes
         'percentage': 93.1,                                  # Porcentaje calculado (465.5/500*100)
