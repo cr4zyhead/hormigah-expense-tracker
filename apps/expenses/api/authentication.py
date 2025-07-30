@@ -32,10 +32,9 @@ class BearerTokenAuthentication(authentication.BaseAuthentication):
             
         Returns:
             tuple: (user, token) si la autenticación es exitosa
-            None: si no hay token o el header no es válido
             
         Raises:
-            AuthenticationFailed: si el token es inválido
+            AuthenticationFailed: si no hay token o el token es inválido
         """
         
         # Obtener header Authorization
@@ -43,7 +42,8 @@ class BearerTokenAuthentication(authentication.BaseAuthentication):
         
         # Verificar que el header existe y tiene el formato correcto
         if not auth_header or auth_header[0].lower() != b'bearer':
-            return None
+            msg = 'Token Bearer requerido. Proporciona Authorization: Bearer {token}'
+            raise exceptions.AuthenticationFailed(msg)
             
         if len(auth_header) == 1:
             msg = 'Token Bearer inválido. No se proporcionó token.'
