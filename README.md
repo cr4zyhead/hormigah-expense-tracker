@@ -162,7 +162,7 @@ Perfil de usuario y configuraciones optimizadas para móvil.
 ### Setup Rápido
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/hormigah.git
+git clone https://github.com/cr4zyhead/hormigah-expense-tracker.git
 cd hormigah
 
 # Configurar variables de entorno
